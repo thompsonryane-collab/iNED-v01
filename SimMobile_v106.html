@@ -1519,19 +1519,16 @@ html::after {
   padding: 8px 14px; cursor: pointer;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.scp-action-btn {
+#scp-print-btn {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px; letter-spacing: 1.5px;
+  font-size: 11px; letter-spacing: 1px;
+  color: #fff; background: #1a7a50;
   border: none; border-radius: 7px;
-  padding: 0 12px; height: 38px;
-  display: flex; align-items: center; gap: 5px;
-  cursor: pointer; flex-shrink: 0; white-space: nowrap;
+  padding: 8px 14px; cursor: pointer;
+  text-decoration: none; display: inline-block;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-  transition: opacity .15s;
+  -webkit-user-select: none; user-select: none;
 }
-.scp-action-btn:active { opacity: .75; }
-#scp-btn-pdf   { background: #3a5470; color: #cce0f2; }
-#scp-btn-share { background: #c8924a; color: #0e1824; }
 
 #scp-preview-hint {
   background: rgba(212,160,90,.12);
@@ -1835,8 +1832,7 @@ html::after {
 <div id="scp-preview-overlay">
   <div id="scp-preview-chrome">
     <span id="scp-preview-title">⎙ SCENARIO REPORT</span>
-    <button id="scp-btn-pdf"   class="scp-action-btn" onclick="scpPrint()">⎙ PDF</button>
-    <button id="scp-btn-share" class="scp-action-btn" onclick="scpShare()">⬆ SHARE</button>
+    <a id="scp-print-btn" href="#" onclick="window.print();return false;">⎙ PRINT / SAVE</a>
     <button id="scp-preview-close" onclick="closeScenarioPreview()">✕ CLOSE</button>
   </div>
   <div id="scp-preview-body"></div>
@@ -5673,6 +5669,9 @@ function buildScenarioHTML(sc) {
   '</div>';
 }
 
+// Cache the report at open-time so share/print don't re-query stale _checkedScenarios
+var _scpCachedReport = null;
+
 // ── Build scenario report HTML (print-friendly white background) ──
 function _buildReportHTML() {
   var selected = savedScenarios.filter(function(sc, i) { return !!_checkedScenarios[i]; });
@@ -5717,39 +5716,18 @@ function scpPrint() {
 
 // ── ⬆ SHARE — Web Share API; falls back to new-tab if unsupported ──
 function scpShare() {
-  var result = _buildReportHTML();
+  var result = _scpCachedReport || _buildReportHTML();
   if (!result) return;
-  if (navigator.share && navigator.canShare) {
-    try {
-      var file = new File([result.html], result.filename, { type: 'text/html' });
-      if (navigator.canShare({ files: [file] })) {
-        navigator.share({
-          title: 'iNED Scenario Report',
-          files: [file]
-        }).catch(function() {});
-        return;
-      }
-    } catch(e) {}
-    // canShare returned false for files — try sharing just the URL/title
-    try {
-      navigator.share({ title: 'iNED Scenario Report', text: 'See attached scenario report.' }).catch(function() {});
-      return;
-    } catch(e2) {}
-  }
-  // Fallback: open in new tab — user can use Safari ⬆ share sheet from there
-  try {
-    var blob = new Blob([result.html], { type: 'text/html' });
-    var url  = URL.createObjectURL(blob);
-    var tab  = window.open(url, '_blank');
-    if (tab) { setTimeout(function() { try { URL.revokeObjectURL(url); } catch(x) {} }, 60000); return; }
-  } catch(e3) {}
-  // Last resort: data URI
-  try { window.open('data:text/html;charset=utf-8,' + encodeURIComponent(result.html), '_blank'); } catch(e4) {}
+  var pw = window.open('', '_blank', 'width=900,height=700');
+  if (!pw) return;
+  pw.document.write(result.html.replace('</body>', '<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt></body>'));
+  pw.document.close();
 }
 
 function closeScenarioPreview() {
   var overlay = document.getElementById('scp-preview-overlay');
   if (overlay) overlay.classList.remove('open');
+  _scpCachedReport = null;
 }
 
 function printSelectedScenarios() {
@@ -5757,6 +5735,8 @@ function printSelectedScenarios() {
   if (!selected.length) return;
   var body = document.getElementById('scp-preview-body');
   if (body) body.innerHTML = selected.map(buildScenarioHTML).join('');
+  // Cache report at open-time for share button
+  _scpCachedReport = _buildReportHTML();
   var overlay = document.getElementById('scp-preview-overlay');
   if (overlay) {
     overlay.classList.add('open');
@@ -6472,6 +6452,8 @@ document.addEventListener('DOMContentLoaded', function() {
   cards.forEach(function(c, i) {
     setTimeout(function() { c.classList.add('revealed'); }, 300 + i * 180);
   });
+
+
 });
 
 document.addEventListener('keydown', function(e) {
