@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>SimMobile</title>
+<title>iNED // Command Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -23,7 +23,7 @@
   --amber:         #d4a05a;
   --tx:            #cce0f2;
   --txh:           #f2f8ff;
-  --txd:           #6e90b0;
+  --txd:           #a8c8e0;
   --mono:          'Share Tech Mono', monospace;
   --dsp:           'Orbitron', monospace;
   --slide-dur:     400ms;
@@ -380,6 +380,9 @@ html::after {
 }
 
 .app-card:active { opacity:.88; }
+#card-saved:active { opacity: 1; } /* saved scenarios is a table, not a press target */
+#card-saved.no-active,
+#card-saved.no-active:active { opacity: 1 !important; } /* JS-assisted :active release after touchend */
 @media (hover:hover) {
   .card-briefing:hover { border-color:rgba(0,200,240,.35); box-shadow: var(--card-bevel), 0 0 20px rgba(0,200,240,.07); }
   .card-wargame:hover  { border-color:rgba(77,158,122,.38); box-shadow: var(--card-bevel), 0 0 20px rgba(77,158,122,.09); }
@@ -543,6 +546,126 @@ html::after {
   background: rgba(242,184,38,.22);
   box-shadow: 0 0 12px rgba(242,184,38,.2);
 }
+
+/* ── SAVED SCENARIOS CARD ── */
+#card-saved {
+  display: none;
+  background: linear-gradient(155deg, rgba(255,255,255,.04), rgba(255,255,255,0) 35%, rgba(0,0,0,.16)), var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--card-bevel), 0 1px 2px rgba(0,0,0,.25);
+  padding: var(--card-pad);
+  position: relative; overflow: hidden;
+  grid-column: 1 / -1;
+  -webkit-tap-highlight-color: transparent;
+}
+#card-saved::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent);
+  opacity: .6;
+}
+#card-saved.has-rows { display: block; }
+.saved-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.saved-title { font-family:var(--dsp); font-size:var(--title-sz); font-weight:700; color:var(--txh); letter-spacing:.3px; flex:1; }
+.saved-badge { font-family:var(--dsp); font-size:var(--badge-sz); letter-spacing:2px; color:var(--amber); }
+
+/* ── SCENARIO ROW ── */
+.sc-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(30,45,69,.4);
+  -webkit-tap-highlight-color: transparent;
+}
+.sc-row:last-child { border-bottom: none; }
+
+/* Checkbox tap zone — 44×44 min */
+.sc-check-wrap {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; flex-shrink: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.sc-checkbox {
+  appearance: none; -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border: 2px solid #3a5470;
+  border-radius: 5px;
+  background: rgba(24,45,66,.5);
+  cursor: pointer;
+  position: relative;
+  transition: border-color .15s, background .15s;
+  flex-shrink: 0;
+  pointer-events: none; /* tap handled by wrap */
+}
+.sc-checkbox.checked {
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.sc-checkbox.checked::after {
+  content: '';
+  position: absolute; left: 5px; top: 2px;
+  width: 6px; height: 11px;
+  border: 2px solid #0e1824;
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+
+/* Main content — tapping launches */
+.sc-row-main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 3px;
+  cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.sc-row-main:active { opacity: .75; }
+@media (hover:hover) { .sc-row-main:hover { opacity: .85; } }
+
+.sc-row-id   { font-family:var(--dsp); font-size:9px; letter-spacing:.5px; color:var(--amber); }
+.sc-row-inst { font-family:var(--dsp); font-size:11px; font-weight:700; color:var(--txh); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sc-row-meta { font-family:var(--mono); font-size:9px; color:var(--txd); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* Delete button */
+.sc-btn-del {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px;
+  background: transparent; color: var(--txd);
+  border: none; font-size: 15px; cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: color .15s;
+  flex-shrink: 0;
+}
+.sc-btn-del:active { color: #c87070; }
+@media (hover:hover) { .sc-btn-del:hover { color: #c87070; } }
+
+/* Print toolbar — appears when ≥1 checked */
+#sc-print-bar {
+  display: none;
+  align-items: center; gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(212,160,90,.14);
+  border: 1.5px solid rgba(212,160,90,.45);
+  border-radius: 10px;
+}
+#sc-print-bar.visible { display: flex; }
+#sc-print-bar-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+  color: var(--amber); flex: 1;
+}
+#sc-print-bar-btn {
+  font-family: var(--dsp); font-size: 11px; letter-spacing: 1.5px;
+  background: var(--amber); color: #0e1824;
+  border: none; border-radius: 8px;
+  padding: 11px 20px; cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  white-space: nowrap; font-weight: 700;
+  transition: opacity .15s;
+  box-shadow: 0 2px 8px rgba(212,160,90,.35);
+}
+#sc-print-bar-btn:active { opacity: .8; }
 
 /* ── SCAN LINE ── */
 #scan-line {
@@ -1367,6 +1490,93 @@ html::after {
   animation: spFadeUp .3s ease both;
 }
 #sp-enter-error.show { display: block; }
+
+/* ── SCENARIO PREVIEW OVERLAY ── */
+#scp-preview-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: #0e1824;
+  flex-direction: column;
+  overflow: hidden;
+}
+#scp-preview-overlay.open { display: flex; }
+#scp-preview-chrome {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: #0a1018;
+  border-bottom: 1px solid #1a2d42;
+  flex-shrink: 0;
+}
+#scp-preview-title {
+  font-family: 'Orbitron', monospace; font-size: 11px;
+  letter-spacing: 2px; color: #4db88a; flex: 1;
+}
+#scp-preview-close {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px; letter-spacing: 1px;
+  color: #fff; background: #3a5470;
+  border: none; border-radius: 7px;
+  padding: 8px 14px; cursor: pointer;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.scp-action-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 1.5px;
+  border: none; border-radius: 7px;
+  padding: 0 12px; height: 38px;
+  display: flex; align-items: center; gap: 5px;
+  cursor: pointer; flex-shrink: 0; white-space: nowrap;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+.scp-action-btn:active { opacity: .75; }
+#scp-btn-pdf   { background: #3a5470; color: #cce0f2; }
+#scp-btn-share { background: #c8924a; color: #0e1824; }
+
+#scp-preview-hint {
+  background: rgba(212,160,90,.12);
+  border-bottom: 1px solid rgba(212,160,90,.3);
+  padding: 8px 16px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: #d4a05a;
+  letter-spacing: .5px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+#scp-preview-body {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: 24px 20px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px; line-height: 1.65;
+  color: #cce0f2; background: #0e1824;
+  /* Belt-and-suspenders for iOS compositing layer */
+  -webkit-transform: translateZ(0);
+}
+.scp-scenario      { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 2px dashed #1a2d42; }
+.scp-scenario:last-child { border-bottom: none; margin-bottom: 0; }
+.scp-header        { border-bottom: 2px solid #4db88a; padding-bottom: 10px; margin-bottom: 18px; }
+.scp-title         { font-size: 17px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #f2f8ff; }
+.scp-sub           { font-size: 11px; letter-spacing: 1px; color: #6e90b0; margin-top: 4px; }
+.scp-section       { margin-bottom: 16px; }
+.scp-section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid #1a2d42; padding-bottom: 5px; margin-bottom: 10px; color: #4db88a; }
+.scp-grid          { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; margin-bottom: 14px; }
+.scp-item          { border-bottom: 1px solid #1a2d42; padding: 5px 0; }
+.scp-key           { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #6e90b0; margin-bottom: 2px; }
+.scp-val           { font-size: 12px; font-weight: 700; color: #f2f8ff; }
+.scp-assets        { display: flex; flex-wrap: wrap; gap: 4px; }
+.scp-asset-chip    { border: 1px solid #4db88a; padding: 3px 8px; font-size: 10px; border-radius: 3px; color: #4db88a; }
+.scp-orders        { display: flex; flex-direction: column; gap: 8px; }
+.scp-order         { border-left: 3px solid #d4a05a; padding: 8px 12px; font-size: 11px; background: #141c27; color: #cce0f2; border-radius: 0 6px 6px 0; }
+.scp-order strong  { color: #d4a05a; }
+.scp-footer        { margin-top: 20px; border-top: 1px solid #1a2d42; padding-top: 8px; font-size: 10px; font-weight: 700; color: #6e90b0; display: flex; justify-content: space-between; }
+
+@media print {
+  body > *              { display: none !important; }
+  #scp-preview-overlay  { display: flex !important; position: static !important; }
+  #scp-preview-chrome   { display: none !important; }
+  #scp-preview-body     { overflow: visible !important; padding: 0 !important; }
+}
 </style>
 </head>
 <body>
@@ -1583,6 +1793,26 @@ html::after {
               style="flex:1;background:rgba(77,158,122,.18);color:var(--sage);border:1px solid rgba(77,158,122,.42);border-radius:10px;font-size:10px;letter-spacing:1.8px;padding:13px 0;">
               &#9654; &nbsp;LAUNCH SIMULATION
             </button>
+            <button class="launch-btn" id="builder-btn" onclick="openApp('overlay-builder')"
+              style="flex:0 0 auto;width:auto;padding:13px 16px;background:rgba(200,146,74,.13);color:#c8924a;border-color:rgba(200,146,74,.36);font-size:8px;letter-spacing:1.8px;border-radius:10px">
+              ⚙︎ &nbsp;BUILDER
+            </button>
+          </div>
+        </div>
+
+        <!-- ── SAVED SCENARIOS CARD ── -->
+        <div class="app-card" id="card-saved">
+          <div class="saved-head">
+            <div>
+              <div class="card-badge" style="color:var(--amber);font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-03 // SCENARIO LIBRARY</div>
+              <div class="saved-title">Saved Scenarios</div>
+            </div>
+            <div class="saved-badge" id="saved-count-badge">0 SAVED</div>
+          </div>
+          <div id="saved-list"></div>
+          <div id="sc-print-bar">
+            <span id="sc-print-bar-label">1 selected</span>
+            <button id="sc-print-bar-btn" onclick="printSelectedScenarios()">⎙ PRINT PDF</button>
           </div>
         </div>
 
@@ -1597,6 +1827,20 @@ html::after {
     </div>
   </div><!-- #hub-scroll -->
 
+
+<div id="scp-print-overlay"></div>
+<a id="scp-dl-anchor" style="display:none" download="iNED-Scenario-Report.html"></a>
+
+<!-- ── SCENARIO PREVIEW OVERLAY ── -->
+<div id="scp-preview-overlay">
+  <div id="scp-preview-chrome">
+    <span id="scp-preview-title">⎙ SCENARIO REPORT</span>
+    <button id="scp-btn-pdf"   class="scp-action-btn" onclick="scpPrint()">⎙ PDF</button>
+    <button id="scp-btn-share" class="scp-action-btn" onclick="scpShare()">⬆ SHARE</button>
+    <button id="scp-preview-close" onclick="closeScenarioPreview()">✕ CLOSE</button>
+  </div>
+  <div id="scp-preview-body"></div>
+</div>
 </div><!-- #launcher-shell -->
 
 <!-- ═══════════════════════════════════════
@@ -1637,9 +1881,9 @@ html::after {
   --slate:   #4a6fa5;
   --slate-d: rgba(74,111,165,.11);
   --slate-l: rgba(74,111,165,.36);
-  --tx:      #b2c4d6;
-  --txd:     #5a7085;
-  --txh:     #d6e8f4;
+  --tx:      #ddeeff;
+  --txd:     #b8d4ec;
+  --txh:     #ffffff;
   --mono:    'Share Tech Mono', monospace;
   --ui:      'Inter', sans-serif;
   --dsp:     'Orbitron', monospace;
@@ -3753,6 +3997,1231 @@ function launchWargame() {
 </div>
 
 
+<!-- ═══════════════════════════════════════
+     OVERLAY: SCENARIO BUILDER
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-builder" id="overlay-builder">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-builder')">&#8592; HUB</button>
+    <span class="overlay-app-name" style="color:#c8924a">⚙︎ AI WARGAME // Cross-Service Energy Resilience</span>
+  </div>
+  <iframe class="overlay-frame" id="frame-builder"
+    sandbox="allow-scripts allow-same-origin"
+    srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>iNED // Scenario Builder</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Orbitron:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+:root{
+  --bg:#07090f; --surface:#0b1120; --panel:#0f1926; --card:#131f30;
+  --border:#1e2d45; --blt:#2a3c55;
+  --sage:#4d9e7a; --sage-d:rgba(77,158,122,.12); --sage-l:rgba(77,158,122,.35);
+  --cyan:#00c8f0; --cyan-d:rgba(0,200,240,.10); --cyan-l:rgba(0,200,240,.35);
+  --amber:#c8924a; --amber-d:rgba(200,146,74,.12); --amber-l:rgba(200,146,74,.35);
+  --rose:#9e4d4d; --rose-d:rgba(158,77,77,.12); --rose-l:rgba(158,77,77,.35);
+  --slate:#4a6fa5; --slate-d:rgba(74,111,165,.12);
+  --tx:#ddeeff; --txh:#ffffff; --txd:#c0d8f0;
+  --mono:'Share Tech Mono',monospace; --dsp:'Orbitron',monospace;
+  --r:4px; --pad:14px; --gap:10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;overflow:hidden;display:flex;flex-direction:column}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
+
+/* CHROME */
+#chrome{height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 12px;flex-shrink:0;overflow:hidden}
+.c-back{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--txd);background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:5px 11px;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.c-back:hover{color:var(--txh);border-color:var(--sage)}
+.c-title{font-family:var(--dsp);font-size:11px;letter-spacing:2px;color:var(--sage);white-space:nowrap}
+.c-sub{font-size:10px;letter-spacing:1.5px;color:var(--txd);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-clear-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:transparent;color:var(--rose);border:1px solid var(--rose-l);border-radius:var(--r);padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.c-clear-btn:hover{background:var(--rose-d);border-color:var(--rose)}
+.c-run-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:var(--sage);color:#071a10;border:none;border-radius:var(--r);padding:5px 14px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.c-run-btn:hover{background:#5ab88a}
+.c-run-btn:disabled{opacity:.4;cursor:default}
+
+/* STEP RIBBON */
+#ribbon{height:32px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;overflow-x:auto;overflow-y:hidden}
+#ribbon::-webkit-scrollbar{height:0}
+.step{display:flex;align-items:center;gap:4px;padding:0 7px;height:100%;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .2s,color .2s;white-space:nowrap;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.step.active{border-bottom-color:var(--sage);color:var(--txh)}
+.step:not(.active){opacity:1;color:var(--txd)}
+.step:hover:not(.active){color:var(--txh)}
+.step-n{font-family:var(--dsp);font-size:9px;width:17px;height:17px;border-radius:50%;border:1px solid var(--blt);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step.active .step-n{border-color:var(--sage);color:var(--sage);background:var(--sage-d)}
+.step.done .step-n{border-color:transparent;background:var(--sage);color:#071a10}
+.step-l{font-family:var(--dsp);font-size:9px;letter-spacing:.8px;text-transform:uppercase}
+.step-dv{width:14px;height:1px;background:var(--border);flex-shrink:0}
+
+/* CANVAS */
+#canvas{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:var(--pad);display:flex;flex-direction:column;gap:var(--gap);min-width:0}
+#canvas::-webkit-scrollbar{width:4px}
+#canvas::-webkit-scrollbar-thumb{background:var(--blt);border-radius:2px}
+
+.pane{display:none;flex-direction:column;gap:var(--gap)}
+.pane.active{display:flex}
+
+/* SECTION */
+.section{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sec-head{padding:8px var(--pad);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sec-icon{font-size:14px;flex-shrink:0}
+.sec-title{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--txd);text-transform:uppercase;flex:1}
+.sec-badge{font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--txd);white-space:nowrap}
+
+.sec-body{padding:var(--pad);display:flex;flex-direction:column;gap:10px}
+
+/* FORM */
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:10px;letter-spacing:1.5px;color:var(--txd);text-transform:uppercase}
+.field input,.field select,.field textarea{background:#1a2a1e;border:1px solid rgba(77,158,122,.35);border-radius:var(--r);color:var(--txh);font-family:var(--mono);font-size:11px;padding:7px 10px;outline:none;width:100%;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sage)}
+.field select{appearance:none;cursor:pointer;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%233a5470'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 10px center}
+.field textarea{resize:vertical;min-height:58px;line-height:1.55}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.hint{font-size:10px;color:var(--txd);line-height:1.55}
+
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:var(--mono);font-size:9px;padding:4px 10px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .15s;color:var(--tx);background:var(--card);user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.chip:hover{border-color:var(--blt);color:var(--tx)}
+.chip.selected{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+.chip.amber.selected{border-color:var(--amber-l);color:var(--amber);background:var(--amber-d)}
+.chip.rose.selected{border-color:var(--rose-l);color:var(--rose);background:var(--rose-d)}
+.chip.slate.selected{border-color:rgba(74,111,165,.35);color:var(--slate);background:var(--slate-d)}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0}
+.toggle-lbl{font-size:10px;color:var(--tx)}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--blt);border-radius:10px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-track{background:var(--sage)}
+.toggle-track::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.toggle-track::after{transform:translateX(16px)}
+
+/* ── WARNING ORDER CARDS ── */
+.wo-list{display:flex;flex-direction:column;gap:8px}
+.wo-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;animation:wofade .25s ease}
+@keyframes wofade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.wo-card-head{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border)}
+.wo-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.wo-dot.warn{background:var(--amber)}
+.wo-dot.crit{background:var(--rose);box-shadow:0 0 6px rgba(158,77,77,.5)}
+.wo-dot.info{background:var(--slate)}
+.wo-dot.res{background:var(--sage)}
+.wo-type-lbl{font-family:var(--dsp);font-size:9px;letter-spacing:2px;flex:1}
+.wo-type-lbl.warn{color:var(--amber)}
+.wo-type-lbl.crit{color:var(--rose)}
+.wo-type-lbl.info{color:var(--slate)}
+.wo-type-lbl.res{color:var(--sage)}
+.wo-seq{font-size:9px;color:var(--txd);flex-shrink:0}
+.wo-del-btn{font-size:11px;color:var(--txd);cursor:pointer;padding:0 4px;transition:color .15s;flex-shrink:0;background:none;border:none;line-height:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.wo-del-btn:hover{color:var(--rose)}
+.wo-card-body{padding:8px 10px 6px}
+.wo-tag-text{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:4px;letter-spacing:.5px}
+.wo-body-text{font-size:11px;line-height:1.6;color:var(--tx)}
+.wo-foot{display:flex;align-items:center;justify-content:space-between;padding:4px 10px 7px}
+.wo-ts{font-size:9px;color:var(--txd)}
+.wo-recip{font-size:9px;color:var(--txd);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+
+/* WO COMPOSER */
+.wo-composer{background:var(--bg);border:1px solid var(--blt);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
+.wo-composer-head{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--txd);text-transform:uppercase;margin-bottom:2px}
+.wo-add-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-l);border-radius:var(--r);padding:7px 0;cursor:pointer;transition:all .15s;width:100%;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.wo-add-btn:hover{background:rgba(200,146,74,.22);box-shadow:0 0 10px rgba(200,146,74,.15)}
+.wo-empty{display:flex;align-items:center;justify-content:center;padding:20px;font-size:10px;color:var(--txd);letter-spacing:1.5px;border:1px dashed var(--border);border-radius:var(--r)}
+
+/* ASSET DRAG */
+.asset-palette{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border)}
+.asset-chip{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:border-color .15s,box-shadow .15s,opacity .15s,background .15s;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.asset-chip:active{opacity:.75}
+.asset-chip.tap-selected{border-color:var(--sage);background:var(--sage-d);box-shadow:0 0 0 2px var(--sage)}
+.drop-zone.tap-ready{border-color:var(--sage);border-style:solid;background:var(--sage-d);cursor:pointer}
+.tap-hint{display:none;font-size:9px;letter-spacing:1.5px;color:var(--sage);text-align:center;padding:4px 0}
+.tap-hint.show{display:block}
+.asset-chip .aicon{font-size:16px;line-height:1}
+.asset-chip .aname{font-size:10px;color:var(--txh)}
+.asset-chip .aquant{font-size:9px;color:var(--txd)}
+.drop-zone{min-height:72px;background:var(--bg);border:1.5px dashed var(--blt);border-radius:var(--r);padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;transition:border-color .2s,background .2s;position:relative}
+.drop-zone-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txd);letter-spacing:1.5px;pointer-events:none}
+.placed-asset{display:flex;align-items:center;gap:5px;padding:4px 8px;background:var(--card);border:1px solid var(--sage-l);border-radius:var(--r);cursor:pointer;font-size:9px;color:var(--sage);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.placed-asset:hover{border-color:var(--rose);color:var(--rose)}
+
+/* INSTALLATION */
+.inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(min-width:700px){.inst-grid{grid-template-columns:1fr 1fr 1fr}}
+.inst-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;cursor:pointer;transition:border-color .2s,background .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.inst-card.selected{border-color:var(--sage-l);background:var(--sage-d)}
+.inst-card-name{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:3px}
+.inst-card-loc{font-size:9px;color:var(--txd);margin-bottom:5px}
+.inst-card-branch{font-size:9px;padding:1px 6px;border-radius:2px;border:1px solid;display:inline-block;margin-bottom:5px}
+.inst-card-branch.army{border-color:rgba(144,216,64,.3);color:#90d840;background:rgba(144,216,64,.06)}
+.inst-card-branch.navy{border-color:rgba(64,184,255,.3);color:#40b8ff;background:rgba(64,184,255,.06)}
+.inst-card-branch.af{border-color:rgba(0,200,240,.3);color:var(--cyan);background:var(--cyan-d)}
+.inst-card-branch.usmc{border-color:rgba(255,96,48,.3);color:#ff6030;background:rgba(255,96,48,.06)}
+.inst-card-branch.joint{border-color:rgba(255,200,32,.3);color:#ffc820;background:rgba(255,200,32,.06)}
+.inst-card-mw{font-size:10px;color:var(--txd)}
+
+/* VEHICLE ROLODEX */
+.vehicle-table{width:100%;border-collapse:collapse}
+.vehicle-table th{font-family:var(--dsp);font-size:9px;letter-spacing:1.5px;color:var(--txd);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border)}
+.vehicle-table td{font-size:10px;color:var(--tx);padding:6px 8px;border-bottom:1px solid rgba(30,45,69,.5)}
+.vehicle-table tr:hover td{background:var(--card)}
+.veh-qty{width:70px}
+.veh-qty input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;color:var(--txh);font-family:var(--mono);font-size:10px;padding:3px 6px;text-align:center}
+
+/* DIST RESULT */
+.dist-result{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dist-item{display:flex;flex-direction:column;gap:2px}
+.dist-label{font-size:9px;letter-spacing:1px;color:var(--txd);text-transform:uppercase}
+.dist-val{font-family:var(--dsp);font-size:14px;color:var(--txh)}
+.dist-unit{font-size:10px;color:var(--txd)}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sum-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px}
+.sum-key{font-size:9px;letter-spacing:1px;color:var(--txd);text-transform:uppercase;margin-bottom:4px}
+.sum-val{font-family:var(--dsp);font-size:10px;color:var(--txh);line-height:1.4;word-break:break-word}
+
+/* TAGS */
+.tag{font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:2px;border:1px solid;text-transform:uppercase;white-space:nowrap;display:inline-block}
+.tag.op{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+.tag.maint{border-color:var(--amber-l);color:var(--amber);background:var(--amber-d)}
+.tag.offline{border-color:var(--rose-l);color:var(--rose);background:var(--rose-d)}
+
+/* BTN ROW */
+.btn-row{display:flex;justify-content:flex-end;gap:8px;padding-top:4px}
+.btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;cursor:pointer;background:var(--card);color:var(--txd);transition:all .15s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn:hover{color:var(--txh);border-color:var(--blt)}
+.btn.primary{background:var(--sage-d);border-color:var(--sage-l);color:var(--sage)}
+.btn.primary:hover{background:rgba(77,158,122,.22);box-shadow:0 0 10px rgba(77,158,122,.12)}
+
+/* PROGRESS */
+.prog-wrap{height:3px;background:var(--blt);border-radius:2px;overflow:hidden;margin-top:2px}
+.prog-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .4s}
+
+/* LAUNCH BANNER */
+#launch-banner{display:none;position:fixed;inset:0;z-index:500;background:rgba(7,9,15,.97);flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#launch-banner.show{display:flex}
+.banner-title{font-family:var(--dsp);font-size:clamp(13px,3vw,20px);color:var(--sage);letter-spacing:3px;text-align:center}
+.banner-sub{font-size:11px;color:var(--txd);letter-spacing:2px;text-align:center;min-height:14px}
+.banner-ring{width:72px;height:72px;border:2px solid var(--sage-l);border-top-color:var(--sage);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.banner-btn{font-family:var(--dsp);font-size:9px;letter-spacing:2px;background:var(--sage);color:#071a10;border:none;border-radius:var(--r);padding:10px 24px;cursor:pointer}
+.banner-btn:hover{background:#5ab88a}
+
+/* CLEAR CONFIRM MODAL */
+#clear-modal{display:none;position:fixed;inset:0;z-index:600;background:rgba(7,9,15,.88);align-items:center;justify-content:center}
+#clear-modal.show{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--rose-l);border-radius:var(--r);padding:22px 24px;max-width:320px;width:90%;display:flex;flex-direction:column;gap:14px}
+.modal-title{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--rose)}
+.modal-body{font-size:10px;color:var(--tx);line-height:1.6}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.modal-cancel{font-family:var(--dsp);font-size:10px;letter-spacing:1px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);color:var(--txd);padding:7px 14px;cursor:pointer}
+.modal-cancel:hover{color:var(--txh);border-color:var(--blt)}
+.modal-confirm{font-family:var(--dsp);font-size:10px;letter-spacing:1px;background:var(--rose-d);border:1px solid var(--rose-l);border-radius:var(--r);color:var(--rose);padding:7px 14px;cursor:pointer}
+.modal-confirm:hover{background:rgba(158,77,77,.25)}
+
+</style>
+</head>
+<body>
+
+<!-- CHROME -->
+<div id=&quot;chrome&quot;>
+  <button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:'CLOSE_BUILDER'},'*')&quot;>← HUB</button>
+  <span class=&quot;c-title&quot;>⬡ AI WARGAME</span>
+  <span class=&quot;c-sub&quot;>Cross-Service · Energy Resilience · iNED Rev 06-29</span>
+  <button class=&quot;c-clear-btn&quot; onclick=&quot;confirmClear()&quot;>✕ CLEAR</button>
+  <button class=&quot;c-run-btn&quot; id=&quot;run-btn&quot; onclick=&quot;launchScenario()&quot; disabled>▶ RUN</button>
+</div>
+
+<!-- STEP RIBBON — Step 1 is Warning Orders, steps 2–7 shifted -->
+<div id=&quot;ribbon&quot;>
+  <div class=&quot;step active&quot; id=&quot;step-1&quot; onclick=&quot;goStep(1)&quot;><span class=&quot;step-n&quot;>1</span><span class=&quot;step-l&quot;>Orders</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-2&quot; onclick=&quot;goStep(2)&quot;><span class=&quot;step-n&quot;>2</span><span class=&quot;step-l&quot;>Install</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-3&quot; onclick=&quot;goStep(3)&quot;><span class=&quot;step-n&quot;>3</span><span class=&quot;step-l&quot;>Trigger</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-4&quot; onclick=&quot;goStep(4)&quot;><span class=&quot;step-n&quot;>4</span><span class=&quot;step-l&quot;>Assets</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-5&quot; onclick=&quot;goStep(5)&quot;><span class=&quot;step-n&quot;>5</span><span class=&quot;step-l&quot;>Manpower</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-6&quot; onclick=&quot;goStep(6)&quot;><span class=&quot;step-n&quot;>6</span><span class=&quot;step-l&quot;>Reporting</span></div>
+  <div class=&quot;step-dv&quot;></div>
+  <div class=&quot;step&quot; id=&quot;step-7&quot; onclick=&quot;goStep(7)&quot;><span class=&quot;step-n&quot;>7</span><span class=&quot;step-l&quot;>Review</span></div>
+</div>
+
+<!-- CANVAS -->
+<div id=&quot;body-shell&quot; style=&quot;flex:1;display:flex;min-height:0;overflow:hidden&quot;>
+<div id=&quot;canvas&quot;>
+
+<!-- ═══ STEP 1: WARNING ORDERS ═══ -->
+<div class=&quot;pane active&quot; id=&quot;pane-1&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;>
+      <span class=&quot;sec-icon&quot;>📨</span>
+      <span class=&quot;sec-title&quot;>Warning Orders</span>
+      <span class=&quot;sec-badge&quot; id=&quot;wo-count-badge&quot;>0 orders</span>
+    </div>
+    <div class=&quot;sec-body&quot;>
+      <p class=&quot;hint&quot;>Compose and queue warning orders for this scenario. Orders stream into the simulator's Ops Feed during playback in sequence. Add as many as needed — drag to reorder.</p>
+
+      <!-- Composer -->
+      <div class=&quot;wo-composer&quot;>
+        <div class=&quot;wo-composer-head&quot;>⊕ COMPOSE NEW ORDER</div>
+        <div class=&quot;field-row&quot;>
+          <div class=&quot;field&quot;><label>Order Type</label>
+            <select id=&quot;wo-type&quot;>
+              <option value=&quot;warn&quot;>WARNING ORDER</option>
+              <option value=&quot;crit&quot;>CRITICAL ALERT</option>
+              <option value=&quot;info&quot;>INFORMATION</option>
+              <option value=&quot;res&quot;>RESOLVED</option>
+            </select>
+          </div>
+          <div class=&quot;field&quot;><label>Priority</label>
+            <select id=&quot;wo-priority&quot;>
+              <option>IMMEDIATE</option>
+              <option selected>URGENT</option>
+              <option>ROUTINE</option>
+              <option>FLASH</option>
+            </select>
+          </div>
+        </div>
+        <div class=&quot;field&quot;><label>Order Tag / Subject</label>
+          <input type=&quot;text&quot; id=&quot;wo-tag&quot; placeholder=&quot;e.g. WARN-001 · FUEL RESUPPLY&quot; maxlength=&quot;80&quot;>
+        </div>
+        <div class=&quot;field&quot;><label>Order Body</label>
+          <textarea id=&quot;wo-body&quot; rows=&quot;3&quot; placeholder=&quot;Full text of the warning order…&quot;></textarea>
+        </div>
+        <div class=&quot;field&quot;><label>Recipients</label>
+          <input type=&quot;text&quot; id=&quot;wo-recip&quot; value=&quot;Installation CO · NAVFAC · DLA Energy&quot; placeholder=&quot;Chain-of-command recipients&quot;>
+        </div>
+        <button class=&quot;wo-add-btn&quot; onclick=&quot;addWarningOrder()&quot;>+ ADD ORDER TO QUEUE</button>
+      </div>
+
+      <!-- Queue display -->
+      <div id=&quot;wo-empty&quot; class=&quot;wo-empty&quot;>NO WARNING ORDERS QUEUED — ADD ONE ABOVE</div>
+      <div class=&quot;wo-list&quot; id=&quot;wo-list&quot;></div>
+
+      <!-- Mock template library -->
+      <div class=&quot;section&quot; style=&quot;border-color:var(--blt)&quot;>
+        <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📚</span><span class=&quot;sec-title&quot;>Template Library</span><span class=&quot;sec-badge&quot;>Quick-insert</span></div>
+        <div class=&quot;sec-body&quot;>
+          <p class=&quot;hint&quot;>Click a template to pre-fill the composer.</p>
+          <div class=&quot;chip-group&quot;>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('fuel')&quot;>⛽ Fuel Resupply</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('burnrate')&quot;>🔥 Burn Rate Critical</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('interdep')&quot;>🔗 Inter-Service Dependency</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('barge')&quot;>⛵ Barge Coordination</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('nmcp')&quot;>🏥 Medical Priority</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('smr')&quot;>⚛️ SMR Feasibility</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('bess')&quot;>🔋 BESS Deployment</div>
+            <div class=&quot;chip&quot; onclick=&quot;loadTemplate('weather')&quot;>🌀 Weather Hold</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;><button class=&quot;btn primary&quot; onclick=&quot;goStep(2)&quot;>NEXT: INSTALLATION →</button></div>
+</div>
+
+<!-- ═══ STEP 2: INSTALLATION ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-2&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>🗺</span><span class=&quot;sec-title&quot;>Select Installation</span><span class=&quot;sec-badge&quot;>16 catalogued</span></div>
+    <div class=&quot;sec-body&quot;>
+      <p class=&quot;hint&quot;>Select the primary installation for this scenario.</p>
+      <div class=&quot;field&quot;><label>Filter by Branch</label>
+        <div class=&quot;chip-group&quot; id=&quot;branch-chips&quot;>
+          <div class=&quot;chip selected&quot; onclick=&quot;filterBranch('ALL',this)&quot;>ALL</div>
+          <div class=&quot;chip&quot; onclick=&quot;filterBranch('NAVY',this)&quot;>NAVY</div>
+          <div class=&quot;chip&quot; onclick=&quot;filterBranch('USMC',this)&quot;>MARINES</div>
+          <div class=&quot;chip&quot; onclick=&quot;filterBranch('JOINT',this)&quot;>JOINT</div>
+        </div>
+      </div>
+      <div class=&quot;inst-grid&quot; id=&quot;inst-grid&quot;></div>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Peak Demand (MW)</label><input type=&quot;number&quot; id=&quot;peak-mw&quot; min=&quot;1&quot; max=&quot;500&quot; value=&quot;58&quot; oninput=&quot;updateSummary()&quot;></div>
+        <div class=&quot;field&quot;><label>Utility Provider</label><input type=&quot;text&quot; id=&quot;utility&quot; value=&quot;Dominion Energy Virginia&quot; oninput=&quot;updateSummary()&quot;></div>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(1)&quot;>← BACK</button>
+    <button class=&quot;btn primary&quot; onclick=&quot;goStep(3)&quot;>NEXT: TRIGGER →</button>
+  </div>
+</div>
+
+<!-- ═══ STEP 3: TRIGGER ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-3&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>⚡</span><span class=&quot;sec-title&quot;>Scenario Type &amp;amp; Trigger</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;field&quot;><label>Scenario Category</label>
+        <div class=&quot;chip-group&quot; id=&quot;sc-type-chips&quot;>
+          <div class=&quot;chip selected&quot; onclick=&quot;selectScenarioCat('Weather Event',this)&quot;>Weather Event</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Cyber Attack',this)&quot;>Cyber Attack</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Grid Failure',this)&quot;>Grid Failure</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Utility Disruption',this)&quot;>Utility Disruption</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Service Outage',this)&quot;>Service Outage</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Operational Surge',this)&quot;>Operational Surge</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectScenarioCat('Fast-Track Deployment',this)&quot;>Fast-Track Deployment</div>
+        </div>
+      </div>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Trigger Event Name</label><input type=&quot;text&quot; id=&quot;trigger-name&quot; value=&quot;Hurricane Florence&quot; oninput=&quot;updateSummary()&quot;></div>
+        <div class=&quot;field&quot;><label>Severity Level</label>
+          <select id=&quot;severity&quot; onchange=&quot;updateSummary()&quot;>
+            <option>CAT 1 — Minor</option><option>CAT 2 — Moderate</option>
+            <option selected>CAT 3 — Significant</option><option>CAT 4 — Severe</option><option>CAT 5 — Catastrophic</option>
+          </select>
+        </div>
+      </div>
+      <div class=&quot;field&quot;><label>Trigger Description</label>
+        <textarea id=&quot;trigger-desc&quot;>Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.</textarea>
+      </div>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Est. Outage Duration</label><input type=&quot;text&quot; id=&quot;outage-dur&quot; value=&quot;72+ hours&quot; oninput=&quot;updateSummary()&quot;></div>
+        <div class=&quot;field&quot;><label>Resupply Delay (hrs)</label><input type=&quot;number&quot; id=&quot;resupply-delay&quot; value=&quot;48&quot; min=&quot;0&quot; max=&quot;720&quot; oninput=&quot;calcDistance()&quot;></div>
+      </div>
+      <div class=&quot;field&quot;><label>Historical Weather Data</label>
+        <div class=&quot;chip-group&quot; id=&quot;weather-chips&quot;>
+          <div class=&quot;chip selected amber&quot; onclick=&quot;selectChip('weather-chips',this)&quot;>2-Year Data</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('weather-chips',this)&quot;>5-Year Data</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('weather-chips',this)&quot;>10-Year Data</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('weather-chips',this)&quot;>NOAA Archive</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('weather-chips',this)&quot;>None</div>
+        </div>
+        <p class=&quot;hint&quot; style=&quot;margin-top:5px&quot;>Historical data feeds triage analytics. Scenario archived for model learning.</p>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(2)&quot;>← BACK</button>
+    <button class=&quot;btn primary&quot; onclick=&quot;goStep(4)&quot;>NEXT: ASSETS →</button>
+  </div>
+</div>
+
+<!-- ═══ STEP 4: ASSETS ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-4&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>🔋</span><span class=&quot;sec-title&quot;>Energy Resource Inventory &amp;amp; Placement</span><span class=&quot;sec-badge&quot;>Tap to Deploy</span></div>
+    <div class=&quot;sec-body&quot;>
+      <p class=&quot;hint&quot;>Tap an asset to select it, then tap the zone below to deploy. Tap a deployed asset to remove it.</p>
+      <div class=&quot;asset-palette&quot; id=&quot;asset-palette&quot;>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;MICROGRID&quot; data-mw=&quot;8.4&quot;><span class=&quot;aicon&quot;>⚡</span><div><div class=&quot;aname&quot;>Microgrid</div><div class=&quot;aquant&quot;>8.4 MW · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;DIESEL_GEN&quot; data-mw=&quot;6.0&quot;><span class=&quot;aicon&quot;>🛢️</span><div><div class=&quot;aname&quot;>Diesel Gen</div><div class=&quot;aquant&quot;>6.0 MW · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;BESS&quot; data-mw=&quot;40&quot;><span class=&quot;aicon&quot;>🔋</span><div><div class=&quot;aname&quot;>BESS</div><div class=&quot;aquant&quot;>40 MWh · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;SMR&quot; data-mw=&quot;10&quot;><span class=&quot;aicon&quot;>⚛️</span><div><div class=&quot;aname&quot;>SMR</div><div class=&quot;aquant&quot;>10 MW · <span class=&quot;tag maint&quot;>MAINT</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;SOLAR&quot; data-mw=&quot;1.2&quot;><span class=&quot;aicon&quot;>☀️</span><div><div class=&quot;aname&quot;>Solar</div><div class=&quot;aquant&quot;>1.2 MW · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;BESS_BARGE&quot; data-mw=&quot;60&quot;><span class=&quot;aicon&quot;>⛵</span><div><div class=&quot;aname&quot;>BESS Barge</div><div class=&quot;aquant&quot;>60 MWh · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;SHIP_GEN&quot; data-mw=&quot;14.4&quot;><span class=&quot;aicon&quot;>🚢</span><div><div class=&quot;aname&quot;>Ship Gen</div><div class=&quot;aquant&quot;>14.4 MW · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+        <div class=&quot;asset-chip&quot; data-asset=&quot;FUEL_CELL&quot; data-mw=&quot;2.0&quot;><span class=&quot;aicon&quot;>🔬</span><div><div class=&quot;aname&quot;>Fuel Cell</div><div class=&quot;aquant&quot;>2.0 MW · <span class=&quot;tag op&quot;>OP</span></div></div></div>
+      </div>
+      <div class=&quot;drop-zone&quot; id=&quot;drop-zone&quot; onclick=&quot;onDropZoneTap()&quot;>
+        <div class=&quot;drop-zone-lbl&quot; id=&quot;dz-lbl&quot;>TAP AN ASSET ABOVE, THEN TAP HERE TO DEPLOY</div>
+      </div>
+      <div class=&quot;tap-hint&quot; id=&quot;tap-hint&quot;>↑ TAP ZONE TO DEPLOY · TAP PLACED ASSET TO REMOVE</div>
+      <div class=&quot;dist-result&quot; id=&quot;power-calc&quot;>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Deployed</div><div class=&quot;dist-val&quot; id=&quot;dep-cap&quot;>0</div><div class=&quot;dist-unit&quot;>MW / MWh</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Peak Demand</div><div class=&quot;dist-val&quot; id=&quot;dep-demand&quot;>58</div><div class=&quot;dist-unit&quot;>MW</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Coverage</div><div class=&quot;dist-val&quot; id=&quot;dep-cover&quot;>0%</div><div class=&quot;dist-unit&quot;>of peak</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Est. Resilience</div><div class=&quot;dist-val&quot; id=&quot;dep-resilience&quot;>—</div><div class=&quot;dist-unit&quot;>hours</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VEHICLE ROLODEX — moved here from Manpower step -->
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>🚛</span><span class=&quot;sec-title&quot;>Vehicle Rolodex</span><span class=&quot;sec-badge&quot;>NAVY · Service-Specific</span></div>
+    <div class=&quot;sec-body&quot;>
+      <p class=&quot;hint&quot;>Set quantities for Navy fuel and logistics vehicles available to this installation. JLTV and commercial fuel tankers are the primary fuel distribution assets for shore-based operations.</p>
+      <table class=&quot;vehicle-table&quot;>
+        <thead><tr><th style=&quot;width:32px&quot;></th><th>Vehicle</th><th>Capacity</th><th>Role</th><th>Status</th><th class=&quot;veh-qty&quot;>Qty</th></tr></thead>
+        <tbody id=&quot;vehicle-table-body&quot;></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ROUND-TRIP DISTANCE -->
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📍</span><span class=&quot;sec-title&quot;>Round-Trip Distance Estimation</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Nearest Fuel Depot</label><input type=&quot;text&quot; id=&quot;depot-name&quot; value=&quot;Portsmouth Naval Shipyard&quot; oninput=&quot;calcDistance()&quot;></div>
+        <div class=&quot;field&quot;><label>Distance (miles)</label><input type=&quot;number&quot; id=&quot;depot-miles&quot; value=&quot;2.1&quot; step=&quot;0.1&quot; min=&quot;0.1&quot; oninput=&quot;calcDistance()&quot;></div>
+      </div>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Avg Speed (mph)</label><input type=&quot;number&quot; id=&quot;veh-speed&quot; value=&quot;25&quot; min=&quot;5&quot; max=&quot;80&quot; oninput=&quot;calcDistance()&quot;></div>
+        <div class=&quot;field&quot;><label>Load/Unload (min)</label><input type=&quot;number&quot; id=&quot;load-time&quot; value=&quot;45&quot; min=&quot;5&quot; oninput=&quot;calcDistance()&quot;></div>
+      </div>
+      <div class=&quot;dist-result&quot;>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>One-Way</div><div class=&quot;dist-val&quot; id=&quot;dc-oneway&quot;>—</div><div class=&quot;dist-unit&quot;>minutes</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Round-Trip</div><div class=&quot;dist-val&quot; id=&quot;dc-roundtrip&quot;>—</div><div class=&quot;dist-unit&quot;>minutes</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Runs / Day</div><div class=&quot;dist-val&quot; id=&quot;dc-runs&quot;>—</div><div class=&quot;dist-unit&quot;>trips</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Fuel / Day</div><div class=&quot;dist-val&quot; id=&quot;dc-gal&quot;>—</div><div class=&quot;dist-unit&quot;>gallons</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(3)&quot;>← BACK</button>
+    <button class=&quot;btn primary&quot; onclick=&quot;goStep(5)&quot;>NEXT: MANPOWER →</button>
+  </div>
+</div>
+
+<!-- ═══ STEP 5: MANPOWER + VEHICLES ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-5&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>👤</span><span class=&quot;sec-title&quot;>Manpower Requirements</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Total Personnel</label><input type=&quot;number&quot; id=&quot;personnel&quot; value=&quot;120&quot; min=&quot;1&quot; oninput=&quot;updateSummary()&quot;></div>
+        <div class=&quot;field&quot;><label>Qualified Operators</label><input type=&quot;number&quot; id=&quot;operators&quot; value=&quot;18&quot; min=&quot;0&quot;></div>
+      </div>
+      <div class=&quot;field-row&quot;>
+        <div class=&quot;field&quot;><label>Shift Duration (hrs)</label><input type=&quot;number&quot; id=&quot;shift-hrs&quot; value=&quot;12&quot; min=&quot;4&quot; max=&quot;24&quot;></div>
+        <div class=&quot;field&quot;><label>Relief Cycle</label>
+          <select id=&quot;relief-cycle&quot;><option>6h on / 6h off</option><option selected>12h on / 12h off</option><option>8h on / 16h off</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(4)&quot;>← BACK</button>
+    <button class=&quot;btn primary&quot; onclick=&quot;goStep(6)&quot;>NEXT: REPORTING →</button>
+  </div>
+</div>
+
+<!-- ═══ STEP 6: REPORTING ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-6&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📡</span><span class=&quot;sec-title&quot;>Outage Reporting Mode</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;field&quot;><label>Primary Reporting Method</label>
+        <div class=&quot;chip-group&quot; id=&quot;report-chips&quot;>
+          <div class=&quot;chip selected&quot; onclick=&quot;selectChip('report-chips',this)&quot;>Manual Chain-of-Command</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('report-chips',this)&quot;>Auto-Trigger + Notifications</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('report-chips',this)&quot;>Hybrid</div>
+        </div>
+      </div>
+      <div class=&quot;field&quot;><label>Notification Recipients</label>
+        <textarea id=&quot;notif-recipients&quot; style=&quot;min-height:44px&quot;>NAVFAC Atlantic · CINCLANTFLT · Installation CO · DLA Energy</textarea>
+      </div>
+      <div class=&quot;toggle-row&quot;><span class=&quot;toggle-lbl&quot;>Auto-trigger on utility outage detection</span><label class=&quot;toggle&quot;><input type=&quot;checkbox&quot; checked><div class=&quot;toggle-track&quot;></div></label></div>
+      <div class=&quot;toggle-row&quot;><span class=&quot;toggle-lbl&quot;>SMS/email notifications to chain-of-command</span><label class=&quot;toggle&quot;><input type=&quot;checkbox&quot; checked><div class=&quot;toggle-track&quot;></div></label></div>
+      <div class=&quot;toggle-row&quot;><span class=&quot;toggle-lbl&quot;>Archive scenario for model learning</span><label class=&quot;toggle&quot;><input type=&quot;checkbox&quot; checked><div class=&quot;toggle-track&quot;></div></label></div>
+      <div class=&quot;toggle-row&quot;><span class=&quot;toggle-lbl&quot;>Generate post-mortem report on completion</span><label class=&quot;toggle&quot;><input type=&quot;checkbox&quot; checked><div class=&quot;toggle-track&quot;></div></label></div>
+      <div class=&quot;toggle-row&quot;><span class=&quot;toggle-lbl&quot;>Triage analytics — weather + historical outages</span><label class=&quot;toggle&quot;><input type=&quot;checkbox&quot;><div class=&quot;toggle-track&quot;></div></label></div>
+      <div class=&quot;field&quot;><label>Post-Mortem Output Priority</label>
+        <div class=&quot;chip-group&quot; id=&quot;output-chips&quot;>
+          <div class=&quot;chip selected&quot; onclick=&quot;selectChip('output-chips',this)&quot;>Spending Priorities</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('output-chips',this)&quot;>Resource Allocation</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('output-chips',this)&quot;>Investment Trade-offs</div>
+          <div class=&quot;chip&quot; onclick=&quot;selectChip('output-chips',this)&quot;>All Outputs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(5)&quot;>← BACK</button>
+    <button class=&quot;btn primary&quot; onclick=&quot;goStep(7)&quot;>NEXT: REVIEW →</button>
+  </div>
+</div>
+
+<!-- ═══ STEP 7: REVIEW ═══ -->
+<div class=&quot;pane&quot; id=&quot;pane-7&quot;>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📋</span><span class=&quot;sec-title&quot;>Scenario Summary</span><span class=&quot;sec-badge&quot; id=&quot;sum-badge&quot;>DRAFT</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;summary-grid&quot; id=&quot;summary-grid&quot;></div>
+    </div>
+  </div>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📊</span><span class=&quot;sec-title&quot;>Power Requirements</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;dist-result&quot;>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Peak Demand</div><div class=&quot;dist-val&quot; id=&quot;sr-demand&quot;>—</div><div class=&quot;dist-unit&quot;>MW</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Deployed</div><div class=&quot;dist-val&quot; id=&quot;sr-cap&quot;>—</div><div class=&quot;dist-unit&quot;>MW</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Resilience</div><div class=&quot;dist-val&quot; id=&quot;sr-window&quot;>—</div><div class=&quot;dist-unit&quot;>hours</div></div>
+        <div class=&quot;dist-item&quot;><div class=&quot;dist-label&quot;>Est. Capital</div><div class=&quot;dist-val&quot; id=&quot;sr-capital&quot;>—</div><div class=&quot;dist-unit&quot;></div></div>
+      </div>
+      <div style=&quot;margin-top:8px&quot;>
+        <div style=&quot;display:flex;justify-content:space-between;margin-bottom:3px&quot;>
+          <span style=&quot;font-size:8px;color:var(--txd);letter-spacing:1px;text-transform:uppercase&quot;>Coverage vs. Demand</span>
+          <span style=&quot;font-size:9px;color:var(--sage)&quot; id=&quot;sr-pct&quot;>0%</span>
+        </div>
+        <div class=&quot;prog-wrap&quot;><div class=&quot;prog-fill&quot; id=&quot;sr-prog&quot; style=&quot;width:0%&quot;></div></div>
+      </div>
+    </div>
+  </div>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>📨</span><span class=&quot;sec-title&quot;>Warning Orders Queued</span><span class=&quot;sec-badge&quot; id=&quot;wo-review-count&quot;>0</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;wo-list&quot; id=&quot;wo-review-list&quot;></div>
+      <p class=&quot;hint&quot; style=&quot;margin-top:4px&quot;>These orders will stream into the simulator's Ops Feed during scenario playback.</p>
+    </div>
+  </div>
+  <div class=&quot;section&quot;>
+    <div class=&quot;sec-head&quot;><span class=&quot;sec-icon&quot;>🗃</span><span class=&quot;sec-title&quot;>Archive</span></div>
+    <div class=&quot;sec-body&quot;>
+      <div class=&quot;field&quot;><label>Scenario ID</label><input type=&quot;text&quot; id=&quot;sc-id&quot; readonly></div>
+      <p class=&quot;hint&quot;>Archived after completion. Feeds triage analytics engine for critical-region identification.</p>
+    </div>
+  </div>
+  <div class=&quot;btn-row&quot;>
+    <button class=&quot;btn&quot; onclick=&quot;goStep(6)&quot;>← BACK</button>
+    <button class=&quot;btn&quot; id=&quot;save-sc-btn&quot; onclick=&quot;saveScenario()&quot; style=&quot;background:rgba(212,160,90,.13);color:var(--amber);border-color:rgba(212,160,90,.36)&quot;>💾 SAVE</button>
+    <button class=&quot;btn primary&quot; id=&quot;launch-final-btn&quot; onclick=&quot;launchScenario()&quot;>▶ RUN IN SIM</button>
+  </div>
+</div>
+
+</div><!-- canvas -->
+
+
+</div><!-- body-shell -->
+
+<!-- LAUNCH BANNER -->
+<div id=&quot;launch-banner&quot;>
+  <div class=&quot;banner-ring&quot;></div>
+  <div class=&quot;banner-title&quot; id=&quot;banner-title&quot;>INITIALIZING SCENARIO</div>
+  <div class=&quot;banner-sub&quot; id=&quot;banner-sub&quot;>Building digital twin…</div>
+  <button class=&quot;banner-btn&quot; id=&quot;banner-btn&quot; onclick=&quot;sendToSimulator()&quot; style=&quot;display:none&quot;>OPEN IN SIMULATOR →</button>
+</div>
+
+<!-- CLEAR CONFIRM MODAL -->
+<div id=&quot;clear-modal&quot;>
+  <div class=&quot;modal-box&quot;>
+    <div class=&quot;modal-title&quot;>✕ CLEAR SCENARIO</div>
+    <div class=&quot;modal-body&quot;>This will reset all steps — warning orders, installation selection, assets, manpower, and reporting settings. This cannot be undone.</div>
+    <div class=&quot;modal-btns&quot;>
+      <button class=&quot;modal-cancel&quot; onclick=&quot;closeClear()&quot;>CANCEL</button>
+      <button class=&quot;modal-confirm&quot; onclick=&quot;clearAll()&quot;>CLEAR ALL</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ INSTALLATIONS ═══
+const INSTALLATIONS = [
+  {id:'NSN',   name:'Naval Station Norfolk',       loc:'Norfolk VA',       branch:'NAVY',  mw:58,  utility:'Dominion Energy VA'},
+  {id:'NB_SD', name:'Naval Base San Diego',        loc:'San Diego CA',     branch:'NAVY',  mw:62,  utility:'SDG&amp;E'},
+  {id:'KNBK',  name:'NB Kitsap',                  loc:'Bremerton WA',     branch:'NAVY',  mw:48,  utility:'Puget Sound Energy'},
+  {id:'NSB',   name:'NSB New London',              loc:'Groton CT',        branch:'NAVY',  mw:20,  utility:'Eversource'},
+  {id:'NASK',  name:'NAS Key West',               loc:'Key West FL',      branch:'NAVY',  mw:12,  utility:'Keys Energy'},
+  {id:'NASJ',  name:'NAS Jacksonville',           loc:'Jacksonville FL',  branch:'NAVY',  mw:38,  utility:'JEA Electric'},
+  {id:'NASP',  name:'NAS Patuxent River',         loc:'Patuxent River MD',branch:'NAVY',  mw:32,  utility:'SMECO'},
+  {id:'NASM',  name:'NAS Meridian',               loc:'Meridian MS',      branch:'NAVY',  mw:18,  utility:'Entergy MS'},
+  {id:'NSA_NO',name:'NS Everett',                 loc:'Everett WA',       branch:'NAVY',  mw:24,  utility:'Snohomish PUD'},
+  {id:'NSA_PC',name:'NS Pensacola',               loc:'Pensacola FL',     branch:'NAVY',  mw:28,  utility:'Gulf Power'},
+  {id:'JBM',   name:'Pentagon / JBM-HH',          loc:'Arlington VA',     branch:'JOINT', mw:45,  utility:'Dominion Energy VA'},
+  {id:'CAMP_P',name:'Camp Pendleton',             loc:'Oceanside CA',     branch:'USMC',  mw:30,  utility:'SDG&amp;E'},
+  {id:'LEMR',  name:'Camp Lejeune',               loc:'Jacksonville NC',  branch:'USMC',  mw:35,  utility:'Duke Energy'},
+  {id:'MCB_HA',name:'MCB Hawaii',                 loc:'Kaneohe Bay HI',   branch:'USMC',  mw:22,  utility:'HECO'},
+  {id:'NBVC',  name:'NB Ventura County',          loc:'Point Mugu CA',    branch:'NAVY',  mw:34,  utility:'Southern California Edison'},
+  {id:'NSA_HR',name:'NSA Hampton Roads',          loc:'Norfolk VA',       branch:'NAVY',  mw:16,  utility:'Dominion Energy VA'},
+];
+const BRANCH_CSS = {NAVY:'navy',USMC:'usmc',JOINT:'joint'};
+let selectedInst = INSTALLATIONS[0];
+let currentBranch = 'ALL';
+
+function filterBranch(b, el) {
+  currentBranch = b;
+  document.querySelectorAll('#branch-chips .chip').forEach(c=>c.classList.remove('selected'));
+  if(el) el.classList.add('selected');
+  renderInst();
+}
+function renderInst() {
+  const list = currentBranch==='ALL' ? INSTALLATIONS : INSTALLATIONS.filter(i=>i.branch===currentBranch);
+  document.getElementById('inst-grid').innerHTML = list.map(i=>`
+    <div class=&quot;inst-card${i.id===selectedInst.id?' selected':''}&quot; onclick=&quot;pickInst('${i.id}')&quot;>
+      <div class=&quot;inst-card-name&quot;>${i.name}</div>
+      <div class=&quot;inst-card-loc&quot;>${i.loc}</div>
+      <span class=&quot;inst-card-branch ${BRANCH_CSS[i.branch]||''}&quot;>${i.branch}</span>
+      <div class=&quot;inst-card-mw&quot;>⚡ ${i.mw} MW · ${i.utility}</div>
+    </div>`).join('');
+}
+function pickInst(id) {
+  selectedInst = INSTALLATIONS.find(i=>i.id===id)||INSTALLATIONS[0];
+  document.getElementById('peak-mw').value = selectedInst.mw;
+  document.getElementById('utility').value = selectedInst.utility;
+  renderInst(); updateSummary();
+}
+
+// ═══ STEPS ═══
+let currentStep = 1;
+const TOTAL = 7;
+function goStep(n) {
+  document.getElementById('pane-'+currentStep).classList.remove('active');
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  if(currentStep < n) document.getElementById('step-'+currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('pane-'+n).classList.add('active');
+  document.getElementById('step-'+n).classList.add('active');
+  document.getElementById('canvas').scrollTop = 0;
+  if(n===TOTAL){ buildSummary(); document.getElementById('run-btn').disabled=false; }
+}
+
+// ═══ CHIPS ═══
+function selectChip(groupId, el) {
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  updateSummary();
+}
+
+// ═══ SCENARIO CATEGORY PRESETS ═══
+const SC_CAT_PRESETS = {
+  'Weather Event': {
+    name: 'Hurricane Florence',
+    severity: 'CAT 3 — Significant',
+    duration: '72+ hours',
+    resupply: '48',
+    desc: 'Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.'
+  },
+  'Cyber Attack': {
+    name: 'Operation BLACKOUT — ICS Intrusion',
+    severity: 'CAT 4 — Severe',
+    duration: '36–96 hours',
+    resupply: '0',
+    desc: 'Adversarial intrusion detected in installation industrial control systems (ICS/SCADA). Automated grid switching compromised — commercial utility tie-line physically isolated as precaution. NAVFAC Cyber Task Force activated. All remote SCADA access suspended pending forensic sweep.'
+  },
+  'Grid Failure': {
+    name: 'Dominion Energy Cascading Fault',
+    severity: 'CAT 3 — Significant',
+    duration: '24–48 hours',
+    resupply: '12',
+    desc: 'Cascading fault originating at Chesapeake substation propagates through 500 kV transmission backbone. Multiple distribution feeders serving NSN and surrounding Hampton Roads installations lost. Estimated utility restoration 18–36 hours. DLA Energy emergency fuel contracts activated.'
+  },
+  'Utility Disruption': {
+    name: 'CPS Energy Rate Moratorium — JBSA',
+    severity: 'CAT 2 — Moderate',
+    duration: '7–14 days',
+    resupply: '24',
+    desc: 'CPS Energy declares force majeure following Winter Storm Uri–type event. Rolling load curtailments imposed on all commercial and military accounts exceeding 1 MW. JBSA-Randolph, Lackland, and Ft. Sam Houston directed to reduce grid draw by 40%. On-site generation and BESS assets to bridge critical mission load.'
+  },
+  'Service Outage': {
+    name: 'Dominion Energy Scheduled Outage — NSN / NSA Hampton Roads',
+    severity: 'CAT 3 — Significant',
+    duration: '18–36 hours',
+    resupply: '6',
+    desc: 'Dominion Energy notifies NAVFAC Atlantic of a planned 36-hour transmission maintenance window affecting the Hampton Roads military corridor. Naval Station Norfolk and NSA Hampton Roads face a coordinated commercial grid interruption. NAVFAC N4 issues WARNO to all tenant commands. Shipboard generators to be brought online for critical pier services. DLA Energy pre-positions emergency fuel contracts. Goal: maintain 100% mission-essential load continuity through on-site generation, BESS, and ship-to-shore power agreements.'
+  },
+  'Operational Surge': {
+    name: 'INDO-PACOM Surge — NB San Diego',
+    severity: 'CAT 3 — Significant',
+    duration: '30–90 days',
+    resupply: '72',
+    desc: 'Fleet concentration surge at NB San Diego driven by INDO-PACOM deployment cycle. Installation peak demand projected to exceed contracted utility capacity by 22 MW during surge window. Emergency microgrid expansion and temporary generator assets required. SDG&E demand-response agreement invoked.'
+  },
+  'Fast-Track Deployment': {
+    name: 'Expeditionary BESS Airlift — Camp Pendleton',
+    severity: 'CAT 2 — Moderate',
+    duration: '14–21 days',
+    resupply: '96',
+    desc: 'USMC expeditionary energy kit pre-deployment validation required within 72-hour window. Containerized BESS and solar microgrid assets staged at Camp Pendleton for C-17 airlift to FARP. Installation grid draw reduced to simulate deployed islanded configuration. NAVFAC Atlantic forward energy team activated.'
+  }
+};
+
+function selectScenarioCat(cat, el) {
+  // Update chip selection
+  document.querySelectorAll('#sc-type-chips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  // Populate trigger fields from preset
+  const p = SC_CAT_PRESETS[cat];
+  if (!p) { updateSummary(); return; }
+
+  const nameEl     = document.getElementById('trigger-name');
+  const sevEl      = document.getElementById('severity');
+  const durEl      = document.getElementById('outage-dur');
+  const resupEl    = document.getElementById('resupply-delay');
+  const descEl     = document.getElementById('trigger-desc');
+
+  if (nameEl)  { nameEl.value  = p.name; }
+  if (sevEl)   { for (var i=0;i<sevEl.options.length;i++) { if(sevEl.options[i].text===p.severity){sevEl.selectedIndex=i;break;} } }
+  if (durEl)   { durEl.value   = p.duration; }
+  if (resupEl) { resupEl.value = p.resupply; }
+  if (descEl)  { descEl.value  = p.desc; }
+
+  // Flash the fields to signal auto-fill
+  [nameEl, durEl, descEl].forEach(function(el) {
+    if (!el) return;
+    el.style.transition = 'border-color .15s';
+    el.style.borderColor = 'var(--sage)';
+    setTimeout(function(){ el.style.borderColor = ''; }, 800);
+  });
+
+  updateSummary();
+}
+
+// ═══ WARNING ORDERS ═══
+let warningOrders = [];
+const WO_TYPE_META = {
+  warn:{ lbl:'WARNING ORDER', cls:'warn' },
+  crit:{ lbl:'CRITICAL ALERT', cls:'crit' },
+  info:{ lbl:'INFORMATION', cls:'info' },
+  res: { lbl:'RESOLVED', cls:'res' },
+};
+
+const TEMPLATES = {
+  fuel:     { type:'warn', priority:'URGENT',    tag:'WARN-XXX · FUEL RESUPPLY', body:'3 of 4 resupply trucks available. Nearest depot: [DEPOT] miles away. ETA: [X] hours. Coordinate with logistics officer to prioritize routing via primary route.' },
+  burnrate: { type:'crit', priority:'IMMEDIATE', tag:'WARN-XXX · BURN RATE — CRITICAL', body:'On-hand diesel: [X] gal. Burn rate at current load: ~[X] gal/hr. Estimated exhaustion: [X] hours from trigger event. Resupply essential to sustain operations.' },
+  interdep: { type:'info', priority:'ROUTINE',   tag:'WARN-XXX · INTER-SERVICE DEPENDENCY', body:'Adjacent installations confirmed within the dependency ring. Cross-service coordination required for fuel-sharing and resupply sequencing.' },
+  barge:    { type:'info', priority:'ROUTINE',   tag:'WARN-XXX · BARGE COORDINATION', body:'USCG Fuel Barge pre-positioned at [SHIPYARD]. Barge carries [X] gal diesel. Transit window: post-storm clearance H+[X]. Coordinate with NAVFAC for barge-to-pier fuel transfer.' },
+  nmcp:     { type:'crit', priority:'FLASH',     tag:'WARN-XXX · MEDICAL FACILITY POWER PRIORITY', body:'Medical facility has declared emergency status. [X] inpatients, active OR cases. Requires uninterrupted power for all life-safety systems. Priority: [X]% of all available diesel.' },
+  smr:      { type:'res',  priority:'ROUTINE',   tag:'SMR FEASIBILITY — SITE APPROVED', body:'SMR site survey complete at [LOCATION]. [X]-acre footprint available. [X]-ft safety radius within base perimeter. No residential encroachment. Projected: [X] MW continuous.' },
+  bess:     { type:'res',  priority:'URGENT',    tag:'RESOLVED · BESS ONLINE', body:'BESS ([X] MWh) online. Bridging power gap during resupply. Critical systems at 100% coverage. Bridge duration: ~[X] hours. Convoy confirmed en route.' },
+  weather:  { type:'crit', priority:'IMMEDIATE', tag:'WARN-XXX · WEATHER HOLD', body:'All road and air resupply routes suspended — minimum [X] hours. Adverse weather conditions exceed safe operating thresholds. No convoy movement authorized.' },
+};
+
+function loadTemplate(key) {
+  const t = TEMPLATES[key]; if(!t) return;
+  document.getElementById('wo-type').value     = t.type;
+  document.getElementById('wo-priority').value = t.priority;
+  document.getElementById('wo-tag').value       = t.tag;
+  document.getElementById('wo-body').value      = t.body;
+}
+
+function addWarningOrder() {
+  const type  = document.getElementById('wo-type').value;
+  const prio  = document.getElementById('wo-priority').value;
+  const tag   = document.getElementById('wo-tag').value.trim()  || 'WARN-' + String(warningOrders.length+1).padStart(3,'0');
+  const body  = document.getElementById('wo-body').value.trim() || '(no details provided)';
+  const recip = document.getElementById('wo-recip').value.trim();
+  const ts    = new Date().toISOString().substring(0,16).replace('T',' ')+' UTC';
+  warningOrders.push({ type, prio, tag, body, recip, ts });
+  // Clear composer
+  document.getElementById('wo-tag').value  = '';
+  document.getElementById('wo-body').value = '';
+  renderWOs();
+}
+
+function removeWO(i) {
+  warningOrders.splice(i,1);
+  renderWOs();
+}
+
+function renderWOs() {
+  const list = document.getElementById('wo-list');
+  const empty= document.getElementById('wo-empty');
+  const badge= document.getElementById('wo-count-badge');
+  badge.textContent = warningOrders.length + (warningOrders.length===1?' order':' orders');
+  if(!warningOrders.length){ empty.style.display=''; list.innerHTML=''; return; }
+  empty.style.display = 'none';
+  list.innerHTML = warningOrders.map((w,i)=>{
+    const m = WO_TYPE_META[w.type]||WO_TYPE_META.warn;
+    return `<div class=&quot;wo-card&quot;>
+      <div class=&quot;wo-card-head&quot;>
+        <div class=&quot;wo-dot ${m.cls}&quot;></div>
+        <div class=&quot;wo-type-lbl ${m.cls}&quot;>${m.lbl}</div>
+        <div class=&quot;wo-seq&quot;>ORDER ${i+1} OF ${warningOrders.length}</div>
+        <button class=&quot;wo-del-btn&quot; onclick=&quot;removeWO(${i})&quot;>✕</button>
+      </div>
+      <div class=&quot;wo-card-body&quot;>
+        <div class=&quot;wo-tag-text&quot;>${w.tag}</div>
+        <div class=&quot;wo-body-text&quot;>${w.body}</div>
+      </div>
+      <div class=&quot;wo-foot&quot;>
+        <div class=&quot;wo-ts&quot;>${w.ts} · ${w.prio}</div>
+        <div class=&quot;wo-recip&quot;>${w.recip}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ ASSET DRAG ═══
+let dragData=null, deployedAssets=[];
+// ── DRAG & DROP (desktop HTML5 + mobile touch) ──
+function onDragStart(e){
+  dragData={asset:e.currentTarget.dataset.asset,mw:parseFloat(e.currentTarget.dataset.mw)||0,label:e.currentTarget.querySelector('.aname').textContent};
+  e.currentTarget.classList.add('dragging');
+  setTimeout(()=>e.currentTarget.classList.remove('dragging'),0);
+}
+function onDragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('over');}
+function onDragLeave(){document.getElementById('drop-zone').classList.remove('over');}
+function onDrop(e){
+  e.preventDefault();document.getElementById('drop-zone').classList.remove('over');
+  if(!dragData)return;
+  deployedAssets.push({...dragData});renderDropZone();calcPower();dragData=null;
+}
+
+// ── MOBILE ASSET INTERACTION: TAP-TO-SELECT + TAP-TO-DEPLOY ──
+// Tap a chip → selects it (green ring). Tap same chip again → deselects.
+// Tap the drop zone → deploys selected chip. Tap a placed asset → removes it.
+// No drag, no ghost, no touchmove. Click fires naturally on all elements.
+
+let _tapSelected = null;
+let _tapData     = null;
+let _tapTimer    = null;
+
+function _clearTapSelect() {
+  if (_tapSelected) {
+    _tapSelected.classList.remove('tap-selected');
+    _tapSelected = null; _tapData = null;
+  }
+  const dz   = document.getElementById('drop-zone');
+  const hint = document.getElementById('tap-hint');
+  if (dz)   dz.classList.remove('tap-ready');
+  if (hint) hint.classList.remove('show');
+}
+
+// Called by onclick on the drop-zone — fires naturally via click event
+function onDropZoneTap() {
+  if (!_tapData) return;
+  deployedAssets.push(Object.assign({}, _tapData));
+  renderDropZone(); calcPower();
+  _clearTapSelect();
+}
+
+function initTouchDrag() {
+  const palette = document.getElementById('asset-palette');
+  if (!palette) return;
+
+  // Passive touchstart: fires a 200ms setTimeout tap-select.
+  // No preventDefault, no touchmove, no touchend — click fires naturally everywhere.
+  palette.addEventListener('touchstart', function(e) {
+    let chip = e.target;
+    while (chip && chip !== palette) {
+      if (chip.classList && chip.classList.contains('asset-chip')) break;
+      chip = chip.parentElement;
+    }
+    if (!chip || chip === palette) return;
+    if (e.touches.length !== 1) return;
+
+    if (_tapTimer) clearTimeout(_tapTimer);
+    const capturedChip = chip;
+    const capturedData = {
+      asset: chip.dataset.asset,
+      mw:    parseFloat(chip.dataset.mw) || 0,
+      label: chip.querySelector('.aname') ? chip.querySelector('.aname').textContent : chip.dataset.asset
+    };
+
+    _tapTimer = setTimeout(function() {
+      _tapTimer = null;
+      if (_tapSelected === capturedChip) {
+        _clearTapSelect();
+      } else {
+        _clearTapSelect();
+        _tapSelected = capturedChip;
+        _tapData     = capturedData;
+        capturedChip.classList.add('tap-selected');
+        const dz   = document.getElementById('drop-zone');
+        const hint = document.getElementById('tap-hint');
+        if (dz)   dz.classList.add('tap-ready');
+        if (hint) hint.classList.add('show');
+      }
+    }, 200);
+
+  }, { passive: true });
+
+  palette.addEventListener('touchcancel', function() {
+    if (_tapTimer) { clearTimeout(_tapTimer); _tapTimer = null; }
+  }, { passive: true });
+}
+function removeAsset(i){deployedAssets.splice(i,1);renderDropZone();calcPower();}
+function renderDropZone(){
+  const dz=document.getElementById('drop-zone');
+  document.getElementById('dz-lbl').style.display=deployedAssets.length?'none':'';
+  dz.querySelectorAll('.placed-asset').forEach(el=>el.remove());
+  deployedAssets.forEach((a,i)=>{
+    const el=document.createElement('div');el.className='placed-asset';
+    el.innerHTML=`${a.label} <span style=&quot;color:var(--txd)&quot;>(${a.mw})</span> ✕`;
+    el.onclick=()=>removeAsset(i);dz.appendChild(el);
+  });
+}
+function calcPower(){
+  const demand=parseFloat(document.getElementById('peak-mw').value)||58;
+  const total=deployedAssets.reduce((s,a)=>s+a.mw,0);
+  const cover=Math.min(100,total/demand*100);
+  const res=total>0?Math.round(total/demand*72):0;
+  document.getElementById('dep-cap').textContent=total.toFixed(1);
+  document.getElementById('dep-demand').textContent=demand;
+  document.getElementById('dep-cover').textContent=cover.toFixed(0)+'%';
+  document.getElementById('dep-resilience').textContent=res?res+'h':'—';
+}
+
+// ═══ VEHICLES ═══
+const VEHICLES=[
+  {icon:'🚛',name:'Commercial Fuel Tanker — 6,000 gal',    cap:'6,000 gal',  status:'op',   branch:'NAVY', desc:'Primary shore-based diesel/JP-5 delivery to installation storage'},
+  {icon:'🚛',name:'Commercial Fuel Tanker — 2,500 gal',    cap:'2,500 gal',  status:'op',   branch:'NAVY', desc:'Secondary tanker for forward distribution to remote generator pads'},
+  {icon:'🚗',name:'JLTV — Joint Light Tactical Vehicle',   cap:'—',          status:'op',   branch:'NAVY', desc:'NAVFAC personnel and light logistics transport'},
+  {icon:'🚐',name:'Personnel Transport Van',               cap:'12 persons', status:'op',   branch:'ALL',  desc:'Crew rotation and operator transport across installation'},
+  {icon:'🔧',name:'MEP-831A — 60 kW Generator Trailer',   cap:'60 kW',      status:'op',   branch:'ALL',  desc:'Towed tactical generator for remote load centers'},
+  {icon:'⛽',name:'JP-5 Fuel Bowser — Shore',             cap:'3,000 gal',  status:'op',   branch:'NAVY', desc:'Aviation fuel bowser — NAS and carrier pier support'},
+];
+let vehicleQty=VEHICLES.map(()=>0);
+function renderVehicles(){
+  document.getElementById('vehicle-table-body').innerHTML=VEHICLES.map((v,i)=>`
+    <tr><td>${v.icon}</td><td style=&quot;color:var(--txh)&quot;>${v.name}</td><td style=&quot;color:var(--txd)&quot;>${v.cap}</td>
+    <td style=&quot;font-size:9px;color:var(--txd);max-width:140px&quot;>${v.desc}</td>
+    <td><span class=&quot;tag ${v.status}&quot;>${v.status==='op'?'OP':'MAINT'}</span></td>
+    <td class=&quot;veh-qty&quot;><input type=&quot;number&quot; min=&quot;0&quot; max=&quot;99&quot; value=&quot;${vehicleQty[i]}&quot;
+      oninput=&quot;vehicleQty[${i}]=parseInt(this.value)||0;calcDistance()&quot;></td></tr>`).join('');
+}
+
+// ═══ DISTANCE ═══
+function calcDistance(){
+  const miles=parseFloat(document.getElementById('depot-miles').value)||2.1;
+  const speed=parseFloat(document.getElementById('veh-speed').value)||25;
+  const load =parseFloat(document.getElementById('load-time').value)||45;
+  const oneWay=(miles/speed)*60;
+  const rt=oneWay*2+load;
+  const runs=Math.floor(24*60/rt);
+  const trucks=vehicleQty[0]||1; // Commercial 6,000 gal tanker as primary
+  const gal=runs*trucks*6000;    // 6,000 gal capacity
+  document.getElementById('dc-oneway').textContent=oneWay.toFixed(0);
+  document.getElementById('dc-roundtrip').textContent=rt.toFixed(0);
+  document.getElementById('dc-runs').textContent=runs;
+  document.getElementById('dc-gal').textContent=gal.toLocaleString();
+}
+
+// ═══ SUMMARY ═══
+function updateSummary(){ calcPower(); }
+function buildSummary(){
+  const demand=parseFloat(document.getElementById('peak-mw').value)||selectedInst.mw;
+  const total=deployedAssets.reduce((s,a)=>s+a.mw,0);
+  const cover=total>0?Math.min(100,total/demand*100).toFixed(0):0;
+  const win=total>0?Math.round(total/demand*72):0;
+  const cap=(deployedAssets.length*8.5+total*0.9).toFixed(1);
+  document.getElementById('sr-demand').textContent=demand;
+  document.getElementById('sr-cap').textContent=total.toFixed(1);
+  document.getElementById('sr-window').textContent=win||'—';
+  document.getElementById('sr-capital').textContent='$'+cap+'M';
+  document.getElementById('sr-pct').textContent=cover+'%';
+  document.getElementById('sr-prog').style.width=cover+'%';
+  const scId='SC-'+selectedInst.id+'-'+Date.now().toString(36).toUpperCase().slice(-6);
+  document.getElementById('sc-id').value=scId;
+  document.getElementById('sum-badge').textContent=total>0?'READY':'INCOMPLETE';
+  document.getElementById('sum-badge').style.color=total>0?'var(--sage)':'var(--amber)';
+  document.getElementById('summary-grid').innerHTML=[
+    ['Installation', selectedInst.name],
+    ['Location',     selectedInst.loc],
+    ['Branch',       selectedInst.branch],
+    ['Trigger',      document.getElementById('trigger-name').value||'—'],
+    ['Severity',     document.getElementById('severity').value],
+    ['Duration',     document.getElementById('outage-dur').value||'—'],
+    ['Resupply Delay',document.getElementById('resupply-delay').value+'h'],
+    ['Personnel',    document.getElementById('personnel').value||'—'],
+    ['Assets',       deployedAssets.map(a=>a.label).join(', ')||'None'],
+    ['Orders',       warningOrders.length+' queued'],
+  ].map(([k,v])=>`<div class=&quot;sum-item&quot;><div class=&quot;sum-key&quot;>${k}</div><div class=&quot;sum-val&quot;>${v}</div></div>`).join('');
+  // Warning orders review
+  const wrc=document.getElementById('wo-review-count');
+  const wrl=document.getElementById('wo-review-list');
+  wrc.textContent=warningOrders.length;
+  if(!warningOrders.length){ wrl.innerHTML='<div class=&quot;wo-empty&quot; style=&quot;margin:0&quot;>NO ORDERS QUEUED</div>'; return; }
+  wrl.innerHTML=warningOrders.map((w,i)=>{
+    const m=WO_TYPE_META[w.type]||WO_TYPE_META.warn;
+    return `<div class=&quot;wo-card&quot;>
+      <div class=&quot;wo-card-head&quot;>
+        <div class=&quot;wo-dot ${m.cls}&quot;></div>
+        <div class=&quot;wo-type-lbl ${m.cls}&quot;>${m.lbl}</div>
+        <div class=&quot;wo-seq&quot;>ORDER ${i+1}</div>
+      </div>
+      <div class=&quot;wo-card-body&quot;><div class=&quot;wo-tag-text&quot;>${w.tag}</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ LAUNCH ═══
+function launchScenario(){
+  document.getElementById('launch-banner').classList.add('show');
+  const msgs=['Building digital twin…','Loading installation data…','Configuring assets…','Calculating power requirements…','Applying scenario parameters…','Scenario ready.'];
+  let i=0;
+  const sub=document.getElementById('banner-sub'),title=document.getElementById('banner-title');
+  const iv=setInterval(()=>{
+    if(i<msgs.length){sub.textContent=msgs[i++];}
+    else{
+      clearInterval(iv);
+      title.textContent='SCENARIO READY';title.style.color='var(--sage)';
+      document.getElementById('banner-btn').style.display='';
+    }
+  },550);
+}
+function _buildScenarioPayload() {
+  const scId = document.getElementById('sc-id').value || ('SC-'+Date.now().toString(36).toUpperCase().slice(-6));
+  const sevEl = document.getElementById('severity');
+
+  // ── Power calculations ──
+  const demand = parseFloat(document.getElementById('peak-mw').value) || 58;
+  const totalMw = deployedAssets.reduce((s,a) => s + a.mw, 0);
+  const coverPct = totalMw > 0 ? Math.min(100, (totalMw / demand * 100)).toFixed(0) : '0';
+  const resilienceHrs = totalMw > 0 ? Math.round(totalMw / demand * 72) : 0;
+  const estCapital = (deployedAssets.length * 8.5 + totalMw * 0.9).toFixed(1);
+
+  // ── Reporting step ──
+  const reportChipEl = document.querySelector('#report-chips .chip.selected');
+  const outputChipEl = document.querySelector('#output-chips .chip.selected');
+
+  // ── Vehicles with quantities ──
+  const vehicleList = VEHICLES.map(function(v, i) {
+    return vehicleQty[i] > 0 ? { name: v.name, cap: v.cap, qty: vehicleQty[i] } : null;
+  }).filter(Boolean);
+
+  // ── Logistics ──
+  const depotMiles = document.getElementById('depot-miles') ? document.getElementById('depot-miles').value : '';
+  const vehSpeed   = document.getElementById('veh-speed')   ? document.getElementById('veh-speed').value   : '';
+  const loadTime   = document.getElementById('load-time')   ? document.getElementById('load-time').value   : '';
+  const oneWay     = depotMiles && vehSpeed ? ((parseFloat(depotMiles)/parseFloat(vehSpeed))*60).toFixed(0) : '—';
+  const rtMins     = depotMiles && vehSpeed && loadTime ? (parseFloat(oneWay)*2 + parseFloat(loadTime)).toFixed(0) : '—';
+
+  return {
+    // ── display fields ──
+    id:           scId,
+    installation: selectedInst.name,
+    location:     selectedInst.loc,
+    branch:       selectedInst.branch,
+    trigger:      document.getElementById('trigger-name').value || 'Unnamed',
+    severity:     sevEl ? sevEl.value : '—',
+    duration:     document.getElementById('outage-dur').value || '—',
+    assets:       deployedAssets.length ? deployedAssets.map(function(a){return a.label;}).join(', ') : 'None',
+    assetCount:   deployedAssets.length,
+    orders:       warningOrders.length,
+    personnel:    document.getElementById('personnel').value || '—',
+    scenarioId:   selectedInst.branch === 'NAVY' ? 'B' : 'A',
+    savedAt:      new Date().toISOString(),
+    // ── Step 1: Warning Orders ──
+    _warningOrders:  warningOrders.slice(),
+    // ── Step 2: Installation ──
+    _instId:        selectedInst.id,
+    _utility:       document.getElementById('utility').value,
+    _peakMw:        document.getElementById('peak-mw').value,
+    // ── Step 3: Trigger ──
+    _triggerName:   document.getElementById('trigger-name').value,
+    _triggerDesc:   document.getElementById('trigger-desc') ? document.getElementById('trigger-desc').value : '',
+    _severity:      sevEl ? sevEl.value : '',
+    _duration:      document.getElementById('outage-dur').value,
+    _resupply:      document.getElementById('resupply-delay').value,
+    // ── Step 4: Assets & Logistics ──
+    _deployedAssets: deployedAssets.slice(),
+    _totalMw:        totalMw.toFixed(1),
+    _coverPct:       coverPct,
+    _resilienceHrs:  resilienceHrs,
+    _estCapital:     estCapital,
+    _vehicleQty:     vehicleQty.slice(),
+    _vehicleList:    vehicleList,
+    _depotName:      document.getElementById('depot-name') ? document.getElementById('depot-name').value : '',
+    _depotMiles:     depotMiles,
+    _vehSpeed:       vehSpeed,
+    _loadTime:       loadTime,
+    _oneWayMins:     oneWay,
+    _roundTripMins:  rtMins,
+    // ── Step 5: Manpower ──
+    _personnel:      document.getElementById('personnel').value,
+    _operators:      document.getElementById('operators') ? document.getElementById('operators').value : '—',
+    _shiftHrs:       document.getElementById('shift-hrs') ? document.getElementById('shift-hrs').value : '—',
+    _reliefCycle:    document.getElementById('relief-cycle') ? document.getElementById('relief-cycle').value : '—',
+    // ── Step 6: Reporting ──
+    _reportMethod:   reportChipEl ? reportChipEl.textContent : '—',
+    _outputPriority: outputChipEl ? outputChipEl.textContent : '—',
+    _notifRecipients: document.getElementById('notif-recipients') ? document.getElementById('notif-recipients').value : '—',
+  };
+}
+function saveScenario() {
+  const payload = _buildScenarioPayload();
+  window.parent.postMessage({ type: 'SAVE_SCENARIO', scenario: payload }, '*');
+  // Flash the save button to confirm
+  const btn = document.getElementById('save-sc-btn');
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ SAVED';
+    btn.style.color = 'var(--sage)';
+    btn.style.borderColor = 'var(--sage)';
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1800);
+  }
+}
+function sendToSimulator(){
+  const payload = _buildScenarioPayload();
+  window.parent.postMessage({ type: 'SAVE_SCENARIO', scenario: payload }, '*');
+  window.parent.postMessage({ type: 'LAUNCH_FROM_BUILDER', scenarioId: payload.scenarioId, reload: true }, '*');
+  document.getElementById('launch-banner').classList.remove('show');
+}
+
+// ═══ CLEAR ═══
+function confirmClear(){ document.getElementById('clear-modal').classList.add('show'); }
+function closeClear(){ document.getElementById('clear-modal').classList.remove('show'); }
+function clearAll(){
+  closeClear();
+  warningOrders=[];deployedAssets=[];vehicleQty=VEHICLES.map(()=>0);
+  selectedInst=INSTALLATIONS[0];currentBranch='ALL';
+  // Reset form fields
+  document.getElementById('peak-mw').value='58';
+  document.getElementById('utility').value='Dominion Energy Virginia';
+  document.getElementById('trigger-name').value='Hurricane Florence';
+  document.getElementById('outage-dur').value='72+ hours';
+  document.getElementById('resupply-delay').value='48';
+  document.getElementById('trigger-desc').value='Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.';
+  document.getElementById('personnel').value='120';
+  document.getElementById('wo-tag').value='';
+  document.getElementById('wo-body').value='';
+  renderWOs();renderInst();renderDropZone();renderVehicles();calcDistance();
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('done','active'));
+  document.getElementById('run-btn').disabled=true;
+  goStep(1);
+}
+
+// ═══ LOAD SCENARIO (from hub) ═══
+function loadScenario(sc) {
+  warningOrders  = sc._warningOrders  ? sc._warningOrders.slice()  : [];
+  deployedAssets = sc._deployedAssets ? sc._deployedAssets.slice() : [];
+  vehicleQty     = sc._vehicleQty     ? sc._vehicleQty.slice()     : VEHICLES.map(function(){return 0;});
+  selectedInst   = INSTALLATIONS.find(function(i){return i.id===sc._instId;}) || INSTALLATIONS[0];
+  var set = function(id, val) { var el=document.getElementById(id); if(el && val!=null) el.value=val; };
+  set('trigger-name',   sc._triggerName);
+  set('trigger-desc',   sc._triggerDesc);
+  set('outage-dur',     sc._duration);
+  set('resupply-delay', sc._resupply);
+  set('peak-mw',        sc._peakMw);
+  set('utility',        sc._utility);
+  set('personnel',      sc._personnel);
+  set('depot-name',     sc._depotName);
+  set('depot-miles',    sc._depotMiles);
+  set('veh-speed',      sc._vehSpeed);
+  set('load-time',      sc._loadTime);
+  set('sc-id',          sc.id);
+  var sevEl = document.getElementById('severity');
+  if (sevEl && sc._severity) {
+    for (var k=0; k<sevEl.options.length; k++) {
+      if (sevEl.options[k].value===sc._severity || sevEl.options[k].text===sc._severity) { sevEl.selectedIndex=k; break; }
+    }
+  }
+  renderInst(); renderWOs(); renderDropZone(); renderVehicles(); calcDistance();
+  document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); s.classList.add('done'); });
+  document.getElementById('run-btn').disabled = false;
+  goStep(7);
+}
+
+// ═══ INIT ═══
+renderInst();renderVehicles();calcDistance();
+initTouchDrag();
+document.getElementById('sc-id').value='SC-PENDING-'+Math.random().toString(36).slice(2,8).toUpperCase();
+
+// Message handler — theme + load scenario
+window.addEventListener('message',function(e){
+  if(!e.data) return;
+  if(e.data.type==='SET_THEME')    document.documentElement.setAttribute('data-theme',e.data.theme);
+  if(e.data.type==='LOAD_SCENARIO') loadScenario(e.data.scenario);
+});
+
+// Signal parent that builder is ready to receive messages
+window.parent.postMessage({ type: 'BUILDER_READY' }, '*');
+
+
+</script>
+</body>
+</html>
+"
+  ></iframe>
+</div>
+
 <script>
 // ── AUTH STATE — top-level so showSplash() can reset it ──
 var authEnabled = false;
@@ -3805,15 +5274,17 @@ function bootScan() {
 function openApp(id) {
   document.getElementById('launcher-shell').classList.add('pushed');
   document.getElementById(id).classList.add('visible');
-  // Force masthead clock update immediately on open
-  if (id === 'overlay-wargame') {
-    var mc = document.getElementById('masthead-clock');
-    if (mc) {
-      var now = new Date();
-      var edt = new Date(now.getTime() - 4 * 3600000);
-      mc.textContent = String(edt.getUTCHours()).padStart(2,'0') + ':' +
-                       String(edt.getUTCMinutes()).padStart(2,'0') + ':' +
-                       String(edt.getUTCSeconds()).padStart(2,'0') + ' EDT';
+  if (id === 'overlay-builder') {
+    var fr = document.getElementById('frame-builder');
+    if (fr) {
+      fr.addEventListener('load', function onLoad() {
+        fr.removeEventListener('load', onLoad);
+        setTimeout(function() {
+          if (window._inedApiKey && fr.contentWindow) {
+            fr.contentWindow.postMessage({ type: 'SET_API_KEY', key: window._inedApiKey, email: window._inedApiEmail || '' }, '*');
+          }
+        }, 400);
+      });
     }
   }
   if (id === 'overlay-wargame') {
@@ -3838,10 +5309,11 @@ function openApp(id) {
 function closeApp(id) {
   document.getElementById(id).classList.remove('visible');
   document.getElementById('launcher-shell').classList.remove('pushed');
+  if (id === 'overlay-builder') { return; }
   if (id === 'overlay-wargame') {
     // Cancel TTS immediately in parent (owns the speech engine on iOS)
     if (window._tts) window._tts.cancel();
-    var mc = document.getElementById('masthead-clock'); if (mc) { mc.style.color = ''; }
+    var mc = document.getElementById('masthead-clock'); if (mc) { mc.textContent = '--:--:--'; mc.style.color = ''; }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     // Also signal iframe (belt-and-suspenders for non-iOS)
     var fr = document.getElementById('frame-wargame');
@@ -3939,6 +5411,450 @@ function reloadWargameFrame() {
   };
 })();
 
+// ═══ SAVED SCENARIOS ═══
+var savedScenarios = [];
+
+function printScenario(sc) {
+  // ── Build assets list ──
+  var assetChips = '';
+  if (sc._deployedAssets && sc._deployedAssets.length) {
+    assetChips = sc._deployedAssets.map(function(a) {
+      return '<div class="scp-asset-chip">' + a.label + ' (' + a.mw + ')</div>';
+    }).join('');
+  } else {
+    assetChips = '<span style="color:#000;-webkit-text-fill-color:#000">None deployed</span>';
+  }
+
+  // ── Build warning orders list ──
+  var orderRows = '';
+  if (sc._warningOrders && sc._warningOrders.length) {
+    orderRows = sc._warningOrders.map(function(w, i) {
+      return '<div class="scp-order"><strong>' + (w.tag || 'ORDER ' + (i+1)) + '</strong><br>' + (w.body || '') + '</div>';
+    }).join('');
+  } else {
+    orderRows = '<span style="color:#000;-webkit-text-fill-color:#000">No orders queued</span>';
+  }
+
+  var savedDate = sc.savedAt ? new Date(sc.savedAt).toLocaleString() : '—';
+
+  var bodyHTML =
+    '<div class="scp-header">' +
+      '<div class="scp-title">iNED // Energy Resilience Scenario</div>' +
+      '<div class="scp-sub">UNCLASSIFIED &nbsp;&middot;&nbsp; ' + sc.id + ' &nbsp;&middot;&nbsp; Saved: ' + savedDate + '</div>' +
+    '</div>' +
+
+    '<div class="scp-section">' +
+      '<div class="scp-section-title">Installation &amp; Trigger</div>' +
+      '<div class="scp-grid">' +
+        '<div class="scp-item"><div class="scp-key">Installation</div><div class="scp-val">' + (sc.installation||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Location</div><div class="scp-val">' + (sc.location||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Branch</div><div class="scp-val">' + (sc.branch||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Peak Demand</div><div class="scp-val">' + (sc._peakMw||'—') + ' MW</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Trigger Event</div><div class="scp-val">' + (sc.trigger||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Severity</div><div class="scp-val">' + (sc.severity||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Duration</div><div class="scp-val">' + (sc.duration||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Resupply Delay</div><div class="scp-val">' + (sc._resupply||'—') + 'h</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Personnel</div><div class="scp-val">' + (sc.personnel||'—') + '</div></div>' +
+        '<div class="scp-item"><div class="scp-key">Utility</div><div class="scp-val">' + (sc._utility||'—') + '</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="scp-section">' +
+      '<div class="scp-section-title">Deployed Assets (' + (sc.assetCount||0) + ')</div>' +
+      '<div class="scp-assets">' + assetChips + '</div>' +
+    '</div>' +
+
+    '<div class="scp-section">' +
+      '<div class="scp-section-title">Warning Orders (' + (sc.orders||0) + ')</div>' +
+      '<div class="scp-orders">' + orderRows + '</div>' +
+    '</div>' +
+
+    '<div class="scp-footer">' +
+      '<span>iNED Command Hub // Energy Resilience Wargame</span>' +
+      '<span>UNCLASSIFIED</span>' +
+    '</div>';
+
+  // ── Open dedicated print window (works on mobile; avoids blank-page from window.print() on parent) ──
+  var pw = window.open('', '_blank', 'width=900,height=700');
+  if (!pw) {
+    // Popup blocked — fall back to legacy in-page print
+    var sheet = document.getElementById('sc-print-sheet');
+    if (sheet) { sheet.innerHTML = bodyHTML; }
+    window.print();
+    return;
+  }
+  pw.document.write(
+    '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>iNED Scenario ' + sc.id + '</title>' +
+    '<style>' +
+      'body{font-family:"Courier New",monospace;color:#000;background:#fff;padding:32px;font-size:11px;line-height:1.6;margin:0}' +
+      '.scp-header{border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:18px}' +
+      '.scp-title{font-size:20px;font-weight:700;letter-spacing:2px;text-transform:uppercase}' +
+      '.scp-sub{font-size:10px;letter-spacing:1.5px;color:#444;margin-top:4px}' +
+      '.scp-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin-bottom:18px}' +
+      '.scp-item{border-bottom:1px solid #ddd;padding:4px 0}' +
+      '.scp-key{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:#000}' +
+      '.scp-val{font-size:11px;font-weight:700;color:#000}' +
+      '.scp-section{margin-bottom:14px}' +
+      '.scp-section-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid #000;padding-bottom:3px;margin-bottom:8px}' +
+      '.scp-assets{display:flex;flex-wrap:wrap;gap:4px}' +
+      '.scp-asset-chip{border:1px solid #000;padding:2px 8px;font-size:9px}' +
+      '.scp-orders{display:flex;flex-direction:column;gap:4px}' +
+      '.scp-order{border-left:3px solid #000;padding:4px 8px;font-size:10px}' +
+      '.scp-footer{margin-top:24px;border-top:1px solid #000;padding-top:8px;font-size:8px;color:#000;display:flex;justify-content:space-between}' +
+      '@media print{body{padding:16px}}' +
+    '</style></head><body>' +
+    bodyHTML +
+    '<script>window.onload=function(){window.print();}<\/script>' +
+    '</body></html>'
+  );
+  pw.document.close();
+}
+
+// Track which scenario indices are checked
+var _checkedScenarios = {};
+
+function updatePrintBar() {
+  var count = Object.keys(_checkedScenarios).filter(function(k) { return _checkedScenarios[k]; }).length;
+  var bar   = document.getElementById('sc-print-bar');
+  var label = document.getElementById('sc-print-bar-label');
+  if (!bar) return;
+  if (count > 0) {
+    bar.classList.add('visible');
+    if (label) label.textContent = count === 1 ? '1 selected' : count + ' selected';
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+function toggleScenarioCheck(i) {
+  _checkedScenarios[i] = !_checkedScenarios[i];
+  // Update the visual checkbox
+  var cb = document.getElementById('sc-cb-' + i);
+  if (cb) cb.classList.toggle('checked', !!_checkedScenarios[i]);
+  updatePrintBar();
+}
+
+function buildScenarioHTML(sc) {
+  var savedDate = sc.savedAt ? new Date(sc.savedAt).toLocaleString() : '—';
+
+  function row(key, val) {
+    return '<div class="scp-item"><div class="scp-key">' + key + '</div><div class="scp-val">' + (val || '—') + '</div></div>';
+  }
+  function section(icon, title, content) {
+    return '<div class="scp-section">' +
+      '<div class="scp-section-title">' + icon + ' ' + title + '</div>' +
+      content +
+      '</div>';
+  }
+
+  // ── Phase 1: Warning Orders ──
+  var ordersHTML = '';
+  if (sc._warningOrders && sc._warningOrders.length) {
+    ordersHTML = sc._warningOrders.map(function(w, i) {
+      var typeLabel = { warn:'WARNING ORDER', crit:'CRITICAL ALERT', info:'INFORMATION', res:'RESOLVED' };
+      return '<div class="scp-order">' +
+        '<div style="font-size:9px;font-weight:700;letter-spacing:1px;margin-bottom:3px">' + (typeLabel[w.type]||'ORDER') + ' ' + (i+1) + ' · ' + (w.prio||'') + '</div>' +
+        '<div style="font-weight:700;margin-bottom:3px">' + (w.tag||'') + '</div>' +
+        '<div style="font-size:10px">' + (w.body||'') + '</div>' +
+        (w.recip ? '<div style="font-size:9px;margin-top:3px;opacity:.8">To: ' + w.recip + '</div>' : '') +
+      '</div>';
+    }).join('');
+  } else {
+    ordersHTML = '<div style="font-size:11px">No warning orders queued</div>';
+  }
+
+  // ── Phase 4: Assets ──
+  var assetsHTML = '';
+  if (sc._deployedAssets && sc._deployedAssets.length) {
+    assetsHTML = '<div class="scp-grid">' +
+      sc._deployedAssets.map(function(a) {
+        return '<div class="scp-item"><div class="scp-key">' + a.label + '</div><div class="scp-val">' + a.mw + ' MW</div></div>';
+      }).join('') +
+    '</div>';
+    assetsHTML += '<div class="scp-grid">' +
+      row('Total Deployed', (sc._totalMw||'—') + ' MW') +
+      row('Peak Demand', (sc._peakMw||'—') + ' MW') +
+      row('Coverage', (sc._coverPct||'—') + '%') +
+      row('Resilience Window', (sc._resilienceHrs ? sc._resilienceHrs + 'h' : '—')) +
+      row('Est. Capital', sc._estCapital ? '$' + sc._estCapital + 'M' : '—') +
+    '</div>';
+  } else {
+    assetsHTML = '<div class="scp-grid">' +
+      row('Assets Deployed', 'None') +
+      row('Peak Demand', (sc._peakMw||'—') + ' MW') +
+    '</div>';
+  }
+
+  // ── Phase 4: Vehicles ──
+  var vehiclesHTML = '';
+  if (sc._vehicleList && sc._vehicleList.length) {
+    vehiclesHTML = '<div class="scp-grid">' +
+      sc._vehicleList.map(function(v) {
+        return row(v.name, 'Qty: ' + v.qty + ' · ' + v.cap);
+      }).join('') +
+    '</div>';
+  } else {
+    vehiclesHTML = '<div style="font-size:11px">No vehicles assigned</div>';
+  }
+
+  // ── Phase 4: Logistics ──
+  var logisticsHTML = '<div class="scp-grid">' +
+    row('Depot', sc._depotName || '—') +
+    row('Distance', sc._depotMiles ? sc._depotMiles + ' mi' : '—') +
+    row('Transit Speed', sc._vehSpeed ? sc._vehSpeed + ' mph' : '—') +
+    row('Load Time', sc._loadTime ? sc._loadTime + ' min' : '—') +
+    row('One-Way Transit', sc._oneWayMins ? sc._oneWayMins + ' min' : '—') +
+    row('Round-Trip Cycle', sc._roundTripMins ? sc._roundTripMins + ' min' : '—') +
+  '</div>';
+
+  return '<div class="scp-scenario">' +
+
+    // Header
+    '<div class="scp-header">' +
+      '<div class="scp-title">iNED // Energy Resilience Scenario</div>' +
+      '<div class="scp-sub">UNCLASSIFIED &nbsp;·&nbsp; ' + sc.id + ' &nbsp;·&nbsp; ' + savedDate + '</div>' +
+    '</div>' +
+
+    // Phase 1: Warning Orders
+    section('📨', 'PHASE 1 — Warning Orders (' + (sc.orders||0) + ')', ordersHTML) +
+
+    // Phase 2: Installation
+    section('🗺', 'PHASE 2 — Installation',
+      '<div class="scp-grid">' +
+        row('Installation', sc.installation) +
+        row('Location', sc.location) +
+        row('Branch', sc.branch) +
+        row('Utility', sc._utility) +
+        row('Peak Demand', (sc._peakMw||'—') + ' MW') +
+      '</div>'
+    ) +
+
+    // Phase 3: Trigger
+    section('⚡', 'PHASE 3 — Scenario Trigger',
+      '<div class="scp-grid">' +
+        row('Event Name', sc.trigger) +
+        row('Severity', sc.severity) +
+        row('Duration', sc.duration) +
+        row('Resupply Delay', (sc._resupply||'—') + 'h') +
+      '</div>' +
+      (sc._triggerDesc ? '<div style="margin-top:8px;padding:8px;border-left:3px solid #4db88a;font-size:11px;line-height:1.55;background:#141c27;padding:10px 12px;border-radius:0 6px 6px 0">' + sc._triggerDesc + '</div>' : '')
+    ) +
+
+    // Phase 4: Assets & Logistics
+    section('🔋', 'PHASE 4 — Energy Assets', assetsHTML) +
+    section('🚛', 'PHASE 4 — Vehicle Rolodex', vehiclesHTML) +
+    section('📍', 'PHASE 4 — Logistics & Distance', logisticsHTML) +
+
+    // Phase 5: Manpower
+    section('👤', 'PHASE 5 — Manpower',
+      '<div class="scp-grid">' +
+        row('Total Personnel', sc._personnel) +
+        row('Qualified Operators', sc._operators) +
+        row('Shift Duration', sc._shiftHrs ? sc._shiftHrs + 'h' : '—') +
+        row('Relief Cycle', sc._reliefCycle) +
+      '</div>'
+    ) +
+
+    // Phase 6: Reporting
+    section('📡', 'PHASE 6 — Reporting & Notifications',
+      '<div class="scp-grid">' +
+        row('Reporting Method', sc._reportMethod) +
+        row('Output Priority', sc._outputPriority) +
+      '</div>' +
+      (sc._notifRecipients ? '<div style="margin-top:8px"><div class="scp-key" style="margin-bottom:4px">NOTIFICATION RECIPIENTS</div><div style="font-size:11px;font-weight:700">' + sc._notifRecipients + '</div></div>' : '')
+    ) +
+
+    '<div class="scp-footer">' +
+      '<span>iNED Command Hub // Energy Resilience Wargame // ' + sc.id + '</span>' +
+      '<span>UNCLASSIFIED</span>' +
+    '</div>' +
+
+  '</div>';
+}
+
+// ── Build scenario report HTML (print-friendly white background) ──
+function _buildReportHTML() {
+  var selected = savedScenarios.filter(function(sc, i) { return !!_checkedScenarios[i]; });
+  if (!selected.length) selected = savedScenarios.slice();
+  if (!selected.length) return null;
+  var scenarioPages = selected.map(buildScenarioHTML).join('');
+  var filename = 'iNED-Scenario-' + selected.map(function(s){ return s.id; }).join('-') + '.html';
+  var html = '<!DOCTYPE html><html><head>' +
+    '<meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>iNED Scenario Report</title>' +
+    '<style>' +
+      '*{box-sizing:border-box;margin:0;padding:0}' +
+      'body{font-family:"Courier New",monospace;background:#fff;color:#111;padding:24px;font-size:12px;line-height:1.65}' +
+      '.scp-scenario{margin-bottom:48px;padding-bottom:48px;border-bottom:2px dashed #ccc}' +
+      '.scp-scenario:last-child{border-bottom:none;margin-bottom:0}' +
+      '.scp-header{border-bottom:2px solid #1a7a50;padding-bottom:10px;margin-bottom:18px}' +
+      '.scp-title{font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#000}' +
+      '.scp-sub{font-size:11px;color:#555;margin-top:4px}' +
+      '.scp-section{margin-bottom:16px}' +
+      '.scp-section-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid #ccc;padding-bottom:5px;margin-bottom:10px;color:#1a7a50}' +
+      '.scp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px;margin-bottom:14px}' +
+      '.scp-item{border-bottom:1px solid #e0e0e0;padding:5px 0}' +
+      '.scp-key{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555;margin-bottom:2px}' +
+      '.scp-val{font-size:12px;font-weight:700;color:#000}' +
+      '.scp-assets{display:flex;flex-wrap:wrap;gap:4px}' +
+      '.scp-asset-chip{border:1px solid #1a7a50;padding:3px 8px;font-size:10px;border-radius:3px;color:#1a7a50}' +
+      '.scp-orders{display:flex;flex-direction:column;gap:8px}' +
+      '.scp-order{border-left:3px solid #b07830;padding:8px 12px;font-size:11px;background:#faf7f2;color:#111;border-radius:0 6px 6px 0}' +
+      '.scp-order strong{color:#b07830}' +
+      '.scp-footer{margin-top:20px;border-top:1px solid #ccc;padding-top:8px;font-size:10px;color:#555;display:flex;justify-content:space-between}' +
+    '</style></head><body>' +
+    scenarioPages +
+    '</body></html>';
+  return { html: html, filename: filename };
+}
+
+// ── ⎙ PDF — calls window.print() directly on the tap; iOS renders native print dialog ──
+function scpPrint() {
+  window.print();
+}
+
+// ── ⬆ SHARE — Web Share API; falls back to new-tab if unsupported ──
+function scpShare() {
+  var result = _buildReportHTML();
+  if (!result) return;
+  if (navigator.share && navigator.canShare) {
+    try {
+      var file = new File([result.html], result.filename, { type: 'text/html' });
+      if (navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: 'iNED Scenario Report',
+          files: [file]
+        }).catch(function() {});
+        return;
+      }
+    } catch(e) {}
+    // canShare returned false for files — try sharing just the URL/title
+    try {
+      navigator.share({ title: 'iNED Scenario Report', text: 'See attached scenario report.' }).catch(function() {});
+      return;
+    } catch(e2) {}
+  }
+  // Fallback: open in new tab — user can use Safari ⬆ share sheet from there
+  try {
+    var blob = new Blob([result.html], { type: 'text/html' });
+    var url  = URL.createObjectURL(blob);
+    var tab  = window.open(url, '_blank');
+    if (tab) { setTimeout(function() { try { URL.revokeObjectURL(url); } catch(x) {} }, 60000); return; }
+  } catch(e3) {}
+  // Last resort: data URI
+  try { window.open('data:text/html;charset=utf-8,' + encodeURIComponent(result.html), '_blank'); } catch(e4) {}
+}
+
+function closeScenarioPreview() {
+  var overlay = document.getElementById('scp-preview-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function printSelectedScenarios() {
+  var selected = savedScenarios.filter(function(sc, i) { return !!_checkedScenarios[i]; });
+  if (!selected.length) return;
+  var body = document.getElementById('scp-preview-body');
+  if (body) body.innerHTML = selected.map(buildScenarioHTML).join('');
+  var overlay = document.getElementById('scp-preview-overlay');
+  if (overlay) {
+    overlay.classList.add('open');
+    if (body) body.scrollTop = 0;
+  }
+}
+
+function renderSavedScenarios() {
+  var card  = document.getElementById('card-saved');
+  var list  = document.getElementById('saved-list');
+  var badge = document.getElementById('saved-count-badge');
+  if (!card || !list) return;
+
+  // Clear stale checkbox state for removed scenarios
+  _checkedScenarios = {};
+  updatePrintBar();
+
+  if (!savedScenarios.length) {
+    card.classList.remove('has-rows');
+    list.innerHTML = '';
+    return;
+  }
+
+  card.classList.add('has-rows');
+  if (badge) badge.textContent = savedScenarios.length + ' SAVED';
+
+  list.innerHTML = '';
+  savedScenarios.forEach(function(sc, i) {
+    var row = document.createElement('div');
+    row.className = 'sc-row';
+
+    // ── Checkbox (left) ──
+    var checkWrap = document.createElement('div');
+    checkWrap.className = 'sc-check-wrap';
+    checkWrap.onclick = function(e) { e.stopPropagation(); toggleScenarioCheck(i); };
+
+    var cb = document.createElement('div');
+    cb.className = 'sc-checkbox';
+    cb.id = 'sc-cb-' + i;
+    checkWrap.appendChild(cb);
+
+    // ── Main content (middle) — tap to launch ──
+    var main = document.createElement('div');
+    main.className = 'sc-row-main';
+    main.innerHTML =
+      '<div class="sc-row-id">' + sc.id + '</div>' +
+      '<div class="sc-row-inst">' + (sc.installation || '—') + '</div>' +
+      '<div class="sc-row-meta">' + (sc.trigger || '—') + ' · ' + (sc.assets || 'No assets') + '</div>';
+    main.onclick = function() { launchSavedScenario(i); };
+
+    // ── Delete (right) ──
+    var delBtn = document.createElement('button');
+    delBtn.className = 'sc-btn-del';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Delete';
+    delBtn.onclick = function(e) { e.stopPropagation(); deleteSavedScenario(i); };
+
+    row.appendChild(checkWrap);
+    row.appendChild(main);
+    row.appendChild(delBtn);
+    list.appendChild(row);
+  });
+}
+
+function launchSavedScenario(i) {
+  var sc = savedScenarios[i];
+  if (!sc) return;
+  hubScenario = sc.scenarioId || 'A';
+  selectScenario(hubScenario);
+  setTimeout(function() { launchWargame(); }, 80);
+}
+
+// Pending scenario to load into builder — set before opening, delivered on BUILDER_READY
+var _pendingLoadScenario = null;
+
+function loadSavedScenario(i) {
+  var sc = savedScenarios[i];
+  if (!sc) return;
+  _pendingLoadScenario = sc;
+  var fr = document.getElementById('frame-builder');
+  // If builder is already live, send immediately; otherwise it will send on BUILDER_READY
+  if (fr && fr.contentWindow) {
+    try {
+      fr.contentWindow.postMessage({ type: 'LOAD_SCENARIO', scenario: sc }, '*');
+      _pendingLoadScenario = null;
+    } catch(err) { /* will retry on BUILDER_READY */ }
+  }
+  openApp('overlay-builder');
+}
+
+function deleteSavedScenario(i) {
+  savedScenarios.splice(i, 1);
+  renderSavedScenarios();
+  // Refresh iOS compositing layer hit-test map after DOM change
+  var hs = document.getElementById('hub-scroll');
+  if (hs) { hs.style.overflowY = 'hidden'; requestAnimationFrame(function() { hs.style.overflowY = ''; }); }
+}
+
 window.addEventListener('message', function(e) {
   var d = e.data;
   if (!d || !d.type) return;
@@ -3946,6 +5862,63 @@ window.addEventListener('message', function(e) {
   if (d.type === 'TTS_CANCEL') { if (window._tts) window._tts.cancel(); return; }
   if (d.type === 'TTS_PAUSE')  { if (window._tts) window._tts.pause();  return; }
   if (d.type === 'TTS_RESUME') { if (window._tts) window._tts.resume(); return; }
+  if (d.type === 'BUILDER_READY') {
+    // Builder iframe just initialised — deliver any pending load
+    if (_pendingLoadScenario) {
+      try { e.source.postMessage({ type: 'LOAD_SCENARIO', scenario: _pendingLoadScenario }, '*'); } catch(err) {}
+      _pendingLoadScenario = null;
+    }
+    return;
+  }
+  if (d.type === 'CLOSE_BUILDER')    closeApp('overlay-builder');
+  if (d.type === 'SAVE_SCENARIO') {
+    savedScenarios.push(d.scenario);
+    renderSavedScenarios();
+    closeApp('overlay-builder');
+    // Force iOS -webkit-overflow-scrolling hit-test refresh.
+    // When DOM is injected into a composited scroll layer, iOS WebKit
+    // caches the old hit-test map and new elements don't receive touches
+    // until the layer is invalidated. Toggling overflow forces a rebuild.
+    var hs = document.getElementById('hub-scroll');
+    if (hs) {
+      hs.style.overflowY = 'hidden';
+      requestAnimationFrame(function() {
+        hs.style.overflowY = '';
+      });
+    }
+    return;
+  }
+  if (d.type === 'LAUNCH_FROM_BUILDER') {
+    closeApp('overlay-builder');
+    hubScenario = d.scenarioId || 'A';
+    selectScenario(hubScenario);
+    setTimeout(function() { launchWargame(); }, 80);
+  }
+  if (d.type === 'SAVE_PDF') {
+    (async function() {
+      try {
+        var bytes = new Uint8Array(d.bytes);
+        var blob = new Blob([bytes], { type: 'application/pdf' });
+        if (typeof window.showSaveFilePicker === 'function') {
+          try {
+            var fh = await window.showSaveFilePicker({ suggestedName: d.filename || 'NES-Formula-Reference.pdf', types: [{ description: 'PDF Document', accept: { 'application/pdf': ['.pdf'] } }] });
+            var w = await fh.createWritable(); await w.write(blob); await w.close();
+            e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'saved' }, '*'); return;
+          } catch(err) {
+            if (err && err.name === 'AbortError') { e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'cancelled' }, '*'); return; }
+          }
+        }
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = d.filename || 'NES-Formula-Reference.pdf';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function() { try { URL.revokeObjectURL(url); } catch(x) {} }, 30000);
+        e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'downloaded' }, '*');
+      } catch(err) {
+        e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'error', msg: err && err.message ? err.message : String(err) }, '*');
+      }
+    })();
+  }
   if (d.type === 'OPEN_WARGAME')     openApp('overlay-wargame');
   if (d.type === 'LAUNCH_WARGAME')   { hubScenario = d.scenario || 'A'; selectScenario(hubScenario); launchWargame(); }
   if (d.type === 'REPLAY_WARGAME') {
