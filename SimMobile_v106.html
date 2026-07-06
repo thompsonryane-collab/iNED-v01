@@ -549,32 +549,32 @@ html::after {
 
 /* ── E-RECON AI CARD ── */
 .card-erecon::before {
-  background: linear-gradient(90deg, transparent, #7c6af7, transparent);
+  background: linear-gradient(90deg, transparent, #5e7a94, transparent);
   opacity: .65;
 }
 @media (hover:hover) {
   .card-erecon:hover {
-    border-color: rgba(124,106,247,.38);
-    box-shadow: var(--card-bevel), 0 0 20px rgba(124,106,247,.10);
+    border-color: rgba(94,122,148,.38);
+    box-shadow: var(--card-bevel), 0 0 20px rgba(94,122,148,.10);
   }
 }
-.card-erecon .card-badge  { color: #7c6af7; }
-.card-erecon .card-desc em { color: #a498f9; }
+.card-erecon .card-badge  { color: #5e7a94; }
+.card-erecon .card-desc em { color: #8aaac4; }
 .card-erecon .meta-pill {
-  border-color: rgba(124,106,247,.25);
-  color: rgba(156,140,250,.85);
-  background: rgba(124,106,247,.07);
+  border-color: rgba(94,122,148,.25);
+  color: rgba(138,170,196,.85);
+  background: rgba(94,122,148,.07);
 }
 .card-erecon .launch-btn {
-  background: rgba(124,106,247,.15);
-  color: #a498f9;
-  border: 1px solid rgba(124,106,247,.40);
+  background: rgba(94,122,148,.15);
+  color: #8aaac4;
+  border: 1px solid rgba(94,122,148,.40);
   border-radius: 10px;
 }
 .card-erecon .launch-btn:active,
 .card-erecon .launch-btn:hover {
-  background: rgba(124,106,247,.26);
-  box-shadow: 0 0 12px rgba(124,106,247,.20);
+  background: rgba(94,122,148,.26);
+  box-shadow: 0 0 12px rgba(94,122,148,.20);
 }
 
 /* ── ERECON STAT STRIP ── */
@@ -584,8 +584,8 @@ html::after {
 }
 .erecon-stat {
   flex: 1;
-  background: rgba(124,106,247,.07);
-  border: 1px solid rgba(124,106,247,.20);
+  background: rgba(94,122,148,.07);
+  border: 1px solid rgba(94,122,148,.20);
   border-radius: 8px;
   padding: 8px 10px;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
@@ -593,7 +593,7 @@ html::after {
 .erecon-stat-val {
   font-family: var(--dsp);
   font-size: 20px; font-weight: 700;
-  color: #a498f9; line-height: 1;
+  color: #8aaac4; line-height: 1;
 }
 .erecon-stat-lbl {
   font-family: var(--mono);
@@ -609,8 +609,8 @@ html::after {
   gap: 6px; margin-bottom: 10px;
 }
 .erecon-cap {
-  background: rgba(124,106,247,.05);
-  border: 1px solid rgba(124,106,247,.18);
+  background: rgba(94,122,148,.05);
+  border: 1px solid rgba(94,122,148,.18);
   border-radius: 8px;
   padding: 8px 6px;
   display: flex; flex-direction: column; gap: 4px;
@@ -618,7 +618,7 @@ html::after {
 .erecon-cap-label {
   font-family: var(--dsp);
   font-size: 8px; letter-spacing: 1.2px;
-  color: #7c6af7; text-transform: uppercase;
+  color: #5e7a94; text-transform: uppercase;
 }
 .erecon-cap-desc {
   font-family: var(--mono);
@@ -634,8 +634,8 @@ html::after {
 .erecon-layer {
   display: flex; align-items: center; gap: 8px;
   padding: 7px 10px;
-  background: rgba(124,106,247,.04);
-  border: 1px solid rgba(124,106,247,.14);
+  background: rgba(94,122,148,.04);
+  border: 1px solid rgba(94,122,148,.14);
   border-radius: 7px;
 }
 .erecon-layer-name {
@@ -649,8 +649,8 @@ html::after {
   white-space: nowrap;
 }
 .erecon-layer-status.lat-long {
-  color: #a498f9; background: rgba(124,106,247,.15);
-  border: 1px solid rgba(124,106,247,.30);
+  color: #8aaac4; background: rgba(94,122,148,.15);
+  border: 1px solid rgba(94,122,148,.30);
 }
 .erecon-layer-status.mocking {
   color: #f2b826; background: rgba(242,184,38,.12);
@@ -777,16 +777,16 @@ html::after {
 }
 .recon-checkbox {
   width: 16px; height: 16px; border-radius: 4px;
-  border: 1.5px solid rgba(124,106,247,.4);
-  background: rgba(124,106,247,.06);
+  border: 1.5px solid rgba(94,122,148,.4);
+  background: rgba(94,122,148,.06);
   position: relative; flex-shrink: 0;
   transition: border-color .15s, background .15s;
 }
-.recon-checkbox.checked { background: rgba(124,106,247,.25); border-color: rgba(124,106,247,.8); }
+.recon-checkbox.checked { background: rgba(94,122,148,.25); border-color: rgba(94,122,148,.8); }
 .recon-checkbox.checked::after {
   content: ''; position: absolute;
   left: 4px; top: 1px; width: 5px; height: 9px;
-  border: 1.5px solid #a498f9; border-top: none; border-left: none;
+  border: 1.5px solid #8aaac4; border-top: none; border-left: none;
   transform: rotate(45deg);
 }
 .recon-row-main {
@@ -794,7 +794,7 @@ html::after {
   touch-action: manipulation;
 }
 .recon-row-main:active { opacity: .75; }
-.recon-row-id   { font-family:var(--dsp); font-size:9px; letter-spacing:.5px; color:#a498f9; }
+.recon-row-id   { font-family:var(--dsp); font-size:9px; letter-spacing:.5px; color:#8aaac4; }
 .recon-row-name { font-family:var(--dsp); font-size:11px; font-weight:700; color:var(--txh); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .recon-row-meta { font-family:var(--mono); font-size:9px; color:var(--txd); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .recon-score-pill {
@@ -825,13 +825,13 @@ html::after {
 }
 #recon-print-bar-btn {
   font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
-  background: rgba(124,106,247,.12); color: #a498f9;
-  border: 1px solid rgba(124,106,247,.35); border-radius: 8px;
+  background: rgba(94,122,148,.12); color: #8aaac4;
+  border: 1px solid rgba(94,122,148,.35); border-radius: 8px;
   padding: 6px 14px; cursor: pointer; white-space: nowrap;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   transition: background .15s;
 }
-#recon-print-bar-btn:active { background: rgba(124,106,247,.22); }
+#recon-print-bar-btn:active { background: rgba(94,122,148,.22); }
 
 /* ── FILES CARD (launcher) ── */
 #card-files {
@@ -1128,7 +1128,7 @@ html::after {
   pointer-events: none;
 }
 .overlay-wargame  .overlay-app-name { color: var(--sage); }
-.overlay-erecon   .overlay-app-name { color: #a498f9; }
+.overlay-erecon   .overlay-app-name { color: #8aaac4; }
 .overlay-frame {
   flex:1; border:none; width:100%;
   min-height:0; display:block;
@@ -1965,12 +1965,12 @@ html::after {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 14px;
   background: #0a0f1a;
-  border-bottom: 1px solid rgba(124,106,247,.3);
+  border-bottom: 1px solid rgba(94,122,148,.3);
   flex-shrink: 0;
 }
 #rcp-preview-title {
   font-family: var(--dsp); font-size: 10px; letter-spacing: 2px;
-  color: #a498f9; flex: 1;
+  color: #8aaac4; flex: 1;
 }
 #rcp-preview-close {
   font-family: var(--mono); font-size: 11px; color: var(--txd);
@@ -1980,9 +1980,9 @@ html::after {
 }
 #rcp-print-btn {
   font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
-  color: #a498f9; text-decoration: none;
-  background: rgba(124,106,247,.12);
-  border: 1px solid rgba(124,106,247,.35); border-radius: 8px;
+  color: #8aaac4; text-decoration: none;
+  background: rgba(94,122,148,.12);
+  border: 1px solid rgba(94,122,148,.35); border-radius: 8px;
   padding: 5px 12px; white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
@@ -2240,30 +2240,30 @@ html::after {
             <div class="card-icon-wrap">
               <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <!-- Globe wireframe -->
-                <circle cx="36" cy="36" r="22" stroke="#7c6af7" stroke-width="1.4" fill="rgba(124,106,247,0.05)"/>
+                <circle cx="36" cy="36" r="22" stroke="#5e7a94" stroke-width="1.4" fill="rgba(94,122,148,0.05)"/>
                 <!-- Latitude lines -->
-                <ellipse cx="36" cy="36" rx="22" ry="8" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
-                <ellipse cx="36" cy="36" rx="22" ry="15" stroke="#7c6af7" stroke-width=".5" opacity=".2"/>
+                <ellipse cx="36" cy="36" rx="22" ry="8" stroke="#5e7a94" stroke-width=".6" opacity=".3"/>
+                <ellipse cx="36" cy="36" rx="22" ry="15" stroke="#5e7a94" stroke-width=".5" opacity=".2"/>
                 <!-- Meridian -->
-                <line x1="36" y1="14" x2="36" y2="58" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
-                <line x1="14" y1="36" x2="58" y2="36" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
+                <line x1="36" y1="14" x2="36" y2="58" stroke="#5e7a94" stroke-width=".6" opacity=".3"/>
+                <line x1="14" y1="36" x2="58" y2="36" stroke="#5e7a94" stroke-width=".6" opacity=".3"/>
                 <!-- Installation pings -->
-                <circle cx="28" cy="30" r="2.2" fill="#7c6af7" opacity=".9">
+                <circle cx="28" cy="30" r="2.2" fill="#5e7a94" opacity=".9">
                   <animate attributeName="opacity" values="1;0.4;1" dur="2.4s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="28" cy="30" r="5" stroke="#7c6af7" stroke-width=".7" fill="none" opacity="0">
+                <circle cx="28" cy="30" r="5" stroke="#5e7a94" stroke-width=".7" fill="none" opacity="0">
                   <animate attributeName="opacity" values="0.7;0" dur="2.4s" repeatCount="indefinite"/>
                   <animate attributeName="r" values="2.5;9" dur="2.4s" repeatCount="indefinite"/>
                 </circle>
-                <circle cx="44" cy="40" r="2" fill="#a498f9" opacity=".8"/>
-                <circle cx="32" cy="44" r="1.8" fill="#a498f9" opacity=".6"/>
-                <circle cx="48" cy="28" r="1.8" fill="#7c6af7" opacity=".7"/>
+                <circle cx="44" cy="40" r="2" fill="#8aaac4" opacity=".8"/>
+                <circle cx="32" cy="44" r="1.8" fill="#8aaac4" opacity=".6"/>
+                <circle cx="48" cy="28" r="1.8" fill="#5e7a94" opacity=".7"/>
                 <!-- SMR bolt accent top-right -->
-                <path d="M60 6 L55 17 L60 17 L55 28 L63 14 L58 14 Z" fill="#7c6af7" opacity=".65"/>
+                <path d="M60 6 L55 17 L60 17 L55 28 L63 14 L58 14 Z" fill="#5e7a94" opacity=".65"/>
               </svg>
             </div>
             <div class="card-head-text">
-              <div class="card-badge" style="color:#7c6af7;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-02C // RECON AI</div>
+              <div class="card-badge" style="color:#5e7a94;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-02C // RECON AI</div>
               <div class="card-title">Energy Reconnaissance AI</div>
             </div>
           </div>
@@ -2322,16 +2322,16 @@ html::after {
 
           <!-- Meta pills -->
           <div class="card-meta">
-            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">SMR</span>
-            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">Microgrids</span>
-            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">BESS</span>
-            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">Globe Interface</span>
-            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">70 Installations</span>
+            <span class="meta-pill" style="border-color:rgba(94,122,148,.25);color:rgba(138,170,196,.85);background:rgba(94,122,148,.07)">SMR</span>
+            <span class="meta-pill" style="border-color:rgba(94,122,148,.25);color:rgba(138,170,196,.85);background:rgba(94,122,148,.07)">Microgrids</span>
+            <span class="meta-pill" style="border-color:rgba(94,122,148,.25);color:rgba(138,170,196,.85);background:rgba(94,122,148,.07)">BESS</span>
+            <span class="meta-pill" style="border-color:rgba(94,122,148,.25);color:rgba(138,170,196,.85);background:rgba(94,122,148,.07)">Globe Interface</span>
+            <span class="meta-pill" style="border-color:rgba(94,122,148,.25);color:rgba(138,170,196,.85);background:rgba(94,122,148,.07)">70 Installations</span>
           </div>
 
           <!-- Launch button -->
           <button class="launch-btn" id="erecon-launch-btn"
-            style="background:rgba(124,106,247,.15);color:#a498f9;border:1px solid rgba(124,106,247,.40);border-radius:10px;font-size:10px;letter-spacing:1.8px;padding:13px 0;">
+            style="background:rgba(94,122,148,.15);color:#8aaac4;border:1px solid rgba(94,122,148,.40);border-radius:10px;font-size:10px;letter-spacing:1.8px;padding:13px 0;">
             &#9654; &nbsp;LAUNCH e-RECON AI
           </button>
         </div>
@@ -2430,10 +2430,10 @@ html::after {
             <div id="card-recon-sites">
               <div class="saved-head">
                 <div>
-                  <div class="card-badge" style="color:#a498f9;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">e-RECON // SITE LIBRARY</div>
+                  <div class="card-badge" style="color:#8aaac4;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">e-RECON // SITE LIBRARY</div>
                   <div class="saved-title">Saved Recon Sites</div>
                 </div>
-                <div class="saved-badge" id="recon-count-badge" style="color:#a498f9;">0 SAVED</div>
+                <div class="saved-badge" id="recon-count-badge" style="color:#8aaac4;">0 SAVED</div>
               </div>
               <div id="recon-site-list">
                 <div class="ingest-empty-row" id="recon-empty-msg" style="color:var(--txd);padding:18px 0 10px;">No recon sites saved yet</div>
@@ -5847,9 +5847,9 @@ window.parent.postMessage({ type: 'BUILDER_READY' }, '*');
 <link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Orbitron:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
 <style>
 :root {
-  --bg:    #09080f; --surf:  #0f0d1a; --panel: #13111f;
-  --card:  #19162a; --border:#2a2545;
-  --pur:   #7c6af7; --pur-d: rgba(124,106,247,.12); --pur-l: rgba(124,106,247,.35); --pur-h: #a498f9;
+  --bg:    #080e15; --surf:  #0d1520; --panel: #111828;
+  --card:  #16202e; --border:#1a2a3a;
+  --pur:   #5e7a94; --pur-d: rgba(94,122,148,.12); --pur-l: rgba(94,122,148,.35); --pur-h: #8aaac4;
   --amber: #d4a05a; --sage:  #4db88a; --red:   #e05a5a;
   --tx:    #d4ceff; --txd:   #8a80c0; --txh:   #f0eeff;
   --mono:  &apos;Share Tech Mono&apos;,monospace; --dsp: &apos;Orbitron&apos;,monospace;
@@ -5864,9 +5864,9 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .tb-sep{width:1px;height:16px;background:var(--border);}
 .tb-scope{font-size:9px;letter-spacing:1px;color:var(--txd);}
 .tb-stat{margin-left:auto;font-family:var(--dsp);font-size:9px;letter-spacing:1.5px;color:var(--pur-h);}
-#tb-save-btn{display:flex;align-items:center;gap:4px;font-family:var(--dsp);font-size:8px;letter-spacing:1.2px;background:rgba(124,106,247,.06);color:rgba(164,152,249,.35);border:1px solid rgba(124,106,247,.18);border-radius:6px;padding:4px 9px;cursor:default;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;flex-shrink:0;transition:background .18s,color .18s,border-color .18s;}
-#tb-save-btn.ready{background:rgba(124,106,247,.18);color:#a498f9;border-color:rgba(124,106,247,.55);cursor:pointer;}
-#tb-save-btn.ready:active{background:rgba(124,106,247,.3);}
+#tb-save-btn{display:flex;align-items:center;gap:4px;font-family:var(--dsp);font-size:8px;letter-spacing:1.2px;background:rgba(94,122,148,.06);color:rgba(164,152,249,.35);border:1px solid rgba(94,122,148,.18);border-radius:6px;padding:4px 9px;cursor:default;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;flex-shrink:0;transition:background .18s,color .18s,border-color .18s;}
+#tb-save-btn.ready{background:rgba(94,122,148,.18);color:#8aaac4;border-color:rgba(94,122,148,.55);cursor:pointer;}
+#tb-save-btn.ready:active{background:rgba(94,122,148,.3);}
 #tb-save-btn.saved{background:rgba(77,184,138,.2);color:#4db88a;border-color:rgba(77,184,138,.5);}
 
 
@@ -5880,27 +5880,24 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .panel{display:none;} .panel.active{display:block;}
 
 /* MAP */
-#map-wrap-er{background:#09080f;border:1px solid var(--border);border-radius:12px;margin-bottom:6px;position:relative;overflow:hidden;height:58vh;min-height:220px;max-height:520px;}
+#map-wrap-er{background:#080e15;border:1px solid var(--border);border-radius:12px;margin-bottom:6px;position:relative;overflow:hidden;height:58vh;min-height:220px;max-height:520px;}
 #map-wrap-er::before{content:&apos;&apos;;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pur),transparent);opacity:.6;z-index:2;pointer-events:none;}
-#recon-map{position:absolute;inset:0;z-index:1;overflow:hidden;background:#09080f;}
-#recon-map-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
-#recon-map-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);pointer-events:none;}
-#recon-map-loading.hidden{display:none;}
-/* install dot overlay (SVG) */
-#recon-dot-svg{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible;}
-.er-static-dot{cursor:pointer;pointer-events:all;}
-.er-static-dot circle{transition:r .15s,fill .15s;}
-.er-static-dot:active circle{fill:#ffffff !important;}
-#map-ctrl-er{position:absolute;bottom:10px;left:10px;display:flex;flex-direction:column;gap:3px;z-index:1000;}
-.er-ctrl-btn{width:28px;height:28px;background:rgba(9,8,15,.88);border:1px solid var(--border);border-radius:4px;color:var(--txd);font-family:var(--mono);font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s;user-select:none;}
+#map-svg-er{width:100%;height:100%;display:block;cursor:grab;}
+#map-svg-er:active{cursor:grabbing;}
+.er-ocean{fill:#080e15;} .er-land{fill:#1a2230;stroke:#283850;stroke-width:0.5;}
+.er-gl{stroke:#1a2a3a;stroke-width:0.4;}
+.er-idot{transition:fill .4s;}
+.er-pring{fill:none;stroke-width:0.4;animation:er-prng 2.2s ease-out infinite;}
+@keyframes er-prng{0%{r:1;opacity:.7}100%{r:5;opacity:0}}
+#map-ctrl-er{position:absolute;bottom:10px;left:10px;display:flex;flex-direction:column;gap:3px;z-index:3;}
+.er-ctrl-btn{width:28px;height:28px;background:rgba(8,14,21,.88);border:1px solid var(--border);border-radius:4px;color:var(--txd);font-family:var(--mono);font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s;user-select:none;}
 .er-ctrl-btn:active{color:var(--pur-h);border-color:var(--pur-l);}
 .er-ctrl-btn.reset{font-size:9px;}
-#er-zoom-badge{position:absolute;bottom:10px;left:48px;z-index:1000;background:rgba(9,8,15,.82);border:1px solid var(--border);border-radius:3px;font-family:var(--mono);font-size:8px;color:var(--txd);padding:3px 6px;pointer-events:none;}
+#er-zoom-badge{position:absolute;bottom:10px;left:48px;z-index:3;background:rgba(8,14,21,.82);border:1px solid var(--border);border-radius:3px;font-family:var(--mono);font-size:8px;color:var(--txd);padding:3px 6px;pointer-events:none;}
 /* TELEMETRY HUD */
 #map-telemetry{
   position:absolute;bottom:10px;right:10px;z-index:4;
-  background:rgba(9,8,15,.86);border:1px solid rgba(124,106,247,.35);
+  background:rgba(8,14,21,.86);border:1px solid rgba(94,122,148,.35);
   border-radius:8px;padding:8px 10px;min-width:138px;
   pointer-events:none;
 }
@@ -5931,10 +5928,10 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .inst-row.selected{border-left:3px solid var(--pur);padding-left:9px;}
 .inst-save-btn{
   flex-shrink:0;margin-left:6px;
-  background:rgba(124,106,247,.12);
-  border:1px solid rgba(124,106,247,.4);
+  background:rgba(94,122,148,.12);
+  border:1px solid rgba(94,122,148,.4);
   border-radius:6px;
-  color:#a498f9;font-size:13px;
+  color:#8aaac4;font-size:13px;
   width:28px;height:28px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;touch-action:manipulation;
@@ -5942,7 +5939,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
   transition:background .15s,border-color .15s;
   line-height:1;padding:0;
 }
-.inst-save-btn:active{background:rgba(124,106,247,.28);border-color:rgba(124,106,247,.7);}
+.inst-save-btn:active{background:rgba(94,122,148,.28);border-color:rgba(94,122,148,.7);}
 .inst-save-btn.saved{background:rgba(77,184,138,.18);border-color:rgba(77,184,138,.5);color:#4db88a;}
 .inst-rank{font-family:var(--dsp);font-size:10px;color:var(--pur-h);width:22px;flex-shrink:0;text-align:center;}
 .inst-info{flex:1;min-width:0;}
@@ -5971,12 +5968,12 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .asset-qty{font-family:var(--dsp);font-size:22px;font-weight:700;color:var(--pur-h);line-height:1;margin:6px 0 0;transition:color .15s;}
 .asset-card.selected .asset-qty{color:#fff;}
 .asset-qty.zero{color:rgba(164,152,249,.25);}
-.asset-dec,.asset-inc{position:absolute;bottom:0;width:40%;height:32px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;line-height:1;color:rgba(164,152,249,.55);background:transparent;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;border-top:1px solid rgba(124,106,247,.15);}
-.asset-dec{left:0;border-radius:0 0 0 8px;border-right:1px solid rgba(124,106,247,.15);}
+.asset-dec,.asset-inc{position:absolute;bottom:0;width:40%;height:32px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;line-height:1;color:rgba(164,152,249,.55);background:transparent;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;border-top:1px solid rgba(94,122,148,.15);}
+.asset-dec{left:0;border-radius:0 0 0 8px;border-right:1px solid rgba(94,122,148,.15);}
 .asset-inc{right:0;border-radius:0 0 8px 0;}
-.asset-dec:active,.asset-inc:active{color:#a498f9;background:rgba(124,106,247,.15);}
-.asset-card.selected .asset-dec,.asset-card.selected .asset-inc{color:rgba(164,152,249,.75);border-top-color:rgba(124,106,247,.3);}
-.asset-card.selected .asset-dec{border-right-color:rgba(124,106,247,.3);}
+.asset-dec:active,.asset-inc:active{color:#8aaac4;background:rgba(94,122,148,.15);}
+.asset-card.selected .asset-dec,.asset-card.selected .asset-inc{color:rgba(164,152,249,.75);border-top-color:rgba(94,122,148,.3);}
+.asset-card.selected .asset-dec{border-right-color:rgba(94,122,148,.3);}
 
 .asset-card.selected{border-color:var(--pur);background:var(--pur-d);}
 .asset-icon{font-size:20px;display:block;margin-bottom:3px;}
@@ -5989,7 +5986,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 #ap-track-wrap{
   overflow:hidden;
   border-radius:8px;
-  border:1px solid rgba(124,106,247,.2);
+  border:1px solid rgba(94,122,148,.2);
 }
 #ap-track{
   display:flex;
@@ -6015,7 +6012,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 }
 .ap-dot{
   width:5px;height:5px;border-radius:50%;
-  background:rgba(124,106,247,.3);
+  background:rgba(94,122,148,.3);
   transition:background .2s,transform .2s;
   flex-shrink:0;
 }
@@ -6047,7 +6044,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .impact-val{font-family:var(--dsp);font-size:11px;color:var(--pur-h);}
 .impact-val.green{color:var(--sage);} .impact-val.amber{color:var(--amber);}
 #run-sim-btn{width:100%;font-family:var(--dsp);font-size:10px;letter-spacing:2px;padding:13px;border-radius:10px;border:1px solid var(--pur-l);background:var(--pur-d);color:var(--pur-h);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .18s;}
-#run-sim-btn:active{background:rgba(124,106,247,.25);}
+#run-sim-btn:active{background:rgba(94,122,148,.25);}
 
 /* ANALYZE */
 .analyze-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;position:relative;overflow:hidden;}
@@ -6080,7 +6077,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
 .action-body{flex:1;}
 .action-title{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:3px;}
 .action-desc{font-size:9px;color:var(--txd);line-height:1.4;}
-.action-tag{display:inline-block;margin-top:5px;font-family:var(--dsp);font-size:8px;padding:2px 7px;border-radius:4px;border:1px solid rgba(124,106,247,.3);color:var(--pur-h);background:var(--pur-d);letter-spacing:.8px;}
+.action-tag{display:inline-block;margin-top:5px;font-family:var(--dsp);font-size:8px;padding:2px 7px;border-radius:4px;border:1px solid rgba(94,122,148,.3);color:var(--pur-h);background:var(--pur-d);letter-spacing:.8px;}
 </style>
 </head>
 <body>
@@ -6112,12 +6109,7 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
           <button class=&quot;er-ctrl-btn reset&quot; onclick=&quot;erZoomReset()&quot;>&amp;#8855;</button>
         </div>
         <div id=&quot;er-zoom-badge&quot;>1&amp;#215;</div>
-        <div id=&quot;recon-map&quot;>
-          <img id=&quot;recon-map-img&quot; alt=&quot;satellite map&quot; src=&quot;&quot;/>
-          <svg id=&quot;recon-dot-svg&quot; viewBox=&quot;0 0 100 100&quot; preserveAspectRatio=&quot;none&quot;></svg>
-          <div id=&quot;recon-map-loading&quot;>⬡ &nbsp;LOADING SATELLITE IMAGERY</div>
-        </div>
-        <svg id=&quot;map-svg-er&quot; style=&quot;display:none&quot; viewBox=&quot;0 0 720 360&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+        <svg id=&quot;map-svg-er&quot; viewBox=&quot;0 0 720 360&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
           <rect width=&quot;720&quot; height=&quot;360&quot; class=&quot;er-ocean&quot;/>
           <line x1=&quot;60&quot;  y1=&quot;0&quot; x2=&quot;60&quot;  y2=&quot;360&quot; class=&quot;er-gl&quot;/>
           <line x1=&quot;120&quot; y1=&quot;0&quot; x2=&quot;120&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
@@ -6169,18 +6161,18 @@ html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mon
           <circle class=&quot;er-idot&quot; cx=&quot;164.4&quot; cy=&quot;117.7&quot; r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
           <circle class=&quot;er-idot&quot; cx=&quot;186.9&quot; cy=&quot;119&quot;   r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
           <circle class=&quot;er-idot&quot; cx=&quot;185&quot;   cy=&quot;106.7&quot; r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
-          <circle class=&quot;er-idot&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot;  r=&quot;2&quot;   fill=&quot;#7c6af7&quot;/>
-          <circle class=&quot;er-pring&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot; r=&quot;1&quot; stroke=&quot;#7c6af7&quot; style=&quot;animation-delay:1.8s&quot;/>
-          <circle class=&quot;er-idot&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;2&quot;   fill=&quot;#7c6af7&quot;/>
-          <circle class=&quot;er-pring&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;1&quot; stroke=&quot;#7c6af7&quot; style=&quot;animation-delay:.3s&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot;  r=&quot;2&quot;   fill=&quot;#5e7a94&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot; r=&quot;1&quot; stroke=&quot;#5e7a94&quot; style=&quot;animation-delay:1.8s&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;2&quot;   fill=&quot;#5e7a94&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;1&quot; stroke=&quot;#5e7a94&quot; style=&quot;animation-delay:.3s&quot;/>
           <!-- Legend -->
-          <rect x=&quot;4&quot; y=&quot;330&quot; width=&quot;200&quot; height=&quot;26&quot; rx=&quot;2&quot; fill=&quot;rgba(9,8,15,.75)&quot; stroke=&quot;#2a2545&quot; stroke-width=&quot;.5&quot;/>
+          <rect x=&quot;4&quot; y=&quot;330&quot; width=&quot;200&quot; height=&quot;26&quot; rx=&quot;2&quot; fill=&quot;rgba(8,14,21,.75)&quot; stroke=&quot;#1a2a3a&quot; stroke-width=&quot;.5&quot;/>
           <circle cx=&quot;14&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#4db88a&quot;/>
           <text x=&quot;20&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#4db88a&quot;>HIGH</text>
           <circle cx=&quot;56&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#d4a05a&quot;/>
           <text x=&quot;62&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#d4a05a&quot;>MID</text>
-          <circle cx=&quot;94&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#7c6af7&quot;/>
-          <text x=&quot;100&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#7c6af7&quot;>INTL</text>
+          <circle cx=&quot;94&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#5e7a94&quot;/>
+          <text x=&quot;100&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#5e7a94&quot;>INTL</text>
           <circle cx=&quot;14&quot; cy=&quot;352&quot; r=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#4db88a&quot; stroke-width=&quot;.8&quot;/>
           <text x=&quot;20&quot; y=&quot;356&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#8a80c0&quot;>PULSE = ACTIVE</text>
         </svg>
@@ -6415,17 +6407,12 @@ function adjQty(type, delta){
   }
 }
 
-var _mapInited=false;
 function switchTab(el) {
   document.querySelectorAll(&apos;.tab&apos;).forEach(function(t){t.classList.remove(&apos;active&apos;);});
   el.classList.add(&apos;active&apos;);
   var tab = el.dataset.tab;
   document.querySelectorAll(&apos;.panel&apos;).forEach(function(p){p.classList.remove(&apos;active&apos;);});
   document.getElementById(&apos;panel-&apos;+tab).classList.add(&apos;active&apos;);
-  if(tab===&apos;globe&apos;){
-    if(!_mapInited){_mapInited=true;initMapEr();}
-    else{ setTimeout(function(){ _smLoad(_smLat,_smLon,_smZoom); },50); }
-  }
 }
 
 function sortList(key) {
@@ -6442,141 +6429,37 @@ function selectScenarioType(type, el) {
   updateImpact();
 }
 
-// ══════════════════════════════════════════════════════
-// MAP ENGINE — TomTom Static Image API (no library)
-// Single <img> request; pan/zoom updates the URL.
-// ══════════════════════════════════════════════════════
-var TT_KEY = &apos;YOUR_TOMTOM_API_KEY&apos;;
-
-// Map state
-var _smLat  = 20,   _smLon = 0,   _smZoom = 2;
-var _smW    = 720,  _smH   = 400;
-
-// Region fly targets [lat, lon, zoom]
-var ER_REGIONS = {
-  CONUS:   [38.5,  -98.0, 4],
-  PACIFIC: [20.0,  165.0, 3],
-  EUROPE:  [50.0,   10.0, 4],
-  OTHER:   [15.0,   70.0, 3]
-};
-
-function scoreColor(s){ return s>=75?&apos;#4db88a&apos;:s>=50?&apos;#d4a05a&apos;:&apos;#e05a5a&apos;; }
-function scoreCls(s){   return s>=75?&apos;high&apos;  :s>=50?&apos;mid&apos;  :&apos;low&apos;;    }
-
-// Lon/lat → pixel x/y within the static image
-// TomTom static image uses Web Mercator. For zoom Z, the world is 256*2^Z px.
-function _llToImgPx(lat, lon) {
-  var worldPx = 256 * Math.pow(2, _smZoom);
-  var sinLat  = Math.sin(lat * Math.PI / 180);
-  var wx = (lon + 180) / 360 * worldPx;
-  var wy = (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * worldPx;
-  var cx = ((_smLon + 180) / 360) * worldPx;
-  var sinC = Math.sin(_smLat * Math.PI / 180);
-  var cy = (0.5 - Math.log((1 + sinC) / (1 - sinC)) / (4 * Math.PI)) * worldPx;
-  return {
-    x: (wx - cx) + _smW / 2,
-    y: (wy - cy) + _smH / 2
-  };
+// MAP ENGINE
+var ER_VB_WORLD={x:0,y:0,w:720,h:360}, ER_VB_CONUS={x:60,y:80,w:200,h:100},
+    ER_VB_PAC={x:0,y:60,w:200,h:160}, ER_VB_EUR={x:290,y:50,w:180,h:100},
+    ER_VB_OTHER={x:340,y:130,w:200,h:130}, ER_MIN_W=30, ER_MAX_W=780;
+var erVB={x:0,y:0,w:720,h:360}, erRafId=null;
+function erApplyVB(x,y,w,h){
+  w=Math.max(ER_MIN_W,Math.min(ER_MAX_W,w)); h=w/2;
+  x=Math.max(-20,Math.min(740-w,x)); y=Math.max(-10,Math.min(370-h,y));
+  erVB={x:x,y:y,w:w,h:h};
+  var svg=document.getElementById(&apos;map-svg-er&apos;);
+  if(svg)svg.setAttribute(&apos;viewBox&apos;,x.toFixed(1)+&apos; &apos;+y.toFixed(1)+&apos; &apos;+w.toFixed(1)+&apos; &apos;+h.toFixed(1));
+  var b=document.getElementById(&apos;er-zoom-badge&apos;);
+  if(b){var lv=ER_VB_WORLD.w/w; b.textContent=(lv>=10?lv.toFixed(0):lv.toFixed(1))+&apos;x&apos;;}
 }
-
-function _smUrl() {
-  var w = _smW, h = _smH;
-  // TomTom Static Map API
-  var url = &apos;https://api.tomtom.com/map/1/staticimage&apos;
-    + &apos;?key=&apos;       + TT_KEY
-    + &apos;&zoom=&apos;      + _smZoom
-    + &apos;&center=&apos;    + _smLon.toFixed(4) + &apos;,&apos; + _smLat.toFixed(4)
-    + &apos;&width=&apos;     + w
-    + &apos;&height=&apos;    + h
-    + &apos;&style=satellite&apos;
-    + &apos;&layer=hybrid&apos;;
-  return url;
+function erLerp(from,to,dur,done){
+  var start=performance.now(); if(erRafId)cancelAnimationFrame(erRafId);
+  function step(now){
+    var t=Math.min((now-start)/dur,1),e=t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    erApplyVB(from.x+(to.x-from.x)*e,from.y+(to.y-from.y)*e,from.w+(to.w-from.w)*e,from.h+(to.h-from.h)*e);
+    if(t<1)erRafId=requestAnimationFrame(step);else{erRafId=null;if(done)done();}
+  }
+  erRafId=requestAnimationFrame(step);
 }
-
-function _smRenderDots() {
-  var svg = document.getElementById(&apos;recon-dot-svg&apos;);
-  if (!svg) return;
-  svg.innerHTML = &apos;&apos;;
-  // viewBox matches image pixels
-  svg.setAttribute(&apos;viewBox&apos;, &apos;0 0 &apos; + _smW + &apos; &apos; + _smH);
-  INSTALLATIONS.forEach(function(inst, i) {
-    var px = _llToImgPx(inst.lat, inst.lon);
-    // Skip if off-screen
-    if (px.x < -20 || px.x > _smW + 20 || px.y < -20 || px.y > _smH + 20) return;
-    var c   = scoreColor(inst.score);
-    var cls = scoreCls(inst.score);
-    var g = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;g&apos;);
-    g.setAttribute(&apos;class&apos;, &apos;er-static-dot&apos;);
-    g.setAttribute(&apos;data-i&apos;, i);
-    // Outer ring pulse
-    var ring = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;circle&apos;);
-    ring.setAttribute(&apos;cx&apos;, px.x); ring.setAttribute(&apos;cy&apos;, px.y);
-    ring.setAttribute(&apos;r&apos;, 10);
-    ring.setAttribute(&apos;fill&apos;, &apos;none&apos;);
-    ring.setAttribute(&apos;stroke&apos;, c);
-    ring.setAttribute(&apos;stroke-width&apos;, &apos;0.8&apos;);
-    ring.setAttribute(&apos;opacity&apos;, &apos;0.4&apos;);
-    // Core dot
-    var dot = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;circle&apos;);
-    dot.setAttribute(&apos;cx&apos;, px.x); dot.setAttribute(&apos;cy&apos;, px.y);
-    dot.setAttribute(&apos;r&apos;, 6);
-    dot.setAttribute(&apos;fill&apos;, c);
-    dot.setAttribute(&apos;fill-opacity&apos;, &apos;0.88&apos;);
-    dot.setAttribute(&apos;stroke&apos;, &apos;rgba(9,8,15,.5)&apos;);
-    dot.setAttribute(&apos;stroke-width&apos;, &apos;1&apos;);
-    g.appendChild(ring);
-    g.appendChild(dot);
-    // Tap → selectInst
-    (function(idx){ g.addEventListener(&apos;click&apos;, function(){ selectInst(idx); }); })(i);
-    svg.appendChild(g);
-  });
+function erZoom(factor){
+  if(erRafId){cancelAnimationFrame(erRafId);erRafId=null;}
+  var x=erVB.x,y=erVB.y,w=erVB.w,h=erVB.h,scx=x+w/2,scy=y+h/2;
+  var nw=Math.max(ER_MIN_W,Math.min(ER_MAX_W,w*factor)),nh=nw/2;
+  erLerp(Object.assign({},erVB),{x:scx-(scx-x)*(nw/w),y:scy-(scy-y)*(nh/h),w:nw,h:nh},320);
 }
-
-function _smLoad(lat, lon, zoom) {
-  _smLat = lat; _smLon = lon; _smZoom = zoom;
-  var img     = document.getElementById(&apos;recon-map-img&apos;);
-  var loading = document.getElementById(&apos;recon-map-loading&apos;);
-  if (!img) return;
-  // Measure actual container size
-  var wrap = document.getElementById(&apos;map-wrap-er&apos;);
-  if (wrap) { _smW = wrap.offsetWidth || 720; _smH = wrap.offsetHeight || 400; }
-  if (loading) loading.classList.remove(&apos;hidden&apos;);
-  img.style.opacity = &apos;0.3&apos;;
-  var url = _smUrl();
-  var tmpImg = new Image();
-  tmpImg.onload = function() {
-    img.src = url;
-    img.style.opacity = &apos;1&apos;;
-    if (loading) loading.classList.add(&apos;hidden&apos;);
-    _smRenderDots();
-    _erZBadge();
-  };
-  tmpImg.onerror = function() {
-    if (loading) {
-      loading.classList.remove(&apos;hidden&apos;);
-      loading.textContent = &apos;⚠ MAP UNAVAILABLE — CHECK API KEY&apos;;
-    }
-    img.style.opacity = &apos;1&apos;;
-  };
-  tmpImg.src = url;
-}
-
-function _erZBadge() {
-  var b = document.getElementById(&apos;er-zoom-badge&apos;);
-  if (b) b.textContent = _smZoom + &apos;×&apos;;
-}
-
-function initMapEr() {
-  var wrap = document.getElementById(&apos;map-wrap-er&apos;);
-  if (wrap) { _smW = wrap.offsetWidth || 720; _smH = wrap.offsetHeight || 400; }
-  _smLoad(_smLat, _smLon, _smZoom);
-}
-
-function erZoom(f) {
-  var newZ = f < 1 ? Math.min(_smZoom + 1, 17) : Math.max(_smZoom - 1, 1);
-  _smLoad(_smLat, _smLon, newZ);
-}
-function erZoomReset() { _smLoad(20, 0, 2); }
+function erZoomReset(){erLerp(Object.assign({},erVB),ER_VB_WORLD,600);}
+var ER_REGIONS={CONUS:ER_VB_CONUS,PACIFIC:ER_VB_PAC,EUROPE:ER_VB_EUR,OTHER:ER_VB_OTHER};
 var REGION_TELE = {
   GLOBAL:  {label:&apos;&amp;#11041; GLOBAL&apos;,  count:&apos;70&apos;, score:&apos;68&apos;, fac:&apos;249&apos;, high:&apos;2&apos;,  asset:&apos;NAVY&apos;},
   CONUS:   {label:&apos;&amp;#11041; CONUS&apos;,   count:&apos;42&apos;, score:&apos;72&apos;, fac:&apos;186&apos;, high:&apos;2&apos;,  asset:&apos;NAVY&apos;},
@@ -6597,18 +6480,60 @@ function selectRegion(el,region){
   var already=el.classList.contains(&apos;sel&apos;);
   document.querySelectorAll(&apos;.region-btn&apos;).forEach(function(b){b.classList.remove(&apos;sel&apos;);});
   if(already){
-    _smLoad(20,0,2);
+    erLerp(Object.assign({},erVB),ER_VB_WORLD,700);
     updateTelemetry(&apos;GLOBAL&apos;);
   } else {
     el.classList.add(&apos;sel&apos;);
-    var t=ER_REGIONS[region];
-    if(t)_smLoad(t[0],t[1],t[2]);
+    var t=ER_REGIONS[region]; if(t)erLerp(Object.assign({},erVB),t,700);
     updateTelemetry(region);
   }
 }
-// erOnWheel removed — Leaflet handles scroll zoom
-// SVG pan/touch engine removed — Leaflet native
-// initMapEr() defined in MAP ENGINE block above
+function erOnWheel(e){
+  e.preventDefault(); if(erRafId){cancelAnimationFrame(erRafId);erRafId=null;}
+  var svg=document.getElementById(&apos;map-svg-er&apos;),rect=svg.getBoundingClientRect();
+  var rx=(e.clientX-rect.left)/rect.width,ry=(e.clientY-rect.top)/rect.height;
+  var scx=erVB.x+erVB.w*rx,scy=erVB.y+erVB.h*ry;
+  var delta=e.deltaMode===1?e.deltaY*30:e.deltaY;
+  var factor=Math.max(0.85,Math.min(1.18,1+delta*0.001));
+  var nw=Math.max(ER_MIN_W,Math.min(ER_MAX_W,erVB.w*factor)),nh=nw/2;
+  erApplyVB(scx-(scx-erVB.x)*(nw/erVB.w),scy-(scy-erVB.y)*(nh/erVB.h),nw,nh);
+}
+var erPan=null;
+function erOnPointerDown(e){
+  if(e.target.classList.contains(&apos;er-ctrl-btn&apos;))return;
+  e.preventDefault();
+  var rect=document.getElementById(&apos;map-svg-er&apos;).getBoundingClientRect();
+  erPan={sx:e.clientX,sy:e.clientY,vb:Object.assign({},erVB),scaleX:erVB.w/rect.width,scaleY:erVB.h/rect.height};
+  if(erRafId){cancelAnimationFrame(erRafId);erRafId=null;}
+}
+function erOnPointerMove(e){if(!erPan)return;erApplyVB(erPan.vb.x-(e.clientX-erPan.sx)*erPan.scaleX,erPan.vb.y-(e.clientY-erPan.sy)*erPan.scaleY,erPan.vb.w,erPan.vb.h);}
+function erOnPointerUp(){erPan=null;}
+var erPinch=null;
+function erD(t1,t2){return Math.hypot(t1.clientX-t2.clientX,t1.clientY-t2.clientY);}
+function erM(t1,t2){return{x:(t1.clientX+t2.clientX)/2,y:(t1.clientY+t2.clientY)/2};}
+function erOnTouchStart(e){if(e.touches.length===2){e.preventDefault();erPinch={dist:erD(e.touches[0],e.touches[1]),vb:Object.assign({},erVB)};if(erRafId){cancelAnimationFrame(erRafId);erRafId=null;}}}
+function erOnTouchMove(e){
+  if(e.touches.length===2&amp;&amp;erPinch){e.preventDefault();
+    var dist=erD(e.touches[0],e.touches[1]),factor=erPinch.dist/dist,mid=erM(e.touches[0],e.touches[1]);
+    var rect=document.getElementById(&apos;map-svg-er&apos;).getBoundingClientRect();
+    var scx=erPinch.vb.x+erPinch.vb.w*((mid.x-rect.left)/rect.width),scy=erPinch.vb.y+erPinch.vb.h*((mid.y-rect.top)/rect.height);
+    var nw=Math.max(ER_MIN_W,Math.min(ER_MAX_W,erPinch.vb.w*factor)),nh=nw/2;
+    erApplyVB(scx-(scx-erPinch.vb.x)*(nw/erPinch.vb.w),scy-(scy-erPinch.vb.y)*(nh/erPinch.vb.h),nw,nh);}
+}
+function erOnTouchEnd(){erPinch=null;}
+function initMapEr(){
+  var svg=document.getElementById(&apos;map-svg-er&apos;),wrap=document.getElementById(&apos;map-wrap-er&apos;);
+  if(!svg||!wrap)return;
+  erApplyVB(0,0,720,360);
+  svg.addEventListener(&apos;wheel&apos;,erOnWheel,{passive:false});
+  wrap.addEventListener(&apos;pointerdown&apos;,erOnPointerDown);
+  window.addEventListener(&apos;pointermove&apos;,erOnPointerMove);
+  window.addEventListener(&apos;pointerup&apos;,erOnPointerUp);
+  svg.addEventListener(&apos;touchstart&apos;,erOnTouchStart,{passive:false});
+  svg.addEventListener(&apos;touchmove&apos;,erOnTouchMove,{passive:false});
+  svg.addEventListener(&apos;touchend&apos;,erOnTouchEnd);
+  wrap.style.cursor=&apos;grab&apos;;
+}
 
 function renderInstList(){
   var sorted=INSTALLATIONS.slice().sort(function(a,b){
@@ -6637,11 +6562,31 @@ function selectInst(i){
   var el=document.getElementById(&apos;inst-&apos;+i); if(el)el.classList.add(&apos;selected&apos;);
   var inst=INSTALLATIONS[i];
   if(!inst)return;
-  // Scroll #main to top so map is visible
+  // Scroll #main to top FIRST so map is visible before animation runs
   var mainEl=document.getElementById(&apos;main&apos;);
   if(mainEl)mainEl.scrollTop=0;
-  // Fly static map to installation at zoom 8
-  _smLoad(inst.lat, inst.lon, 8);
+  // Zoom map — delay 1 frame so scroll settles before RAF kicks off
+  var mx=(inst.lon+180)*2, my=(90-inst.lat)*2;
+  var zw=52, zh=26;
+  var target={x:mx-zw/2,y:my-zh/2,w:zw,h:zh};
+  requestAnimationFrame(function(){
+    erLerp(Object.assign({},erVB),target,680);
+  });
+  // Flash the nearest dot white × 2 after zoom lands
+  var dots=document.querySelectorAll(&apos;.er-idot&apos;);
+  var closestDot=null,minDist=Infinity;
+  dots.forEach(function(d){
+    var dx=parseFloat(d.getAttribute(&apos;cx&apos;))-mx,dy=parseFloat(d.getAttribute(&apos;cy&apos;))-my;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<minDist){minDist=dist;closestDot=d;}
+  });
+  if(closestDot){
+    var origFill=closestDot.getAttribute(&apos;fill&apos;);
+    setTimeout(function(){closestDot.setAttribute(&apos;fill&apos;,&apos;#ffffff&apos;);},720);
+    setTimeout(function(){closestDot.setAttribute(&apos;fill&apos;,origFill);},900);
+    setTimeout(function(){closestDot.setAttribute(&apos;fill&apos;,&apos;#ffffff&apos;);},1060);
+    setTimeout(function(){closestDot.setAttribute(&apos;fill&apos;,origFill);},1220);
+  }
   // Track selected inst + show topbar save button
   _selectedInstIdx=i;
   var tbBtn=document.getElementById(&apos;tb-save-btn&apos;);
@@ -6855,17 +6800,7 @@ function initAssetButtons(){
   });
 }
 
-renderInstList(); renderSitePicker(); renderBarChart(); renderActions(); updateTelemetry(&apos;GLOBAL&apos;); initAssetButtons();
-// Map init deferred — fires after overlay is visible and container has height
-setTimeout(function(){ if(!_mapInited){_mapInited=true;initMapEr();} },300);
-// ERECON_OPEN: re-init static map with correct container dimensions
-window.addEventListener(&apos;message&apos;,function(ev){
-  if(!ev.data)return;
-  if(ev.data.type===&apos;ERECON_OPEN&apos;){
-    if(!_mapInited){_mapInited=true;initMapEr();}
-    else{ setTimeout(function(){ _smLoad(_smLat,_smLon,_smZoom); },80); }
-  }
-});
+renderInstList(); renderSitePicker(); renderBarChart(); renderActions(); initMapEr(); updateTelemetry(&apos;GLOBAL&apos;); initAssetButtons();
 </script>
 </body>
 </html>"
@@ -6924,14 +6859,6 @@ function bootScan() {
 function openApp(id) {
   document.getElementById('launcher-shell').classList.add('pushed');
   document.getElementById(id).classList.add('visible');
-  if(id==='overlay-erecon'){
-    var _ef=document.getElementById('frame-erecon');
-    if(_ef&&_ef.contentWindow){
-      setTimeout(function(){
-        try{_ef.contentWindow.postMessage({type:'ERECON_OPEN'},'*');}catch(e){}
-      },120);
-    }
-  }
   if (id === 'overlay-builder') {
     var fr = document.getElementById('frame-builder');
     if (fr) {
@@ -7245,7 +7172,7 @@ function openReconFromSite(i) {
 function buildReconSiteHTML(site) {
   function row(k,v){ return '<div style="border-bottom:1px solid #e0e0e0;padding:5px 0"><div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555">'+k+'</div><div style="font-size:12px;font-weight:700">'+v+'</div></div>'; }
   return '<div style="margin-bottom:40px;padding-bottom:40px;border-bottom:2px dashed #ccc">' +
-    '<div style="font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:2px solid #7c6af7;padding-bottom:8px;margin-bottom:16px">e-RECON // '+site.name+'</div>' +
+    '<div style="font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:2px solid #5e7a94;padding-bottom:8px;margin-bottom:16px">e-RECON // '+site.name+'</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px">' +
       row('ID', site.id) +
       row('BRANCH', site.branch) +
