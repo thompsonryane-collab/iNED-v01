@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Scenario Simulator</title>
+<title>eSimReconAI // Command Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -547,23 +547,390 @@ html::after {
   box-shadow: 0 0 12px rgba(242,184,38,.2);
 }
 
-/* ── SAVED SCENARIOS CARD ── */
-#card-saved {
-  display: none;
-  background: linear-gradient(155deg, rgba(255,255,255,.04), rgba(255,255,255,0) 35%, rgba(0,0,0,.16)), var(--card-bg);
+/* ── E-RECON AI CARD ── */
+.card-erecon::before {
+  background: linear-gradient(90deg, transparent, #7c6af7, transparent);
+  opacity: .65;
+}
+@media (hover:hover) {
+  .card-erecon:hover {
+    border-color: rgba(124,106,247,.38);
+    box-shadow: var(--card-bevel), 0 0 20px rgba(124,106,247,.10);
+  }
+}
+.card-erecon .card-badge  { color: #7c6af7; }
+.card-erecon .card-desc em { color: #a498f9; }
+.card-erecon .meta-pill {
+  border-color: rgba(124,106,247,.25);
+  color: rgba(156,140,250,.85);
+  background: rgba(124,106,247,.07);
+}
+.card-erecon .launch-btn {
+  background: rgba(124,106,247,.15);
+  color: #a498f9;
+  border: 1px solid rgba(124,106,247,.40);
+  border-radius: 10px;
+}
+.card-erecon .launch-btn:active,
+.card-erecon .launch-btn:hover {
+  background: rgba(124,106,247,.26);
+  box-shadow: 0 0 12px rgba(124,106,247,.20);
+}
+
+/* ── ERECON STAT STRIP ── */
+.erecon-stat-strip {
+  display: flex; gap: 8px;
+  margin-bottom: 10px;
+}
+.erecon-stat {
+  flex: 1;
+  background: rgba(124,106,247,.07);
+  border: 1px solid rgba(124,106,247,.20);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.erecon-stat-val {
+  font-family: var(--dsp);
+  font-size: 20px; font-weight: 700;
+  color: #a498f9; line-height: 1;
+}
+.erecon-stat-lbl {
+  font-family: var(--mono);
+  font-size: 8px; letter-spacing: 1px;
+  color: var(--txd); text-align: center;
+  text-transform: uppercase; line-height: 1.3;
+}
+
+/* ── ERECON CAPABILITY ROW ── */
+.erecon-cap-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px; margin-bottom: 10px;
+}
+.erecon-cap {
+  background: rgba(124,106,247,.05);
+  border: 1px solid rgba(124,106,247,.18);
+  border-radius: 8px;
+  padding: 8px 6px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.erecon-cap-label {
+  font-family: var(--dsp);
+  font-size: 8px; letter-spacing: 1.2px;
+  color: #7c6af7; text-transform: uppercase;
+}
+.erecon-cap-desc {
+  font-family: var(--mono);
+  font-size: 9px; line-height: 1.4;
+  color: var(--txd);
+}
+
+/* ── ERECON DATA LAYER ROWS ── */
+.erecon-layer-list {
+  display: flex; flex-direction: column; gap: 5px;
+  margin-bottom: 10px;
+}
+.erecon-layer {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  background: rgba(124,106,247,.04);
+  border: 1px solid rgba(124,106,247,.14);
+  border-radius: 7px;
+}
+.erecon-layer-name {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--txh); flex: 1;
+}
+.erecon-layer-status {
+  font-family: var(--dsp); font-size: 8px;
+  letter-spacing: 1px; padding: 2px 7px;
+  border-radius: 5px; text-transform: uppercase;
+  white-space: nowrap;
+}
+.erecon-layer-status.lat-long {
+  color: #a498f9; background: rgba(124,106,247,.15);
+  border: 1px solid rgba(124,106,247,.30);
+}
+.erecon-layer-status.mocking {
+  color: #f2b826; background: rgba(242,184,38,.12);
+  border: 1px solid rgba(242,184,38,.28);
+}
+.erecon-layer-status.va-ref {
+  color: var(--txd); background: rgba(168,200,224,.06);
+  border: 1px solid rgba(168,200,224,.16);
+}
+
+/* ── DATA INGEST (now inside Files card panel) ── */
+.ingest-count-badge {
+  font-family: var(--dsp); font-size: var(--badge-sz);
+  letter-spacing: 2px; color: var(--cyan);
+}
+/* Drop zone */
+#ingest-dropzone {
+  border: 1.5px dashed rgba(24,212,248,.35);
+  border-radius: 10px;
+  background: rgba(24,212,248,.03);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 22px 14px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: border-color .18s, background .18s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  position: relative;
+}
+#ingest-dropzone.drag-over {
+  border-color: rgba(24,212,248,.75);
+  background: rgba(24,212,248,.08);
+}
+#ingest-dropzone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.ingest-drop-icon {
+  font-size: 28px; opacity: .55;
+}
+.ingest-drop-label {
+  font-family: var(--dsp); font-size: 10px;
+  letter-spacing: 1.8px; color: var(--cyan);
+  text-align: center; text-transform: uppercase;
+  line-height: 1.45;
+}
+.ingest-drop-types {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: 1px; color: var(--txd);
+  text-align: center; text-transform: uppercase;
+}
+/* File table */
+#ingest-table-wrap { width: 100%; }
+.ingest-table-head {
+  display: grid;
+  grid-template-columns: 38px 1fr 54px 68px 32px;
+  gap: 0 6px;
+  padding: 4px 4px 6px;
+  border-bottom: 1px solid rgba(24,212,248,.18);
+  font-family: var(--dsp); font-size: 8px;
+  letter-spacing: 1.8px; color: var(--cyan);
+  text-transform: uppercase;
+}
+.ingest-table-head span:last-child { text-align: center; }
+.ingest-empty-row {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1px; color: var(--txd);
+  text-align: center; padding: 14px 0 6px;
+  text-transform: uppercase;
+}
+#ingest-file-list { width: 100%; }
+.ingest-file-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 54px 68px 32px;
+  gap: 0 6px; align-items: center;
+  padding: 7px 4px;
+  border-bottom: 1px solid rgba(30,45,69,.4);
+  -webkit-tap-highlight-color: transparent;
+}
+.ingest-file-row:last-child { border-bottom: none; }
+.ingest-file-type {
+  font-family: var(--dsp); font-size: 8px; letter-spacing: 1px;
+  color: var(--cyan); background: rgba(24,212,248,.1);
+  border: 1px solid rgba(24,212,248,.25);
+  border-radius: 4px; padding: 2px 4px;
+  text-align: center; text-transform: uppercase;
+}
+.ingest-file-name {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--txh); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.ingest-file-size {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--txd); text-align: right;
+}
+.ingest-file-date {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--txd); text-align: right; letter-spacing: .3px;
+}
+.ingest-file-del {
+  background: transparent; border: none;
+  color: var(--txd); font-size: 14px;
+  cursor: pointer; text-align: center;
+  padding: 4px; line-height: 1;
+  transition: color .15s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.ingest-file-del:active { color: #c87070; }
+@media (hover:hover) { .ingest-file-del:hover { color: #c87070; } }
+
+
+/* ── RECON SITE ROWS ── */
+.recon-row {
+  display: flex; align-items: center; gap: 0;
+  padding: 9px 0; border-bottom: 1px solid rgba(42,37,69,.5);
+  -webkit-tap-highlight-color: transparent;
+}
+.recon-row:last-child { border-bottom: none; }
+.recon-check-wrap {
+  flex-shrink: 0; width: 32px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation; padding: 4px;
+}
+.recon-checkbox {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1.5px solid rgba(124,106,247,.4);
+  background: rgba(124,106,247,.06);
+  position: relative; flex-shrink: 0;
+  transition: border-color .15s, background .15s;
+}
+.recon-checkbox.checked { background: rgba(124,106,247,.25); border-color: rgba(124,106,247,.8); }
+.recon-checkbox.checked::after {
+  content: ''; position: absolute;
+  left: 4px; top: 1px; width: 5px; height: 9px;
+  border: 1.5px solid #a498f9; border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+.recon-row-main {
+  flex: 1; min-width: 0; cursor: pointer;
+  touch-action: manipulation;
+}
+.recon-row-main:active { opacity: .75; }
+.recon-row-id   { font-family:var(--dsp); font-size:9px; letter-spacing:.5px; color:#a498f9; }
+.recon-row-name { font-family:var(--dsp); font-size:11px; font-weight:700; color:var(--txh); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.recon-row-meta { font-family:var(--mono); font-size:9px; color:var(--txd); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.recon-score-pill {
+  font-family: var(--dsp); font-size: 10px; font-weight: 700;
+  flex-shrink: 0; margin: 0 6px;
+}
+.recon-score-pill.high { color: var(--sage); }
+.recon-score-pill.mid  { color: var(--amber); }
+.recon-score-pill.low  { color: #e05a5a; }
+.recon-btn-del {
+  background: transparent; border: none;
+  color: var(--txd); font-size: 14px; cursor: pointer;
+  padding: 4px 8px; line-height: 1; flex-shrink: 0;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: color .15s;
+}
+.recon-btn-del:active { color: #c87070; }
+/* Recon print bar (mirrors sc-print-bar) */
+#recon-print-bar {
+  display: none; align-items: center; justify-content: space-between;
+  padding: 8px 0 2px; gap: 10px;
+  border-top: 1px solid var(--border); margin-top: 6px;
+}
+#recon-print-bar.visible { display: flex; }
+#recon-print-bar-label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 1px; color: var(--txd);
+}
+#recon-print-bar-btn {
+  font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
+  background: rgba(124,106,247,.12); color: #a498f9;
+  border: 1px solid rgba(124,106,247,.35); border-radius: 8px;
+  padding: 6px 14px; cursor: pointer; white-space: nowrap;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+}
+#recon-print-bar-btn:active { background: rgba(124,106,247,.22); }
+
+/* ── FILES CARD (launcher) ── */
+#card-files {
+  grid-column: 1 / -1;
+  background: linear-gradient(155deg, rgba(255,255,255,.05), rgba(255,255,255,0) 35%, rgba(0,0,0,.16)), var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--card-bevel), 0 1px 2px rgba(0,0,0,.25);
   padding: var(--card-pad);
   position: relative; overflow: hidden;
-  grid-column: 1 / -1;
+  display: flex; flex-direction: column;
   -webkit-tap-highlight-color: transparent;
 }
-#card-saved::before {
+#card-files::before {
   content:''; position:absolute; top:0; left:0; right:0; height:2px;
   background: linear-gradient(90deg, transparent, var(--amber), transparent);
-  opacity: .6;
+  opacity: .55;
 }
+.files-card-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+}
+.files-card-icon {
+  width: var(--icon-sz); height: var(--icon-sz); flex-shrink: 0;
+}
+.files-card-icon svg { width: 100%; height: 100%; }
+.files-card-text { flex: 1; min-width: 0; }
+.files-card-badge {
+  font-family: var(--dsp); font-size: var(--badge-sz);
+  letter-spacing: 2.5px; color: var(--amber);
+  margin-bottom: 4px;
+}
+.files-card-title {
+  font-family: var(--dsp); font-size: var(--title-sz);
+  font-weight: 700; color: var(--txh); letter-spacing: .3px;
+}
+/* Tab strip inside Files card */
+.files-tabs {
+  display: flex; gap: 0; margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.files-tab {
+  font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
+  padding: 7px 14px;
+  color: var(--txd);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+.files-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+/* Panels inside Files card */
+.files-panel { display: none; }
+.files-panel.active { display: block; }
+/* Launch overlay button for Files */
+#files-overlay-btn {
+  font-family: var(--dsp); font-size: 10px; letter-spacing: 1.8px;
+  background: rgba(212,160,90,.13); color: var(--amber);
+  border: 1px solid rgba(212,160,90,.38); border-radius: 10px;
+  padding: 11px 0; width: 100%; cursor: pointer; text-transform: uppercase;
+  margin-top: 10px;
+  transition: background .18s; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  display: none; /* shown when files panel is active */
+}
+#files-overlay-btn:active { background: rgba(212,160,90,.22); }
+
+/* ── FILES OVERLAY ── */
+.overlay-files .overlay-app-name { color: var(--amber); }
+#overlay-files { z-index: 400; }
+/* Tab strip in overlay */
+#files-overlay-tabs {
+  display: flex; gap: 0;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.fot {
+  font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
+  padding: 10px 18px; color: var(--txd);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.fot.active { color: var(--amber); border-bottom-color: var(--amber); }
+#files-overlay-body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+}
+.fop { display: none; }
+.fop.active { display: block; }
+
+/* ── SAVED SCENARIOS CARD (now inside Files card panel) ── */
+#card-saved {
+  display: block;
+  -webkit-tap-highlight-color: transparent;
+}
+/* #card-saved::before removed — now inside Files card */
 #card-saved.has-rows { display: block; }
 .saved-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
 .saved-title { font-family:var(--dsp); font-size:var(--title-sz); font-weight:700; color:var(--txh); letter-spacing:.3px; flex:1; }
@@ -761,6 +1128,7 @@ html::after {
   pointer-events: none;
 }
 .overlay-wargame  .overlay-app-name { color: var(--sage); }
+.overlay-erecon   .overlay-app-name { color: #a498f9; }
 .overlay-frame {
   flex:1; border:none; width:100%;
   min-height:0; display:block;
@@ -1519,6 +1887,21 @@ html::after {
   padding: 8px 14px; cursor: pointer;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
+#scp-share-btn {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 1.5px;
+  background: rgba(77,184,138,.12);
+  color: var(--sage);
+  border: 1px solid rgba(77,184,138,.38);
+  border-radius: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background .15s;
+}
+#scp-share-btn:active { background: rgba(77,184,138,.22); }
 #scp-print-btn {
   font-family: 'Share Tech Mono', monospace;
   font-size: 11px; letter-spacing: 1px;
@@ -1568,11 +1951,65 @@ html::after {
 .scp-order strong  { color: #d4a05a; }
 .scp-footer        { margin-top: 20px; border-top: 1px solid #1a2d42; padding-top: 8px; font-size: 10px; font-weight: 700; color: #6e90b0; display: flex; justify-content: space-between; }
 
+
+/* ── RECON PREVIEW OVERLAY ── */
+#rcp-preview-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: #0e1824;
+  flex-direction: column;
+  overflow: hidden;
+}
+#rcp-preview-overlay.open { display: flex; }
+#rcp-preview-chrome {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: #0a0f1a;
+  border-bottom: 1px solid rgba(124,106,247,.3);
+  flex-shrink: 0;
+}
+#rcp-preview-title {
+  font-family: var(--dsp); font-size: 10px; letter-spacing: 2px;
+  color: #a498f9; flex: 1;
+}
+#rcp-preview-close {
+  font-family: var(--mono); font-size: 11px; color: var(--txd);
+  background: transparent; border: none; cursor: pointer;
+  padding: 4px 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+#rcp-print-btn {
+  font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
+  color: #a498f9; text-decoration: none;
+  background: rgba(124,106,247,.12);
+  border: 1px solid rgba(124,106,247,.35); border-radius: 8px;
+  padding: 5px 12px; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+#rcp-share-btn {
+  font-family: var(--dsp); font-size: 9px; letter-spacing: 1.5px;
+  color: var(--sage); background: rgba(77,184,138,.12);
+  border: 1px solid rgba(77,184,138,.35); border-radius: 8px;
+  padding: 5px 12px; cursor: pointer; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+}
+#rcp-share-btn:active { background: rgba(77,184,138,.22); }
+#rcp-preview-body {
+  flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  background: #fff; color: #111;
+  font-family: 'Courier New', monospace; font-size: 12px;
+  padding: 24px; line-height: 1.65;
+}
+
 @media print {
   body > *              { display: none !important; }
   #scp-preview-overlay  { display: flex !important; position: static !important; }
   #scp-preview-chrome   { display: none !important; }
   #scp-preview-body     { overflow: visible !important; padding: 0 !important; }
+  #rcp-preview-overlay  { display: flex !important; position: static !important; }
+  #rcp-preview-chrome   { display: none !important; }
+  #rcp-preview-body     { overflow: visible !important; padding: 0 !important; }
 }
 </style>
 </head>
@@ -1797,21 +2234,218 @@ html::after {
           </div>
         </div>
 
-        <!-- ── SAVED SCENARIOS CARD ── -->
-        <div class="app-card" id="card-saved">
-          <div class="saved-head">
-            <div>
-              <div class="card-badge" style="color:var(--amber);font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-03 // SCENARIO LIBRARY</div>
-              <div class="saved-title">Saved Scenarios</div>
+        <!-- ── E-RECON AI CARD ── -->
+        <div class="app-card card-erecon" id="card-erecon">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Globe wireframe -->
+                <circle cx="36" cy="36" r="22" stroke="#7c6af7" stroke-width="1.4" fill="rgba(124,106,247,0.05)"/>
+                <!-- Latitude lines -->
+                <ellipse cx="36" cy="36" rx="22" ry="8" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
+                <ellipse cx="36" cy="36" rx="22" ry="15" stroke="#7c6af7" stroke-width=".5" opacity=".2"/>
+                <!-- Meridian -->
+                <line x1="36" y1="14" x2="36" y2="58" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
+                <line x1="14" y1="36" x2="58" y2="36" stroke="#7c6af7" stroke-width=".6" opacity=".3"/>
+                <!-- Installation pings -->
+                <circle cx="28" cy="30" r="2.2" fill="#7c6af7" opacity=".9">
+                  <animate attributeName="opacity" values="1;0.4;1" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="28" cy="30" r="5" stroke="#7c6af7" stroke-width=".7" fill="none" opacity="0">
+                  <animate attributeName="opacity" values="0.7;0" dur="2.4s" repeatCount="indefinite"/>
+                  <animate attributeName="r" values="2.5;9" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="44" cy="40" r="2" fill="#a498f9" opacity=".8"/>
+                <circle cx="32" cy="44" r="1.8" fill="#a498f9" opacity=".6"/>
+                <circle cx="48" cy="28" r="1.8" fill="#7c6af7" opacity=".7"/>
+                <!-- SMR bolt accent top-right -->
+                <path d="M60 6 L55 17 L60 17 L55 28 L63 14 L58 14 Z" fill="#7c6af7" opacity=".65"/>
+              </svg>
             </div>
-            <div class="saved-badge" id="saved-count-badge">0 SAVED</div>
+            <div class="card-head-text">
+              <div class="card-badge" style="color:#7c6af7;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-02C // RECON AI</div>
+              <div class="card-title">Energy Reconnaissance AI</div>
+            </div>
           </div>
-          <div id="saved-list"></div>
-          <div id="sc-print-bar">
-            <span id="sc-print-bar-label">1 selected</span>
-            <button id="sc-print-bar-btn" onclick="printSelectedScenarios()">⎙ PRINT PDF</button>
+
+          <div class="card-desc">
+            <em>Global interactive simulation engine</em> for multi-installation energy resiliency — visualize, simulate, and analyze 70 prioritized military installations with SMR, BESS &amp; Microgrid asset placement.
           </div>
+
+          <!-- Stat strip -->
+          <div class="erecon-stat-strip">
+            <div class="erecon-stat">
+              <div class="erecon-stat-val">70</div>
+              <div class="erecon-stat-lbl">Installations<br>Prioritized</div>
+            </div>
+            <div class="erecon-stat">
+              <div class="erecon-stat-val">3</div>
+              <div class="erecon-stat-lbl">Asset<br>Types</div>
+            </div>
+            <div class="erecon-stat">
+              <div class="erecon-stat-val">HC</div>
+              <div class="erecon-stat-lbl">VA+68<br>Scoring</div>
+            </div>
+          </div>
+
+          <!-- Capability columns -->
+          <div class="erecon-cap-row">
+            <div class="erecon-cap">
+              <div class="erecon-cap-label">Visualize</div>
+              <div class="erecon-cap-desc">Global globe with regional satellite imagery zoom</div>
+            </div>
+            <div class="erecon-cap">
+              <div class="erecon-cap-label">Simulate</div>
+              <div class="erecon-cap-desc">Drag-and-drop SMR, BESS &amp; Microgrids onto sites</div>
+            </div>
+            <div class="erecon-cap">
+              <div class="erecon-cap-label">Analyze</div>
+              <div class="erecon-cap-desc">Real-time cost, viability &amp; generation impact</div>
+            </div>
+          </div>
+
+          <!-- Foundational data layers -->
+          <div class="erecon-layer-list">
+            <div class="erecon-layer">
+              <span class="erecon-layer-name">Installation Coordinates</span>
+              <span class="erecon-layer-status lat-long">✓ Lat/Long</span>
+            </div>
+            <div class="erecon-layer">
+              <span class="erecon-layer-name">Critical Facility Counts</span>
+              <span class="erecon-layer-status mocking">⚙ Mocking</span>
+            </div>
+            <div class="erecon-layer">
+              <span class="erecon-layer-name">SMR Technical Profiles</span>
+              <span class="erecon-layer-status va-ref">◎ VA Ref</span>
+            </div>
+          </div>
+
+          <!-- Meta pills -->
+          <div class="card-meta">
+            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">SMR</span>
+            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">Microgrids</span>
+            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">BESS</span>
+            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">Globe Interface</span>
+            <span class="meta-pill" style="border-color:rgba(124,106,247,.25);color:rgba(156,140,250,.85);background:rgba(124,106,247,.07)">70 Installations</span>
+          </div>
+
+          <!-- Launch button -->
+          <button class="launch-btn" id="erecon-launch-btn"
+            style="background:rgba(124,106,247,.15);color:#a498f9;border:1px solid rgba(124,106,247,.40);border-radius:10px;font-size:10px;letter-spacing:1.8px;padding:13px 0;">
+            &#9654; &nbsp;LAUNCH e-RECON AI
+          </button>
         </div>
+
+        <!-- ── FILES CARD ── -->
+        <div id="card-files">
+
+          <!-- Card header -->
+          <div class="files-card-head">
+            <div class="files-card-icon">
+              <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- folder back -->
+                <path d="M8 26 L8 58 Q8 62 12 62 L60 62 Q64 62 64 58 L64 26 Q64 22 60 22 L36 22 L30 16 Q28 14 24 14 L12 14 Q8 14 8 18 Z"
+                      fill="rgba(212,160,90,0.08)" stroke="#d4a05a" stroke-width="1.5"/>
+                <!-- folder tab -->
+                <path d="M8 18 Q8 14 12 14 L24 14 Q28 14 30 16 L36 22 L12 22 Q8 22 8 18 Z"
+                      fill="rgba(212,160,90,0.15)" stroke="#d4a05a" stroke-width="1.5"/>
+                <!-- doc lines -->
+                <line x1="20" y1="38" x2="52" y2="38" stroke="#d4a05a" stroke-width="1.2" opacity=".6"/>
+                <line x1="20" y1="46" x2="52" y2="46" stroke="#d4a05a" stroke-width="1.2" opacity=".4"/>
+                <line x1="20" y1="54" x2="38" y2="54" stroke="#d4a05a" stroke-width="1.2" opacity=".25"/>
+                <!-- upload badge -->
+                <circle cx="56" cy="20" r="11" fill="rgba(212,160,90,0.18)" stroke="#d4a05a" stroke-width="1"/>
+                <polyline points="56,26 56,14" stroke="#d4a05a" stroke-width="1.8" stroke-linecap="round"/>
+                <polyline points="51,19 56,14 61,19" stroke="#d4a05a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="files-card-text">
+              <div class="files-card-badge">SYS-02B+03 // FILES</div>
+              <div class="files-card-title">Reference &amp; Scenarios</div>
+            </div>
+          </div>
+
+          <!-- Tab strip -->
+          <div class="files-tabs">
+            <div class="files-tab active" id="ftab-docs"   onclick="switchFilesTab('docs')">⬆ DOCUMENTS</div>
+            <div class="files-tab"        id="ftab-saved"  onclick="switchFilesTab('saved')">⬡ SCENARIOS</div>
+            <div class="files-tab"        id="ftab-recon"  onclick="switchFilesTab('recon')">⬡ RECON SITES</div>
+          </div>
+
+          <!-- Panel: Reference Document Library -->
+          <div class="files-panel active" id="fpanel-docs">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--cyan);">DATA INGEST // REFERENCE LIBRARY</div>
+              <div class="ingest-count-badge" id="ingest-count-badge">0 FILES</div>
+            </div>
+            <!-- Drop zone -->
+            <div id="ingest-dropzone"
+                 ondragover="ingestDragOver(event)"
+                 ondragleave="ingestDragLeave(event)"
+                 ondrop="ingestDrop(event)">
+              <input type="file" id="ingest-file-input" multiple
+                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
+                     onchange="ingestFilesAdded(this.files)">
+              <div class="ingest-drop-icon">🗂</div>
+              <div class="ingest-drop-label">Drop Files or Click to Upload</div>
+              <div class="ingest-drop-types">PDF · Word · PowerPoint · Excel (.xls .xlsx)</div>
+            </div>
+            <!-- File table -->
+            <div id="ingest-table-wrap">
+              <div class="ingest-table-head">
+                <span>Type</span>
+                <span>Filename</span>
+                <span style="text-align:right">Size</span>
+                <span style="text-align:right">Uploaded</span>
+                <span></span>
+              </div>
+              <div id="ingest-file-list">
+                <div class="ingest-empty-row" id="ingest-empty-msg">No documents uploaded yet</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel: Saved Scenarios -->
+          <div class="files-panel" id="fpanel-saved">
+            <div id="card-saved">
+              <div class="saved-head">
+                <div>
+                  <div class="card-badge" style="color:var(--amber);font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">SYS-03 // SCENARIO LIBRARY</div>
+                  <div class="saved-title">Saved Scenarios</div>
+                </div>
+                <div class="saved-badge" id="saved-count-badge">0 SAVED</div>
+              </div>
+              <div id="saved-list">
+                <div class="ingest-empty-row" id="saved-empty-msg" style="color:var(--txd);padding:18px 0 10px;">No scenarios saved yet</div>
+              </div>
+              <div id="sc-print-bar">
+                <span id="sc-print-bar-label">1 selected</span>
+                <button id="sc-print-bar-btn" onclick="printSelectedScenarios()">⎙ PRINT PDF</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel: Saved Recon Sites -->
+          <div class="files-panel" id="fpanel-recon">
+            <div id="card-recon-sites">
+              <div class="saved-head">
+                <div>
+                  <div class="card-badge" style="color:#a498f9;font-family:var(--dsp);font-size:var(--badge-sz);letter-spacing:2.5px;margin-bottom:4px">e-RECON // SITE LIBRARY</div>
+                  <div class="saved-title">Saved Recon Sites</div>
+                </div>
+                <div class="saved-badge" id="recon-count-badge" style="color:#a498f9;">0 SAVED</div>
+              </div>
+              <div id="recon-site-list">
+                <div class="ingest-empty-row" id="recon-empty-msg" style="color:var(--txd);padding:18px 0 10px;">No recon sites saved yet</div>
+              </div>
+              <div id="recon-print-bar">
+                <span id="recon-print-bar-label">1 selected</span>
+                <button id="recon-print-bar-btn" onclick="printSelectedReconSites()">⎙ PRINT PDF</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- #card-files -->
 
       </div><!-- #card-grid -->
     </div><!-- #stage -->
@@ -1832,10 +2466,23 @@ html::after {
 <div id="scp-preview-overlay">
   <div id="scp-preview-chrome">
     <span id="scp-preview-title">⎙ SCENARIO REPORT</span>
-    <a id="scp-print-btn" href="#" onclick="window.print();return false;">⎙ PRINT / SAVE</a>
+    <a id="scp-print-btn" href="#" onclick="scpPrint();return false;">⎙ PRINT / SAVE</a>
+    <button id="scp-share-btn" onclick="scpShare()">⬆ SHARE</button>
     <button id="scp-preview-close" onclick="closeScenarioPreview()">✕ CLOSE</button>
   </div>
   <div id="scp-preview-body"></div>
+</div>
+
+
+<!-- ── RECON SITE PREVIEW OVERLAY ── -->
+<div id="rcp-preview-overlay">
+  <div id="rcp-preview-chrome">
+    <span id="rcp-preview-title">⎙ RECON SITE REPORT</span>
+    <a id="rcp-print-btn" href="#" onclick="rcpPrint();return false;">⎙ PRINT / SAVE</a>
+    <button id="rcp-share-btn" onclick="rcpShare()">⬆ SHARE</button>
+    <button id="rcp-preview-close" onclick="closeReconPreview()">✕ CLOSE</button>
+  </div>
+  <div id="rcp-preview-body"></div>
 </div>
 </div><!-- #launcher-shell -->
 
@@ -2373,9 +3020,9 @@ body {
   display: flex; align-items: center; gap: 8px; flex-shrink: 0;
   background: var(--surface);
 }
-#ops-feed-count { margin-right: auto; }
 .ops-feed-title { font-family: var(--dsp); font-size: 9px; letter-spacing: 2px; color: var(--tx); text-transform: uppercase; }
 #ops-feed-count {
+  margin-right: auto;
   font-family: var(--mono); font-size: 9.5px; color: var(--amber);
   background: var(--amber-d); border: 1px solid var(--amber-l);
   padding: 1px 7px; border-radius: 10px; min-width: 22px; text-align: center;
@@ -2394,8 +3041,6 @@ body {
   min-height: 120px;
 }
 #sc-feed::-webkit-scrollbar { display: none; }
-#sc-feed::-webkit-scrollbar { width: 3px; }
-#sc-feed::-webkit-scrollbar-thumb { background: var(--blt); border-radius: 2px; }
 #sc-empty { text-align: center; padding: 20px 14px; color: var(--txd); font-size: 11px; line-height: 1.65; }
 .sc-empty-icon { font-size: 22px; margin-bottom: 8px; opacity: .3; }
 
@@ -2418,44 +3063,6 @@ body {
   background: var(--sage);
   transform: scale(1.4);
 }
-
-/* ── OPS FEED ── */
-#ops-feed-wrap {
-  grid-row:2; grid-column:1;
-  background:var(--panel); border:1px solid var(--border);
-  border-radius:var(--r); display:flex; flex-direction:column;
-  min-height:0; overflow:visible;
-}
-#ops-feed-head {
-  padding: 6px var(--pad); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
-  background: var(--surface);
-}
-#ops-feed-count { margin-right: auto; }
-.ops-feed-title { font-family:var(--dsp); font-size:9px; letter-spacing:2px; color:var(--tx); text-transform:uppercase; }
-#ops-feed-count {
-  font-family:var(--mono); font-size:9.5px; color:var(--amber);
-  background:var(--amber-d); border:1px solid var(--amber-l);
-  padding:1px 7px; border-radius:10px; min-width:22px; text-align:center;
-}
-#sc-feed {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
-  gap: 0;
-  padding: 0;
-  min-height: 120px;
-}
-#sc-feed::-webkit-scrollbar { display: none; }
-#sc-feed::-webkit-scrollbar{width:3px}
-#sc-feed::-webkit-scrollbar-thumb{background:var(--blt);border-radius:2px}
-#sc-empty { text-align:center; padding:20px 14px; color:var(--txd); font-size:11px; line-height:1.65; flex:0 0 100%; scroll-snap-align:start; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.sc-empty-icon { font-size:22px; margin-bottom:8px; opacity:.3; }
 
 /* ── BOTTOM STRIP ── */
 #bottom {
@@ -3490,7 +4097,7 @@ function initMapInteractions() {
 
 // ── EVENT LOG ──
 function logEntry(msg,c=''){
-  const _d=new Date(); _d.setTime(_d.getTime()-4*3600000); const ts=_d.toISOString().substring(11,19);
+  const _d=new Date(); const _h=String(_d.getHours()).padStart(2,'0'),_m=String(_d.getMinutes()).padStart(2,'0'),_s=String(_d.getSeconds()).padStart(2,'0'); const ts=_h+':'+_m+':'+_s;
   const el=document.createElement('div'); el.className='lentry';
   el.innerHTML=`<span class=&quot;lts&quot;>${ts}</span><span class=&quot;lmsg ${c}&quot;>${msg}</span>`;
   const log = $('event-log');
@@ -3523,12 +4130,12 @@ function pushPhaseCard(eye,title,body,voiceText,btnLabel){
 function pushWarnCard(eye,tag,body,type,counter,isLast,voiceText){
   return new Promise(resolve=>{
     removeEmpty(); bumpCount();
-    const _d=new Date(); _d.setTime(_d.getTime()-4*3600000); const ts=_d.toISOString().substring(11,19);
+    const _d=new Date(); const _h=String(_d.getHours()).padStart(2,'0'),_m=String(_d.getMinutes()).padStart(2,'0'),_s=String(_d.getSeconds()).padStart(2,'0'); const ts=_h+':'+_m+':'+_s;
     const el=document.createElement('div');
     el.className='sc-warn pending'+(type?' '+type:'');
     const btnCls=isLast?(type==='crit'?'next-btn rose':'next-btn slate'):'next-btn amber';
     const btnTxt=isLast?'ACKNOWLEDGE ✓':'NEXT →';
-    el.innerHTML=`<div class='sc-w-eye'><span class='sc-w-dot'></span>${eye}</div><div class='sc-w-tag'>${tag}</div><div class='sc-w-body'>${body}</div><div class='sc-w-foot'><div class='sc-w-meta'><div class='sc-w-ctr'>${counter}</div><div class='sc-w-ts'>${ts} EDT</div></div><button class='${btnCls}'>${btnTxt}</button></div>`;
+    el.innerHTML=`<div class='sc-w-eye'><span class='sc-w-dot'></span>${eye}</div><div class='sc-w-tag'>${tag}</div><div class='sc-w-body'>${body}</div><div class='sc-w-foot'><div class='sc-w-meta'><div class='sc-w-ctr'>${counter}</div><div class='sc-w-ts'>${ts}</div></div><button class='${btnCls}'>${btnTxt}</button></div>`;
     const btn=el.querySelector('button');
     btn.addEventListener('click',()=>{
       stopSpeech();
@@ -3556,7 +4163,10 @@ function skipToEnd(){
   stopSpeech();
   if(fuelIv)clearInterval(fuelIv);
   if(resIv)clearInterval(resIv);
-  document.querySelectorAll('.next-btn:not(:disabled)').forEach(b=>b.click());
+  // Use dispatchEvent instead of .click() for iOS reliability
+  document.querySelectorAll('.next-btn:not(:disabled)').forEach(function(b){
+    b.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true}));
+  });
   setTimeout(()=>$('postmortem').classList.add('vis'),100);
 }
 
@@ -5218,6 +5828,1050 @@ window.parent.postMessage({ type: 'BUILDER_READY' }, '*');
   ></iframe>
 </div>
 
+<!-- ═══════════════════════════════════════
+     OVERLAY: E-RECON AI
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-erecon" id="overlay-erecon">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-erecon')">&#8592; HUB</button>
+    <span class="overlay-app-name">&#11041; e-RECON AI // Energy Reconnaissance</span>
+  </div>
+  <iframe class="overlay-frame" id="frame-erecon"
+    sandbox="allow-scripts allow-same-origin"
+    srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>eSimReconAI</title>
+<link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Orbitron:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
+<style>
+:root {
+  --bg:    #09080f; --surf:  #0f0d1a; --panel: #13111f;
+  --card:  #19162a; --border:#2a2545;
+  --pur:   #7c6af7; --pur-d: rgba(124,106,247,.12); --pur-l: rgba(124,106,247,.35); --pur-h: #a498f9;
+  --amber: #d4a05a; --sage:  #4db88a; --red:   #e05a5a;
+  --tx:    #d4ceff; --txd:   #8a80c0; --txh:   #f0eeff;
+  --mono:  &apos;Share Tech Mono&apos;,monospace; --dsp: &apos;Orbitron&apos;,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;overflow:hidden;}
+#shell{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+
+/* TOP BAR */
+#topbar{background:var(--surf);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 12px;height:40px;flex-shrink:0;}
+.tb-logo{font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);}
+.tb-sep{width:1px;height:16px;background:var(--border);}
+.tb-scope{font-size:9px;letter-spacing:1px;color:var(--txd);}
+.tb-stat{margin-left:auto;font-family:var(--dsp);font-size:9px;letter-spacing:1.5px;color:var(--pur-h);}
+#tb-save-btn{display:flex;align-items:center;gap:4px;font-family:var(--dsp);font-size:8px;letter-spacing:1.2px;background:rgba(124,106,247,.06);color:rgba(164,152,249,.35);border:1px solid rgba(124,106,247,.18);border-radius:6px;padding:4px 9px;cursor:default;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;flex-shrink:0;transition:background .18s,color .18s,border-color .18s;}
+#tb-save-btn.ready{background:rgba(124,106,247,.18);color:#a498f9;border-color:rgba(124,106,247,.55);cursor:pointer;}
+#tb-save-btn.ready:active{background:rgba(124,106,247,.3);}
+#tb-save-btn.saved{background:rgba(77,184,138,.2);color:#4db88a;border-color:rgba(77,184,138,.5);}
+
+
+/* TAB BAR */
+#tabbar{background:var(--surf);border-bottom:1px solid var(--border);display:flex;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tab{font-family:var(--dsp);font-size:8px;letter-spacing:1.5px;padding:10px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;color:var(--txd);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s;flex-shrink:0;}
+.tab.active{color:var(--pur-h);border-bottom-color:var(--pur);}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:8px;}
+.panel{display:none;} .panel.active{display:block;}
+
+/* MAP */
+#map-wrap-er{background:#09080f;border:1px solid var(--border);border-radius:12px;margin-bottom:6px;position:relative;overflow:hidden;height:58vh;min-height:220px;max-height:520px;}
+#map-wrap-er::before{content:&apos;&apos;;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pur),transparent);opacity:.6;z-index:2;pointer-events:none;}
+#recon-map{position:absolute;inset:0;z-index:1;overflow:hidden;background:#09080f;}
+#recon-map-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s;}
+#recon-map-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);pointer-events:none;}
+#recon-map-loading.hidden{display:none;}
+/* install dot overlay (SVG) */
+#recon-dot-svg{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:visible;}
+.er-static-dot{cursor:pointer;pointer-events:all;}
+.er-static-dot circle{transition:r .15s,fill .15s;}
+.er-static-dot:active circle{fill:#ffffff !important;}
+#map-ctrl-er{position:absolute;bottom:10px;left:10px;display:flex;flex-direction:column;gap:3px;z-index:1000;}
+.er-ctrl-btn{width:28px;height:28px;background:rgba(9,8,15,.88);border:1px solid var(--border);border-radius:4px;color:var(--txd);font-family:var(--mono);font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .15s,border-color .15s;user-select:none;}
+.er-ctrl-btn:active{color:var(--pur-h);border-color:var(--pur-l);}
+.er-ctrl-btn.reset{font-size:9px;}
+#er-zoom-badge{position:absolute;bottom:10px;left:48px;z-index:1000;background:rgba(9,8,15,.82);border:1px solid var(--border);border-radius:3px;font-family:var(--mono);font-size:8px;color:var(--txd);padding:3px 6px;pointer-events:none;}
+/* TELEMETRY HUD */
+#map-telemetry{
+  position:absolute;bottom:10px;right:10px;z-index:4;
+  background:rgba(9,8,15,.86);border:1px solid rgba(124,106,247,.35);
+  border-radius:8px;padding:8px 10px;min-width:138px;
+  pointer-events:none;
+}
+#map-telemetry::before{
+  content:&apos;&apos;;position:absolute;top:0;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--pur),transparent);border-radius:8px 8px 0 0;
+}
+.tele-region{font-family:var(--dsp);font-size:8px;letter-spacing:2px;color:var(--pur-h);margin-bottom:5px;}
+.tele-row{display:flex;justify-content:space-between;gap:12px;padding:2px 0;border-bottom:1px solid rgba(42,37,69,.5);}
+.tele-row:last-child{border-bottom:none;}
+.tele-key{font-size:8px;color:var(--txd);letter-spacing:.5px;}
+.tele-val{font-family:var(--dsp);font-size:8px;color:var(--pur-h);text-align:right;}
+.tele-val.g{color:var(--sage);}
+.tele-val.a{color:var(--amber);}
+.region-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+.region-btn{font-family:var(--dsp);font-size:8px;letter-spacing:1px;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--txd);cursor:pointer;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s,color .15s;}
+.region-btn:active,.region-btn.sel{border-color:var(--pur-l);color:var(--pur-h);background:var(--pur-d);}
+.region-count{font-size:14px;font-family:var(--dsp);color:var(--pur-h);display:block;margin-bottom:2px;}
+
+/* PRIORITY LIST */
+.sort-row{display:flex;gap:6px;margin-bottom:10px;align-items:center;}
+.sort-lbl{font-size:9px;color:var(--txd);letter-spacing:.8px;flex-shrink:0;}
+.sort-btn{font-family:var(--dsp);font-size:8px;letter-spacing:1px;padding:4px 9px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--txd);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s,color .15s;}
+.sort-btn.active{border-color:var(--pur-l);color:var(--pur-h);background:var(--pur-d);}
+.inst-list{display:flex;flex-direction:column;gap:6px;}
+.inst-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s;}
+.inst-row:active,.inst-row.selected{border-color:var(--pur-l);background:var(--pur-d);}
+.inst-row.selected{border-left:3px solid var(--pur);padding-left:9px;}
+.inst-save-btn{
+  flex-shrink:0;margin-left:6px;
+  background:rgba(124,106,247,.12);
+  border:1px solid rgba(124,106,247,.4);
+  border-radius:6px;
+  color:#a498f9;font-size:13px;
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .15s,border-color .15s;
+  line-height:1;padding:0;
+}
+.inst-save-btn:active{background:rgba(124,106,247,.28);border-color:rgba(124,106,247,.7);}
+.inst-save-btn.saved{background:rgba(77,184,138,.18);border-color:rgba(77,184,138,.5);color:#4db88a;}
+.inst-rank{font-family:var(--dsp);font-size:10px;color:var(--pur-h);width:22px;flex-shrink:0;text-align:center;}
+.inst-info{flex:1;min-width:0;}
+.inst-name{font-family:var(--dsp);font-size:10px;color:var(--txh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.inst-meta{font-size:9px;color:var(--txd);margin-top:2px;}
+.inst-score-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;}
+.inst-score{font-family:var(--dsp);font-size:13px;font-weight:700;}
+.inst-score.high{color:var(--sage);} .inst-score.mid{color:var(--amber);} .inst-score.low{color:var(--red);}
+.inst-score-bar-wrap{width:48px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
+.inst-score-bar{height:100%;border-radius:2px;transition:width .4s;}
+.inst-score-bar.high{background:var(--sage);} .inst-score-bar.mid{background:var(--amber);} .inst-score-bar.low{background:var(--red);}
+
+/* SIMULATE */
+.sim-section-head{font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin:14px 0 6px;}
+.sim-section-head:first-child{margin-top:0;}
+/* Scenario type row */
+.scenario-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+.scenario-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:9px 10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;}
+.scenario-card.selected{border-color:var(--pur);background:var(--pur-d);}
+.sc-tag{font-family:var(--dsp);font-size:8px;letter-spacing:1px;color:var(--pur-h);margin-bottom:3px;}
+.sc-name{font-family:var(--dsp);font-size:10px;color:var(--txh);}
+.sc-desc{font-size:8px;color:var(--txd);margin-top:2px;line-height:1.4;}
+/* Asset grid */
+.asset-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;}
+.asset-card{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:10px 6px 36px;text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;position:relative;user-select:none;}
+.asset-qty{font-family:var(--dsp);font-size:22px;font-weight:700;color:var(--pur-h);line-height:1;margin:6px 0 0;transition:color .15s;}
+.asset-card.selected .asset-qty{color:#fff;}
+.asset-qty.zero{color:rgba(164,152,249,.25);}
+.asset-dec,.asset-inc{position:absolute;bottom:0;width:40%;height:32px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300;line-height:1;color:rgba(164,152,249,.55);background:transparent;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .12s,background .12s;border-top:1px solid rgba(124,106,247,.15);}
+.asset-dec{left:0;border-radius:0 0 0 8px;border-right:1px solid rgba(124,106,247,.15);}
+.asset-inc{right:0;border-radius:0 0 8px 0;}
+.asset-dec:active,.asset-inc:active{color:#a498f9;background:rgba(124,106,247,.15);}
+.asset-card.selected .asset-dec,.asset-card.selected .asset-inc{color:rgba(164,152,249,.75);border-top-color:rgba(124,106,247,.3);}
+.asset-card.selected .asset-dec{border-right-color:rgba(124,106,247,.3);}
+
+.asset-card.selected{border-color:var(--pur);background:var(--pur-d);}
+.asset-icon{font-size:20px;display:block;margin-bottom:3px;}
+.asset-name{font-family:var(--dsp);font-size:8px;letter-spacing:1px;color:var(--pur-h);}
+.asset-sub{font-size:8px;color:var(--txd);margin-top:2px;}
+/* Asset profile detail */
+/* Asset profile carousel */
+#asset-profile{margin-bottom:10px;display:none;}
+#asset-profile.show{display:block;}
+#ap-track-wrap{
+  overflow:hidden;
+  border-radius:8px;
+  border:1px solid rgba(124,106,247,.2);
+}
+#ap-track{
+  display:flex;
+  overflow-x:scroll;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+#ap-track::-webkit-scrollbar{display:none;}
+.ap-slide{
+  flex:0 0 100%;
+  scroll-snap-align:start;
+  box-sizing:border-box;
+  background:var(--panel);
+  padding:10px 12px;
+  min-width:0;
+}
+/* dots */
+#ap-dots{
+  display:flex;justify-content:center;gap:5px;
+  padding:6px 0 2px;
+}
+.ap-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(124,106,247,.3);
+  transition:background .2s,transform .2s;
+  flex-shrink:0;
+}
+.ap-dot.active{
+  background:var(--pur);
+  transform:scale(1.4);
+}
+.ap-head{font-family:var(--dsp);font-size:9px;letter-spacing:1.5px;color:var(--pur-h);margin-bottom:7px;}
+.ap-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(42,37,69,.4);}
+.ap-row:last-child{border-bottom:none;}
+.ap-key{font-size:9px;color:var(--txd);}
+.ap-val{font-family:var(--dsp);font-size:9px;color:var(--txh);}
+.ap-val.g{color:var(--sage);} .ap-val.a{color:var(--amber);}
+/* Site picker */
+.site-picker{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.site-row{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s;}
+.site-row.selected{border-color:var(--pur-l);background:var(--pur-d);}
+.site-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.site-dot.high{background:var(--sage);} .site-dot.mid{background:var(--amber);} .site-dot.low{background:var(--red);}
+.site-name{font-family:var(--dsp);font-size:10px;color:var(--txh);flex:1;}
+.site-score{font-family:var(--dsp);font-size:10px;color:var(--txd);}
+/* Impact + run */
+#impact-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:none;}
+#impact-panel.show{display:block;}
+#impact-panel::before{content:&apos;&apos;;display:block;height:2px;background:linear-gradient(90deg,transparent,var(--pur),transparent);margin:-12px -12px 10px;opacity:.5;}
+.impact-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(42,37,69,.5);}
+.impact-row:last-child{border-bottom:none;}
+.impact-label{font-size:9px;letter-spacing:.8px;color:var(--txd);}
+.impact-val{font-family:var(--dsp);font-size:11px;color:var(--pur-h);}
+.impact-val.green{color:var(--sage);} .impact-val.amber{color:var(--amber);}
+#run-sim-btn{width:100%;font-family:var(--dsp);font-size:10px;letter-spacing:2px;padding:13px;border-radius:10px;border:1px solid var(--pur-l);background:var(--pur-d);color:var(--pur-h);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .18s;}
+#run-sim-btn:active{background:rgba(124,106,247,.25);}
+
+/* ANALYZE */
+.analyze-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;position:relative;overflow:hidden;}
+.analyze-card::before{content:&apos;&apos;;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pur),transparent);opacity:.45;}
+.an-head{font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin-bottom:8px;}
+.an-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(42,37,69,.4);}
+.an-row:last-child{border-bottom:none;}
+.an-key{font-size:9px;color:var(--txd);}
+.an-val{font-family:var(--dsp);font-size:10px;color:var(--txh);}
+.an-val.g{color:var(--sage);} .an-val.a{color:var(--amber);} .an-val.r{color:var(--red);}
+.bar-chart{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
+.bar-row{display:flex;align-items:center;gap:8px;}
+.bar-lbl{font-size:9px;color:var(--txd);width:72px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:3px;}
+.bar-fill{height:100%;border-radius:3px;background:var(--pur);transition:width .6s;}
+.bar-val{font-family:var(--dsp);font-size:9px;color:var(--pur-h);width:28px;text-align:right;flex-shrink:0;}
+/* Strategy formulation card */
+.strategy-item{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(42,37,69,.4);}
+.strategy-item:last-child{border-bottom:none;}
+.strat-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.strat-body{flex:1;}
+.strat-title{font-family:var(--dsp);font-size:9px;letter-spacing:.8px;color:var(--pur-h);margin-bottom:3px;}
+.strat-desc{font-size:9px;color:var(--txd);line-height:1.4;}
+
+/* ACTIONS */
+.action-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.action-cb{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);background:rgba(42,37,69,.4);cursor:pointer;flex-shrink:0;margin-top:2px;position:relative;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;}
+.action-cb.done{background:var(--pur);border-color:var(--pur);}
+.action-cb.done::after{content:&apos;&apos;;position:absolute;left:5px;top:2px;width:6px;height:11px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg);}
+.action-body{flex:1;}
+.action-title{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:3px;}
+.action-desc{font-size:9px;color:var(--txd);line-height:1.4;}
+.action-tag{display:inline-block;margin-top:5px;font-family:var(--dsp);font-size:8px;padding:2px 7px;border-radius:4px;border:1px solid rgba(124,106,247,.3);color:var(--pur-h);background:var(--pur-d);letter-spacing:.8px;}
+</style>
+</head>
+<body>
+<div id=&quot;shell&quot;>
+
+  <div id=&quot;topbar&quot;>
+    <span class=&quot;tb-logo&quot;>e-RECON</span>
+    <div class=&quot;tb-sep&quot;></div>
+    <span class=&quot;tb-scope&quot;>70 INSTALLATIONS · GLOBAL</span>
+    <button id=&quot;tb-save-btn&quot; onclick=&quot;tbSaveReconSite()&quot;>&#x2B21; SAVE SITE</button>
+    <span class=&quot;tb-stat&quot;>HC VA+68</span>
+  </div>
+
+  <div id=&quot;tabbar&quot;>
+    <div class=&quot;tab active&quot; data-tab=&quot;globe&quot;    onclick=&quot;switchTab(this)&quot;>&amp;#11041; RECON</div>
+    <div class=&quot;tab&quot;        data-tab=&quot;simulate&quot; onclick=&quot;switchTab(this)&quot;>&amp;#9883; SIMULATE</div>
+    <div class=&quot;tab&quot;        data-tab=&quot;analyze&quot;  onclick=&quot;switchTab(this)&quot;>&amp;#9650; ANALYZE</div>
+    <div class=&quot;tab&quot;        data-tab=&quot;actions&quot;  onclick=&quot;switchTab(this)&quot;>&amp;#9744; ACTIONS</div>
+  </div>
+
+  <div id=&quot;main&quot;>
+
+    <!-- ── MAP TAB ── -->
+    <div class=&quot;panel active&quot; id=&quot;panel-globe&quot;>
+      <div id=&quot;map-wrap-er&quot;>
+        <div id=&quot;map-ctrl-er&quot;>
+          <button class=&quot;er-ctrl-btn&quot; onclick=&quot;erZoom(0.6)&quot;>+</button>
+          <button class=&quot;er-ctrl-btn&quot; onclick=&quot;erZoom(1.6)&quot;>&amp;#8722;</button>
+          <button class=&quot;er-ctrl-btn reset&quot; onclick=&quot;erZoomReset()&quot;>&amp;#8855;</button>
+        </div>
+        <div id=&quot;er-zoom-badge&quot;>1&amp;#215;</div>
+        <div id=&quot;recon-map&quot;>
+          <img id=&quot;recon-map-img&quot; alt=&quot;satellite map&quot; src=&quot;&quot;/>
+          <svg id=&quot;recon-dot-svg&quot; viewBox=&quot;0 0 100 100&quot; preserveAspectRatio=&quot;none&quot;></svg>
+          <div id=&quot;recon-map-loading&quot;>⬡ &nbsp;LOADING SATELLITE IMAGERY</div>
+        </div>
+        <svg id=&quot;map-svg-er&quot; style=&quot;display:none&quot; viewBox=&quot;0 0 720 360&quot; preserveAspectRatio=&quot;xMidYMid meet&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;>
+          <rect width=&quot;720&quot; height=&quot;360&quot; class=&quot;er-ocean&quot;/>
+          <line x1=&quot;60&quot;  y1=&quot;0&quot; x2=&quot;60&quot;  y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;120&quot; y1=&quot;0&quot; x2=&quot;120&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;180&quot; y1=&quot;0&quot; x2=&quot;180&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;240&quot; y1=&quot;0&quot; x2=&quot;240&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;300&quot; y1=&quot;0&quot; x2=&quot;300&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;360&quot; y1=&quot;0&quot; x2=&quot;360&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;420&quot; y1=&quot;0&quot; x2=&quot;420&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;480&quot; y1=&quot;0&quot; x2=&quot;480&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;540&quot; y1=&quot;0&quot; x2=&quot;540&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;600&quot; y1=&quot;0&quot; x2=&quot;600&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;660&quot; y1=&quot;0&quot; x2=&quot;660&quot; y2=&quot;360&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;60&quot;  x2=&quot;720&quot; y2=&quot;60&quot;  class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;120&quot; x2=&quot;720&quot; y2=&quot;120&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;180&quot; x2=&quot;720&quot; y2=&quot;180&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;240&quot; x2=&quot;720&quot; y2=&quot;240&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;300&quot; x2=&quot;720&quot; y2=&quot;300&quot; class=&quot;er-gl&quot;/>
+          <line x1=&quot;0&quot; y1=&quot;180&quot; x2=&quot;720&quot; y2=&quot;180&quot; stroke=&quot;#3a3060&quot; stroke-width=&quot;0.8&quot;/>
+          <!-- Landmasses -->
+          <path class=&quot;er-land&quot; d=&quot;M 28,56 L 32,52 L 44,48 L 60,44 L 72,42 L 84,44 L 90,50 L 96,52 L 100,58 L 98,68 L 92,76 L 90,86 L 86,94 L 84,104 L 80,112 L 78,124 L 76,132 L 80,138 L 82,148 L 80,158 L 76,164 L 72,168 L 68,172 L 66,178 L 68,184 L 74,188 L 76,196 L 72,200 L 68,204 L 62,208 L 56,212 L 52,218 L 50,226 L 48,232 L 44,236 L 40,238 L 36,236 L 32,230 L 28,224 L 24,218 L 20,210 L 18,202 L 16,194 L 14,184 L 12,172 L 10,160 L 8,148 L 6,136 L 6,124 L 8,112 L 10,100 L 12,90 L 14,80 L 16,70 L 20,62 L 24,58 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 96,28 L 106,24 L 118,22 L 128,24 L 134,30 L 132,38 L 126,44 L 118,48 L 108,50 L 100,48 L 96,42 L 94,34 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 68,204 L 72,200 L 76,204 L 80,210 L 78,216 L 74,220 L 70,218 L 66,212 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 70,218 L 80,212 L 90,210 L 100,212 L 108,218 L 112,228 L 116,240 L 114,254 L 110,268 L 104,280 L 96,292 L 88,302 L 82,310 L 78,316 L 74,320 L 70,316 L 66,308 L 62,296 L 60,282 L 60,268 L 62,254 L 64,242 L 66,230 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 340,72 L 348,68 L 356,66 L 364,68 L 370,74 L 372,82 L 368,90 L 362,96 L 354,100 L 346,98 L 340,92 L 338,84 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 346,52 L 354,48 L 362,48 L 368,52 L 370,60 L 366,68 L 358,72 L 350,70 L 344,64 L 342,56 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 360,60 L 380,52 L 408,48 L 436,50 L 460,56 L 476,66 L 482,80 L 478,94 L 468,104 L 452,110 L 436,112 L 416,108 L 398,100 L 382,92 L 370,82 L 362,72 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 458,116 L 472,112 L 490,112 L 506,116 L 514,126 L 512,138 L 504,146 L 490,150 L 474,148 L 462,140 L 456,128 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 356,130 L 370,122 L 390,118 L 412,116 L 432,118 L 448,126 L 458,138 L 462,154 L 460,170 L 454,186 L 448,202 L 440,218 L 430,232 L 418,246 L 406,260 L 396,272 L 388,282 L 382,290 L 378,294 L 372,290 L 366,280 L 360,266 L 356,250 L 352,234 L 350,218 L 350,202 L 352,186 L 354,170 L 354,154 L 354,140 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 472,216 L 476,210 L 480,214 L 480,224 L 476,232 L 472,228 L 470,220 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 460,48 L 500,40 L 550,36 L 600,36 L 640,40 L 666,48 L 680,60 L 684,74 L 678,88 L 664,98 L 644,104 L 618,108 L 590,108 L 562,104 L 536,96 L 512,88 L 494,80 L 476,70 L 464,60 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 494,112 L 514,108 L 536,108 L 554,114 L 566,126 L 564,142 L 552,154 L 536,162 L 520,166 L 504,162 L 492,150 L 488,136 L 490,122 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 560,126 L 578,120 L 598,118 L 614,124 L 622,134 L 618,146 L 606,154 L 590,158 L 574,154 L 562,144 L 558,132 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 560,80 L 588,76 L 614,76 L 636,82 L 650,92 L 654,106 L 646,118 L 630,126 L 610,130 L 588,128 L 568,120 L 554,108 L 552,94 L 556,84 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 648,90 L 652,86 L 658,88 L 660,96 L 656,104 L 650,106 L 646,100 L 646,94 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 590,222 L 610,214 L 634,212 L 656,216 L 672,228 L 678,244 L 674,260 L 662,272 L 644,280 L 622,280 L 602,272 L 588,258 L 582,242 L 582,228 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 330,74 L 334,70 L 338,72 L 338,80 L 334,86 L 330,84 L 328,78 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 296,54 L 304,50 L 312,52 L 314,60 L 308,66 L 298,64 L 294,58 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 6,52 L 14,46 L 28,42 L 40,42 L 48,46 L 48,56 L 40,62 L 26,64 L 12,62 L 6,56 Z&quot;/>
+          <path class=&quot;er-land&quot; d=&quot;M 628,148 L 632,144 L 636,148 L 634,156 L 630,158 L 626,154 Z&quot;/>
+          <!-- Installation pings: x=(lon+180)*2  y=(90-lat)*2 -->
+          <circle class=&quot;er-idot&quot; cx=&quot;125.7&quot; cy=&quot;114.6&quot; r=&quot;2.2&quot; fill=&quot;#4db88a&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;125.7&quot; cy=&quot;114.6&quot; r=&quot;1&quot; stroke=&quot;#4db88a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;207.4&quot; cy=&quot;106.1&quot; r=&quot;2.2&quot; fill=&quot;#4db88a&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;207.4&quot; cy=&quot;106.1&quot; r=&quot;1&quot; stroke=&quot;#4db88a&quot; style=&quot;animation-delay:.6s&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;202&quot;   cy=&quot;109.7&quot; r=&quot;1.8&quot; fill=&quot;#d4a05a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;44.1&quot;  cy=&quot;137.3&quot; r=&quot;2&quot;   fill=&quot;#4db88a&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;44.1&quot; cy=&quot;137.3&quot; r=&quot;1&quot; stroke=&quot;#4db88a&quot; style=&quot;animation-delay:1.1s&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;125.1&quot; cy=&quot;113.3&quot; r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;164.4&quot; cy=&quot;117.7&quot; r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;186.9&quot; cy=&quot;119&quot;   r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;185&quot;   cy=&quot;106.7&quot; r=&quot;1.6&quot; fill=&quot;#d4a05a&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot;  r=&quot;2&quot;   fill=&quot;#7c6af7&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;375.2&quot; cy=&quot;81.1&quot; r=&quot;1&quot; stroke=&quot;#7c6af7&quot; style=&quot;animation-delay:1.8s&quot;/>
+          <circle class=&quot;er-idot&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;2&quot;   fill=&quot;#7c6af7&quot;/>
+          <circle class=&quot;er-pring&quot; cx=&quot;615.5&quot; cy=&quot;127.3&quot; r=&quot;1&quot; stroke=&quot;#7c6af7&quot; style=&quot;animation-delay:.3s&quot;/>
+          <!-- Legend -->
+          <rect x=&quot;4&quot; y=&quot;330&quot; width=&quot;200&quot; height=&quot;26&quot; rx=&quot;2&quot; fill=&quot;rgba(9,8,15,.75)&quot; stroke=&quot;#2a2545&quot; stroke-width=&quot;.5&quot;/>
+          <circle cx=&quot;14&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#4db88a&quot;/>
+          <text x=&quot;20&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#4db88a&quot;>HIGH</text>
+          <circle cx=&quot;56&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#d4a05a&quot;/>
+          <text x=&quot;62&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#d4a05a&quot;>MID</text>
+          <circle cx=&quot;94&quot; cy=&quot;340&quot; r=&quot;3&quot; fill=&quot;#7c6af7&quot;/>
+          <text x=&quot;100&quot; y=&quot;344&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#7c6af7&quot;>INTL</text>
+          <circle cx=&quot;14&quot; cy=&quot;352&quot; r=&quot;3&quot; fill=&quot;none&quot; stroke=&quot;#4db88a&quot; stroke-width=&quot;.8&quot;/>
+          <text x=&quot;20&quot; y=&quot;356&quot; font-family=&quot;Share Tech Mono&quot; font-size=&quot;6&quot; fill=&quot;#8a80c0&quot;>PULSE = ACTIVE</text>
+        </svg>
+        <div id=&quot;map-telemetry&quot;>
+          <div class=&quot;tele-region&quot; id=&quot;tele-region&quot;>&amp;#11041; GLOBAL</div>
+          <div class=&quot;tele-row&quot;><span class=&quot;tele-key&quot;>INSTALLATIONS</span><span class=&quot;tele-val&quot; id=&quot;tele-count&quot;>70</span></div>
+          <div class=&quot;tele-row&quot;><span class=&quot;tele-key&quot;>AVG SCORE</span><span class=&quot;tele-val g&quot; id=&quot;tele-score&quot;>68</span></div>
+          <div class=&quot;tele-row&quot;><span class=&quot;tele-key&quot;>CRIT. FACILITIES</span><span class=&quot;tele-val&quot; id=&quot;tele-fac&quot;>249</span></div>
+          <div class=&quot;tele-row&quot;><span class=&quot;tele-key&quot;>HIGH PRIORITY</span><span class=&quot;tele-val g&quot; id=&quot;tele-high&quot;>2</span></div>
+          <div class=&quot;tele-row&quot;><span class=&quot;tele-key&quot;>TOP ASSET</span><span class=&quot;tele-val a&quot; id=&quot;tele-asset&quot;>NAVY</span></div>
+        </div>
+      </div>
+      <div style=&quot;font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin-bottom:8px;&quot;>ZOOM TO REGION</div>
+      <div class=&quot;region-grid&quot;>
+        <div class=&quot;region-btn&quot; id=&quot;rbtn-conus&quot;   onclick=&quot;selectRegion(this,&apos;CONUS&apos;)&quot;><span class=&quot;region-count&quot;>42</span>CONUS</div>
+        <div class=&quot;region-btn&quot; id=&quot;rbtn-pacific&quot; onclick=&quot;selectRegion(this,&apos;PACIFIC&apos;)&quot;><span class=&quot;region-count&quot;>12</span>PACIFIC</div>
+        <div class=&quot;region-btn&quot; id=&quot;rbtn-europe&quot;  onclick=&quot;selectRegion(this,&apos;EUROPE&apos;)&quot;><span class=&quot;region-count&quot;>10</span>EUROPE</div>
+        <div class=&quot;region-btn&quot; id=&quot;rbtn-other&quot;   onclick=&quot;selectRegion(this,&apos;OTHER&apos;)&quot;><span class=&quot;region-count&quot;>6</span>OTHER</div>
+      </div>
+
+      <!-- ── PRIORITY LIST (inline below map) ── -->
+      <div style=&quot;font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin:10px 0 6px;&quot;>RESILIENCY PRIORITY LIST</div>
+      <div class=&quot;sort-row&quot;>
+        <span class=&quot;sort-lbl&quot;>SORT:</span>
+        <button class=&quot;sort-btn active&quot; id=&quot;sort-score&quot;  onclick=&quot;sortList(&apos;score&apos;)&quot;>SCORE</button>
+        <button class=&quot;sort-btn&quot;        id=&quot;sort-branch&quot; onclick=&quot;sortList(&apos;branch&apos;)&quot;>BRANCH</button>
+        <button class=&quot;sort-btn&quot;        id=&quot;sort-region&quot; onclick=&quot;sortList(&apos;region&apos;)&quot;>REGION</button>
+        <button class=&quot;sort-btn&quot;        id=&quot;sort-fac&quot;    onclick=&quot;sortList(&apos;facilities&apos;)&quot;>FACILITIES</button>
+      </div>
+      <div class=&quot;inst-list&quot; id=&quot;inst-list&quot;></div>
+
+
+
+    </div>
+
+    <!-- ── SIMULATE TAB ── -->
+    <div class=&quot;panel&quot; id=&quot;panel-simulate&quot;>
+      <div class=&quot;sim-section-head&quot;>SCENARIO TYPE</div>
+      <div class=&quot;scenario-row&quot;>
+        <div class=&quot;scenario-card selected&quot; id=&quot;sc-type-outage&quot; onclick=&quot;selectScenarioType(&apos;outage&apos;,this)&quot;>
+          <div class=&quot;sc-tag&quot;>&amp;#9889; GRID FAILURE</div>
+          <div class=&quot;sc-name&quot;>Utility Outage</div>
+          <div class=&quot;sc-desc&quot;>Simulate commercial grid severance and backup activation timeline</div>
+        </div>
+        <div class=&quot;scenario-card&quot; id=&quot;sc-type-disaster&quot; onclick=&quot;selectScenarioType(&apos;disaster&apos;,this)&quot;>
+          <div class=&quot;sc-tag&quot;>&amp;#9928; NATURAL EVENT</div>
+          <div class=&quot;sc-name&quot;>Disaster Strike</div>
+          <div class=&quot;sc-desc&quot;>Model hurricane, earthquake or flood impact on energy resilience</div>
+        </div>
+      </div>
+
+      <div class=&quot;sim-section-head&quot;>SELECT ENERGY ASSET</div>
+      <div class=&quot;asset-grid&quot;>
+        <div class=&quot;asset-card&quot; id=&quot;asset-smr&quot; onclick=&quot;selectAsset(&apos;SMR&apos;)&quot;>
+          <span class=&quot;asset-icon&quot;>&amp;#9883;</span>
+          <div class=&quot;asset-name&quot;>SMR</div>
+          <div class=&quot;asset-sub&quot;>50&amp;#8211;300MW</div>
+          <div class=&quot;asset-qty zero&quot; id=&quot;qty-SMR&quot;>0</div>
+          <button class=&quot;asset-dec&quot; data-type=&quot;SMR&quot; data-delta=&quot;-1&quot;>&minus;</button>
+          <button class=&quot;asset-inc&quot; data-type=&quot;SMR&quot; data-delta=&quot;1&quot;>+</button>
+        </div>
+        <div class=&quot;asset-card&quot; id=&quot;asset-bess&quot; onclick=&quot;selectAsset(&apos;BESS&apos;)&quot;>
+          <span class=&quot;asset-icon&quot;>&amp;#128267;</span>
+          <div class=&quot;asset-name&quot;>BESS</div>
+          <div class=&quot;asset-sub&quot;>10&amp;#8211;100MWh</div>
+          <div class=&quot;asset-qty zero&quot; id=&quot;qty-BESS&quot;>0</div>
+          <button class=&quot;asset-dec&quot; data-type=&quot;BESS&quot; data-delta=&quot;-1&quot;>&minus;</button>
+          <button class=&quot;asset-inc&quot; data-type=&quot;BESS&quot; data-delta=&quot;1&quot;>+</button>
+        </div>
+        <div class=&quot;asset-card&quot; id=&quot;asset-microgrid&quot; onclick=&quot;selectAsset(&apos;MICROGRID&apos;)&quot;>
+          <span class=&quot;asset-icon&quot;>&amp;#9889;</span>
+          <div class=&quot;asset-name&quot;>MICRO GRID</div>
+          <div class=&quot;asset-sub&quot;>5&amp;#8211;50MW</div>
+          <div class=&quot;asset-qty zero&quot; id=&quot;qty-MICROGRID&quot;>0</div>
+          <button class=&quot;asset-dec&quot; data-type=&quot;MICROGRID&quot; data-delta=&quot;-1&quot;>&minus;</button>
+          <button class=&quot;asset-inc&quot; data-type=&quot;MICROGRID&quot; data-delta=&quot;1&quot;>+</button>
+        </div>
+      </div>
+      <div id=&quot;asset-profile&quot;>
+        <div id=&quot;ap-track-wrap&quot;>
+          <div id=&quot;ap-track&quot;></div>
+        </div>
+        <div id=&quot;ap-dots&quot;></div>
+      </div>
+
+      <div class=&quot;sim-section-head&quot;>SELECT INSTALLATION SITE</div>
+      <div class=&quot;site-picker&quot; id=&quot;site-picker&quot;></div>
+
+      <div id=&quot;impact-panel&quot;>
+        <div style=&quot;font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin-bottom:8px;&quot;>PROJECTED IMPACT</div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>SCENARIO</span><span class=&quot;impact-val&quot; id=&quot;imp-scenario&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>ASSET</span><span class=&quot;impact-val&quot; id=&quot;imp-asset&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>INSTALLATION</span><span class=&quot;impact-val&quot; id=&quot;imp-site&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>CAPACITY</span><span class=&quot;impact-val green&quot; id=&quot;imp-cap&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>EST. COST</span><span class=&quot;impact-val amber&quot; id=&quot;imp-cost&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>RESILIENCY DELTA</span><span class=&quot;impact-val green&quot; id=&quot;imp-delta&quot;>&amp;#8212;</span></div>
+        <div class=&quot;impact-row&quot;><span class=&quot;impact-label&quot;>VIABILITY</span><span class=&quot;impact-val&quot; id=&quot;imp-viab&quot;>&amp;#8212;</span></div>
+      </div>
+      <button id=&quot;run-sim-btn&quot; onclick=&quot;runSimulation()&quot;>&amp;#9654; &amp;nbsp;RUN ANALYSIS</button>
+    </div>
+
+    <!-- ── ANALYZE TAB ── -->
+    <div class=&quot;panel&quot; id=&quot;panel-analyze&quot;>
+      <div class=&quot;analyze-card&quot;>
+        <div class=&quot;an-head&quot;>PORTFOLIO OVERVIEW</div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>TOTAL INSTALLATIONS</span><span class=&quot;an-val&quot;>70</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>HIGH RESILIENCY (&amp;#8805;75)</span><span class=&quot;an-val g&quot;>18</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>MID RESILIENCY (40&amp;#8211;74)</span><span class=&quot;an-val a&quot;>31</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>LOW RESILIENCY (&amp;lt;40)</span><span class=&quot;an-val r&quot;>21</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>SCORING METHOD</span><span class=&quot;an-val&quot;>HC VA+68</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>RESILIENCY SCORE BASIS</span><span class=&quot;an-val a&quot;>&amp;#9881; Methodology TBD</span></div>
+      </div>
+      <div class=&quot;analyze-card&quot;>
+        <div class=&quot;an-head&quot;>TOP PRIORITY INSTALLATIONS</div>
+        <div class=&quot;bar-chart&quot; id=&quot;bar-chart&quot;></div>
+      </div>
+      <div class=&quot;analyze-card&quot;>
+        <div class=&quot;an-head&quot;>FOUNDATIONAL DATA STATUS</div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>Installation Coordinates</span><span class=&quot;an-val g&quot;>&amp;#10003; Lat/Long</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>Critical Facility Counts</span><span class=&quot;an-val a&quot;>&amp;#9881; Mocking</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>SMR Technical Profiles</span><span class=&quot;an-val&quot;>&amp;#9678; VA Ref</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>Resiliency Score Method</span><span class=&quot;an-val a&quot;>&amp;#9881; In Dev</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>BESS Profiles</span><span class=&quot;an-val a&quot;>&amp;#9881; Mocking</span></div>
+        <div class=&quot;an-row&quot;><span class=&quot;an-key&quot;>Microgrid Profiles</span><span class=&quot;an-val a&quot;>&amp;#9881; Mocking</span></div>
+      </div>
+      <div class=&quot;analyze-card&quot;>
+        <div class=&quot;an-head&quot;>STRATEGY FORMULATION</div>
+        <div class=&quot;strategy-item&quot;>
+          <span class=&quot;strat-icon&quot;>&amp;#128200;</span>
+          <div class=&quot;strat-body&quot;>
+            <div class=&quot;strat-title&quot;>SCENARIO MODELING OUTPUT</div>
+            <div class=&quot;strat-desc&quot;>Run grid failure and disaster simulations to identify energy requirements and costs needed to maintain resilience at each installation.</div>
+          </div>
+        </div>
+        <div class=&quot;strategy-item&quot;>
+          <span class=&quot;strat-icon&quot;>&amp;#9878;</span>
+          <div class=&quot;strat-body&quot;>
+            <div class=&quot;strat-title&quot;>PRIORITIZATION ENGINE</div>
+            <div class=&quot;strat-desc&quot;>Resiliency scores create a data-backed hierarchy guiding where to focus SMR, BESS, and microgrid investment first across 70 installations.</div>
+          </div>
+        </div>
+        <div class=&quot;strategy-item&quot;>
+          <span class=&quot;strat-icon&quot;>&amp;#128196;</span>
+          <div class=&quot;strat-body&quot;>
+            <div class=&quot;strat-title&quot;>LONG-TERM STRATEGY</div>
+            <div class=&quot;strat-desc&quot;>Simulation insights directly inform and justify a comprehensive, long-term energy resiliency strategy and investment plan.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIONS TAB ── -->
+    <div class=&quot;panel&quot; id=&quot;panel-actions&quot;>
+      <div style=&quot;font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--pur-h);margin-bottom:10px;&quot;>NEXT STRATEGIC ACTIONS // @PROJECT LEAD</div>
+      <div id=&quot;action-list&quot;></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var INSTALLATIONS = [
+  {rank:1,  name:&apos;Naval Base San Diego&apos;,   branch:&apos;NAVY&apos;, region:&apos;CONUS&apos;,   score:82, facilities:38, lat:32.68,  lon:-117.13},
+  {rank:2,  name:&apos;Naval Station Norfolk&apos;,  branch:&apos;NAVY&apos;, region:&apos;CONUS&apos;,   score:78, facilities:42, lat:36.94,  lon:-76.29},
+  {rank:3,  name:&apos;Fort Liberty (Bragg)&apos;,   branch:&apos;ARMY&apos;, region:&apos;CONUS&apos;,   score:74, facilities:31, lat:35.14,  lon:-79.00},
+  {rank:4,  name:&apos;JB Pearl Harbor-Hickam&apos;, branch:&apos;NAVY&apos;, region:&apos;PACIFIC&apos;, score:71, facilities:28, lat:21.35,  lon:-157.97},
+  {rank:5,  name:&apos;Camp Pendleton&apos;,         branch:&apos;USMC&apos;, region:&apos;CONUS&apos;,   score:68, facilities:24, lat:33.36,  lon:-117.44},
+  {rank:6,  name:&apos;Fort Cavazos (Hood)&apos;,    branch:&apos;ARMY&apos;, region:&apos;CONUS&apos;,   score:65, facilities:29, lat:31.13,  lon:-97.79},
+  {rank:7,  name:&apos;Eglin AFB&apos;,             branch:&apos;AF&apos;,   region:&apos;CONUS&apos;,   score:62, facilities:22, lat:30.48,  lon:-86.53},
+  {rank:8,  name:&apos;Fort Campbell&apos;,         branch:&apos;ARMY&apos;, region:&apos;CONUS&apos;,   score:58, facilities:26, lat:36.66,  lon:-87.48},
+  {rank:9,  name:&apos;Ramstein AB&apos;,           branch:&apos;AF&apos;,   region:&apos;EUROPE&apos;,  score:55, facilities:19, lat:49.44,  lon:7.60},
+  {rank:10, name:&apos;Kadena AB&apos;,             branch:&apos;AF&apos;,   region:&apos;PACIFIC&apos;, score:52, facilities:17, lat:26.36,  lon:127.77},
+];
+
+var ASSET_PROFILES = {
+  SMR: {
+    versions:&apos;NuScale VOYGR, BWXT BANR, Holtec SMR-160, TerraPower Natrium&apos;,
+    cap:&apos;50\u2013300 MW per module&apos;, req:&apos;~15 acres, seismic zone review, NRC permit&apos;,
+    maint:&apos;18\u201324 mo refuel cycle, on-site crew 50+&apos;, life:&apos;60\u201380 years&apos;,
+    ref:&apos;VA 4-site plan: Hampton Roads, Danville, Southwest VA, Northern VA&apos;,
+    cost:&apos;$4.2B&apos;, delta:&apos;+38 pts&apos;, viab:&apos;HIGH&apos;
+  },
+  BESS: {
+    versions:&apos;Tesla Megapack, Fluence Gridstack, BYD MC Cube, CATL EnerD&apos;,
+    cap:&apos;10\u2013100 MWh per system&apos;, req:&apos;<2 acres, HVAC, fire suppression&apos;,
+    maint:&apos;Quarterly BMS check, cell replacement yr 10+&apos;, life:&apos;15\u201325 years&apos;,
+    ref:&apos;N/A \u2014 vendor data sheets&apos;,
+    cost:&apos;$120M&apos;, delta:&apos;+14 pts&apos;, viab:&apos;HIGH&apos;
+  },
+  MICROGRID: {
+    versions:&apos;Schneider EcoStruxure, ABB Ability, Siemens SICAM, S&amp;C IntelliTeam&apos;,
+    cap:&apos;5\u201350 MW distributed&apos;, req:&apos;Distribution network integration, SCADA&apos;,
+    maint:&apos;Annual inspection, firmware updates, switch gear&apos;, life:&apos;20\u201330 years&apos;,
+    ref:&apos;DoD ESTCP microgrid demonstration program&apos;,
+    cost:&apos;$85M&apos;, delta:&apos;+11 pts&apos;, viab:&apos;MED&apos;
+  }
+};
+
+var ACTIONS = [
+  {title:&apos;Map 70 Global Installations&apos;, desc:&apos;Plot all 70 installations onto the world map with precise lat/long coordinates. Use HC VA+68 installation list as source.&apos;, tag:&apos;PROJECT LEAD · TBD&apos;, done:false},
+  {title:&apos;Define Resiliency Score Methodology&apos;, desc:&apos;Develop criteria for mock priority list ranking. Factor: critical facility count, grid dependency, mission criticality, geographic risk.&apos;, tag:&apos;PROJECT LEAD · TBD&apos;, done:false},
+  {title:&apos;Assign Critical Facility Counts&apos;, desc:&apos;Define and assign a mock number of critical facilities for each installation to test scoring hierarchy.&apos;, tag:&apos;PROJECT LEAD · TBD&apos;, done:false},
+  {title:&apos;Compile Energy Source Profiles&apos;, desc:&apos;Detail SMR, BESS, and microgrid technical and operational profiles for all versions. Reference Virginia\&apos;s 4-site SMR plan.&apos;, tag:&apos;PROJECT LEAD · TBD&apos;, done:false},
+];
+
+var selAsset = new Set(), selSite = null, selScenarioType = &apos;outage&apos;, sortKey = &apos;score&apos;;
+var assetQty = {SMR:0, BESS:0, MICROGRID:0};
+
+function adjQty(type, delta){
+  var next = (assetQty[type]||0) + delta;
+  if(next < 0) next = 0;
+  if(next > 99) next = 99;
+  assetQty[type] = next;
+  var el = document.getElementById(&apos;qty-&apos;+type);
+  if(el){
+    el.textContent = next;
+    el.classList.toggle(&apos;zero&apos;, next===0);
+  }
+  // Auto-select the card when qty > 0, deselect when back to 0
+  if(next > 0 && !selAsset.has(type)){
+    selAsset.add(type);
+    var card = document.getElementById(&apos;asset-&apos;+type.toLowerCase());
+    if(card) card.classList.add(&apos;selected&apos;);
+    buildApCarousel();
+    updateImpact();
+  } else if(next === 0 && selAsset.has(type)){
+    selAsset.delete(type);
+    var card = document.getElementById(&apos;asset-&apos;+type.toLowerCase());
+    if(card) card.classList.remove(&apos;selected&apos;);
+    buildApCarousel();
+    updateImpact();
+  }
+}
+
+var _mapInited=false;
+function switchTab(el) {
+  document.querySelectorAll(&apos;.tab&apos;).forEach(function(t){t.classList.remove(&apos;active&apos;);});
+  el.classList.add(&apos;active&apos;);
+  var tab = el.dataset.tab;
+  document.querySelectorAll(&apos;.panel&apos;).forEach(function(p){p.classList.remove(&apos;active&apos;);});
+  document.getElementById(&apos;panel-&apos;+tab).classList.add(&apos;active&apos;);
+  if(tab===&apos;globe&apos;){
+    if(!_mapInited){_mapInited=true;initMapEr();}
+    else{ setTimeout(function(){ _smLoad(_smLat,_smLon,_smZoom); },50); }
+  }
+}
+
+function sortList(key) {
+  sortKey = key;
+  document.querySelectorAll(&apos;.sort-btn&apos;).forEach(function(b){b.classList.remove(&apos;active&apos;);});
+  document.getElementById(&apos;sort-&apos;+key).classList.add(&apos;active&apos;);
+  renderInstList();
+}
+
+function selectScenarioType(type, el) {
+  selScenarioType = type;
+  document.querySelectorAll(&apos;.scenario-card&apos;).forEach(function(c){c.classList.remove(&apos;selected&apos;);});
+  el.classList.add(&apos;selected&apos;);
+  updateImpact();
+}
+
+// ══════════════════════════════════════════════════════
+// MAP ENGINE — TomTom Static Image API (no library)
+// Single <img> request; pan/zoom updates the URL.
+// ══════════════════════════════════════════════════════
+var TT_KEY = &apos;YOUR_TOMTOM_API_KEY&apos;;
+
+// Map state
+var _smLat  = 20,   _smLon = 0,   _smZoom = 2;
+var _smW    = 720,  _smH   = 400;
+
+// Region fly targets [lat, lon, zoom]
+var ER_REGIONS = {
+  CONUS:   [38.5,  -98.0, 4],
+  PACIFIC: [20.0,  165.0, 3],
+  EUROPE:  [50.0,   10.0, 4],
+  OTHER:   [15.0,   70.0, 3]
+};
+
+function scoreColor(s){ return s>=75?&apos;#4db88a&apos;:s>=50?&apos;#d4a05a&apos;:&apos;#e05a5a&apos;; }
+function scoreCls(s){   return s>=75?&apos;high&apos;  :s>=50?&apos;mid&apos;  :&apos;low&apos;;    }
+
+// Lon/lat → pixel x/y within the static image
+// TomTom static image uses Web Mercator. For zoom Z, the world is 256*2^Z px.
+function _llToImgPx(lat, lon) {
+  var worldPx = 256 * Math.pow(2, _smZoom);
+  var sinLat  = Math.sin(lat * Math.PI / 180);
+  var wx = (lon + 180) / 360 * worldPx;
+  var wy = (0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * worldPx;
+  var cx = ((_smLon + 180) / 360) * worldPx;
+  var sinC = Math.sin(_smLat * Math.PI / 180);
+  var cy = (0.5 - Math.log((1 + sinC) / (1 - sinC)) / (4 * Math.PI)) * worldPx;
+  return {
+    x: (wx - cx) + _smW / 2,
+    y: (wy - cy) + _smH / 2
+  };
+}
+
+function _smUrl() {
+  var w = _smW, h = _smH;
+  // TomTom Static Map API
+  var url = &apos;https://api.tomtom.com/map/1/staticimage&apos;
+    + &apos;?key=&apos;       + TT_KEY
+    + &apos;&zoom=&apos;      + _smZoom
+    + &apos;&center=&apos;    + _smLon.toFixed(4) + &apos;,&apos; + _smLat.toFixed(4)
+    + &apos;&width=&apos;     + w
+    + &apos;&height=&apos;    + h
+    + &apos;&style=satellite&apos;
+    + &apos;&layer=hybrid&apos;;
+  return url;
+}
+
+function _smRenderDots() {
+  var svg = document.getElementById(&apos;recon-dot-svg&apos;);
+  if (!svg) return;
+  svg.innerHTML = &apos;&apos;;
+  // viewBox matches image pixels
+  svg.setAttribute(&apos;viewBox&apos;, &apos;0 0 &apos; + _smW + &apos; &apos; + _smH);
+  INSTALLATIONS.forEach(function(inst, i) {
+    var px = _llToImgPx(inst.lat, inst.lon);
+    // Skip if off-screen
+    if (px.x < -20 || px.x > _smW + 20 || px.y < -20 || px.y > _smH + 20) return;
+    var c   = scoreColor(inst.score);
+    var cls = scoreCls(inst.score);
+    var g = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;g&apos;);
+    g.setAttribute(&apos;class&apos;, &apos;er-static-dot&apos;);
+    g.setAttribute(&apos;data-i&apos;, i);
+    // Outer ring pulse
+    var ring = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;circle&apos;);
+    ring.setAttribute(&apos;cx&apos;, px.x); ring.setAttribute(&apos;cy&apos;, px.y);
+    ring.setAttribute(&apos;r&apos;, 10);
+    ring.setAttribute(&apos;fill&apos;, &apos;none&apos;);
+    ring.setAttribute(&apos;stroke&apos;, c);
+    ring.setAttribute(&apos;stroke-width&apos;, &apos;0.8&apos;);
+    ring.setAttribute(&apos;opacity&apos;, &apos;0.4&apos;);
+    // Core dot
+    var dot = document.createElementNS(&apos;http://www.w3.org/2000/svg&apos;, &apos;circle&apos;);
+    dot.setAttribute(&apos;cx&apos;, px.x); dot.setAttribute(&apos;cy&apos;, px.y);
+    dot.setAttribute(&apos;r&apos;, 6);
+    dot.setAttribute(&apos;fill&apos;, c);
+    dot.setAttribute(&apos;fill-opacity&apos;, &apos;0.88&apos;);
+    dot.setAttribute(&apos;stroke&apos;, &apos;rgba(9,8,15,.5)&apos;);
+    dot.setAttribute(&apos;stroke-width&apos;, &apos;1&apos;);
+    g.appendChild(ring);
+    g.appendChild(dot);
+    // Tap → selectInst
+    (function(idx){ g.addEventListener(&apos;click&apos;, function(){ selectInst(idx); }); })(i);
+    svg.appendChild(g);
+  });
+}
+
+function _smLoad(lat, lon, zoom) {
+  _smLat = lat; _smLon = lon; _smZoom = zoom;
+  var img     = document.getElementById(&apos;recon-map-img&apos;);
+  var loading = document.getElementById(&apos;recon-map-loading&apos;);
+  if (!img) return;
+  // Measure actual container size
+  var wrap = document.getElementById(&apos;map-wrap-er&apos;);
+  if (wrap) { _smW = wrap.offsetWidth || 720; _smH = wrap.offsetHeight || 400; }
+  if (loading) loading.classList.remove(&apos;hidden&apos;);
+  img.style.opacity = &apos;0.3&apos;;
+  var url = _smUrl();
+  var tmpImg = new Image();
+  tmpImg.onload = function() {
+    img.src = url;
+    img.style.opacity = &apos;1&apos;;
+    if (loading) loading.classList.add(&apos;hidden&apos;);
+    _smRenderDots();
+    _erZBadge();
+  };
+  tmpImg.onerror = function() {
+    if (loading) {
+      loading.classList.remove(&apos;hidden&apos;);
+      loading.textContent = &apos;⚠ MAP UNAVAILABLE — CHECK API KEY&apos;;
+    }
+    img.style.opacity = &apos;1&apos;;
+  };
+  tmpImg.src = url;
+}
+
+function _erZBadge() {
+  var b = document.getElementById(&apos;er-zoom-badge&apos;);
+  if (b) b.textContent = _smZoom + &apos;×&apos;;
+}
+
+function initMapEr() {
+  var wrap = document.getElementById(&apos;map-wrap-er&apos;);
+  if (wrap) { _smW = wrap.offsetWidth || 720; _smH = wrap.offsetHeight || 400; }
+  _smLoad(_smLat, _smLon, _smZoom);
+}
+
+function erZoom(f) {
+  var newZ = f < 1 ? Math.min(_smZoom + 1, 17) : Math.max(_smZoom - 1, 1);
+  _smLoad(_smLat, _smLon, newZ);
+}
+function erZoomReset() { _smLoad(20, 0, 2); }
+var REGION_TELE = {
+  GLOBAL:  {label:&apos;&amp;#11041; GLOBAL&apos;,  count:&apos;70&apos;, score:&apos;68&apos;, fac:&apos;249&apos;, high:&apos;2&apos;,  asset:&apos;NAVY&apos;},
+  CONUS:   {label:&apos;&amp;#11041; CONUS&apos;,   count:&apos;42&apos;, score:&apos;72&apos;, fac:&apos;186&apos;, high:&apos;2&apos;,  asset:&apos;NAVY&apos;},
+  PACIFIC: {label:&apos;&amp;#11041; PACIFIC&apos;, count:&apos;12&apos;, score:&apos;66&apos;, fac:&apos;38&apos;,  high:&apos;1&apos;,  asset:&apos;NAVY&apos;},
+  EUROPE:  {label:&apos;&amp;#11041; EUROPE&apos;,  count:&apos;10&apos;, score:&apos;58&apos;, fac:&apos;19&apos;,  high:&apos;0&apos;,  asset:&apos;AF&apos;},
+  OTHER:   {label:&apos;&amp;#11041; OTHER&apos;,   count:&apos;6&apos;,  score:&apos;51&apos;, fac:&apos;6&apos;,   high:&apos;0&apos;,  asset:&apos;AF&apos;},
+};
+function updateTelemetry(region){
+  var d=REGION_TELE[region]||REGION_TELE.GLOBAL;
+  document.getElementById(&apos;tele-region&apos;).innerHTML=d.label;
+  document.getElementById(&apos;tele-count&apos;).textContent=d.count;
+  document.getElementById(&apos;tele-score&apos;).textContent=d.score;
+  document.getElementById(&apos;tele-fac&apos;).textContent=d.fac;
+  document.getElementById(&apos;tele-high&apos;).textContent=d.high;
+  document.getElementById(&apos;tele-asset&apos;).textContent=d.asset;
+}
+function selectRegion(el,region){
+  var already=el.classList.contains(&apos;sel&apos;);
+  document.querySelectorAll(&apos;.region-btn&apos;).forEach(function(b){b.classList.remove(&apos;sel&apos;);});
+  if(already){
+    _smLoad(20,0,2);
+    updateTelemetry(&apos;GLOBAL&apos;);
+  } else {
+    el.classList.add(&apos;sel&apos;);
+    var t=ER_REGIONS[region];
+    if(t)_smLoad(t[0],t[1],t[2]);
+    updateTelemetry(region);
+  }
+}
+// erOnWheel removed — Leaflet handles scroll zoom
+// SVG pan/touch engine removed — Leaflet native
+// initMapEr() defined in MAP ENGINE block above
+
+function renderInstList(){
+  var sorted=INSTALLATIONS.slice().sort(function(a,b){
+    if(sortKey===&apos;score&apos;)return b.score-a.score;
+    if(sortKey===&apos;facilities&apos;)return b.facilities-a.facilities;
+    if(sortKey===&apos;branch&apos;)return a.branch.localeCompare(b.branch);
+    if(sortKey===&apos;region&apos;)return a.region.localeCompare(b.region);
+    return 0;
+  });
+  var list=document.getElementById(&apos;inst-list&apos;);
+  list.innerHTML=sorted.map(function(inst,i){
+    var cls=inst.score>=75?&apos;high&apos;:inst.score>=50?&apos;mid&apos;:&apos;low&apos;;
+    var oi=INSTALLATIONS.indexOf(inst);
+    return &apos;<div class=&quot;inst-row&quot; onclick=&quot;selectInst(&apos;+oi+&apos;)&quot; id=&quot;inst-&apos;+oi+&apos;&quot;>&apos;
+      +&apos;<div class=&quot;inst-rank&quot;>&apos;+(i+1)+&apos;</div>&apos;
+      +&apos;<div class=&quot;inst-info&quot;><div class=&quot;inst-name&quot;>&apos;+inst.name+&apos;</div>&apos;
+      +&apos;<div class=&quot;inst-meta&quot;>&apos;+inst.branch+&apos; \xb7 &apos;+inst.region+&apos; \xb7 &apos;+inst.facilities+&apos; crit. fac.</div></div>&apos;
+      +&apos;<div class=&quot;inst-score-wrap&quot;><div class=&quot;inst-score &apos;+cls+&apos;&quot;>&apos;+inst.score+&apos;</div>&apos;
+      +&apos;<div class=&quot;inst-score-bar-wrap&quot;><div class=&quot;inst-score-bar &apos;+cls+&apos;&quot; style=&quot;width:&apos;+inst.score+&apos;%&quot;></div></div></div>&apos;
+      +&apos;<button class=&quot;inst-save-btn&quot; onclick=&quot;event.stopPropagation();saveReconSiteByIdx(&apos;+oi+&apos;)&quot;>&#x2B21;</button>&apos;
+      +&apos;</div>&apos;;
+  }).join(&apos;&apos;);
+}
+function selectInst(i){
+  document.querySelectorAll(&apos;.inst-row&apos;).forEach(function(r){r.classList.remove(&apos;selected&apos;);});
+  var el=document.getElementById(&apos;inst-&apos;+i); if(el)el.classList.add(&apos;selected&apos;);
+  var inst=INSTALLATIONS[i];
+  if(!inst)return;
+  // Scroll #main to top so map is visible
+  var mainEl=document.getElementById(&apos;main&apos;);
+  if(mainEl)mainEl.scrollTop=0;
+  // Fly static map to installation at zoom 8
+  _smLoad(inst.lat, inst.lon, 8);
+  // Track selected inst + show topbar save button
+  _selectedInstIdx=i;
+  var tbBtn=document.getElementById(&apos;tb-save-btn&apos;);
+  if(tbBtn){
+    tbBtn.classList.add(&apos;ready&apos;);
+    tbBtn.classList.remove(&apos;saved&apos;);
+    tbBtn.innerHTML=&apos;&#x2B21; &apos;+inst.name.split(&apos; &apos;).slice(-1)[0].toUpperCase();
+  }
+}
+
+function renderSitePicker(){
+  var wrap=document.getElementById(&apos;site-picker&apos;);
+  wrap.innerHTML=INSTALLATIONS.slice(0,8).map(function(inst,i){
+    var cls=inst.score>=75?&apos;high&apos;:inst.score>=50?&apos;mid&apos;:&apos;low&apos;;
+    return &apos;<div class=&quot;site-row&quot; onclick=&quot;selectSite(&apos;+i+&apos;,this)&quot;>&apos;
+      +&apos;<div class=&quot;site-dot &apos;+cls+&apos;&quot;></div>&apos;
+      +&apos;<span class=&quot;site-name&quot;>&apos;+inst.name+&apos;</span>&apos;
+      +&apos;<span class=&quot;site-score&quot;>&apos;+inst.score+&apos;</span></div>&apos;;
+  }).join(&apos;&apos;);
+}
+
+function buildApCarousel(){
+  var ap=document.getElementById(&apos;asset-profile&apos;);
+  var track=document.getElementById(&apos;ap-track&apos;);
+  var dotsEl=document.getElementById(&apos;ap-dots&apos;);
+  if(!ap||!track||!dotsEl)return;
+  var types=Array.from(selAsset);
+  if(types.length===0){ ap.classList.remove(&apos;show&apos;); return; }
+  ap.classList.add(&apos;show&apos;);
+  // Build slides
+  track.innerHTML=types.map(function(t){
+    var p=ASSET_PROFILES[t]; if(!p)return &apos;&apos;;
+    var tLabel=(t===&apos;MICROGRID&apos;)?&apos;MICRO GRID&apos;:t;
+    var qtyStr=(assetQty[t]&&assetQty[t]>0)?&apos; × &apos;+assetQty[t]:&apos;&apos;;
+    return &apos;<div class=&quot;ap-slide&quot;>&apos;
+      +&apos;<div class=&quot;ap-head&quot; style=&quot;color:var(--pur-h);font-family:var(--dsp);font-size:9px;letter-spacing:2px;margin-bottom:7px;&quot;>&apos;+tLabel+qtyStr+&apos; // ASSET PROFILE</div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>VERSIONS</span><span class=&quot;ap-val&quot;>&apos;+p.versions+&apos;</span></div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>CAPACITY RANGE</span><span class=&quot;ap-val g&quot;>&apos;+p.cap+&apos;</span></div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>INSTALL REQ</span><span class=&quot;ap-val&quot;>&apos;+p.req+&apos;</span></div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>MAINTENANCE</span><span class=&quot;ap-val&quot;>&apos;+p.maint+&apos;</span></div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>OPERATIONAL LIFE</span><span class=&quot;ap-val&quot;>&apos;+p.life+&apos;</span></div>&apos;
+      +&apos;<div class=&quot;ap-row&quot;><span class=&quot;ap-key&quot;>VA REFERENCE</span><span class=&quot;ap-val a&quot;>&apos;+p.ref+&apos;</span></div>&apos;
+      +&apos;</div>&apos;;
+  }).join(&apos;&apos;);
+  // Build dots (only if multiple slides)
+  if(types.length>1){
+    dotsEl.innerHTML=types.map(function(_,i){
+      return &apos;<div class=&quot;ap-dot&apos;+(i===0?&apos; active&apos;:&apos;&apos;)+&apos;&quot; data-idx=&quot;&apos;+i+&apos;&quot;></div>&apos;;
+    }).join(&apos;&apos;);
+    dotsEl.style.display=&apos;flex&apos;;
+    // Scroll listener → update active dot
+    track.onscroll=function(){
+      var idx=Math.round(track.scrollLeft/track.clientWidth);
+      dotsEl.querySelectorAll(&apos;.ap-dot&apos;).forEach(function(d,i){
+        d.classList.toggle(&apos;active&apos;,i===idx);
+      });
+    };
+    // Tap dot → scroll to slide
+    dotsEl.querySelectorAll(&apos;.ap-dot&apos;).forEach(function(d){
+      d.addEventListener(&apos;touchend&apos;,function(e){
+        e.preventDefault();
+        var idx=parseInt(d.dataset.idx)||0;
+        track.scrollTo({left:idx*track.clientWidth,behavior:&apos;smooth&apos;});
+      },{passive:false});
+      d.onclick=function(){
+        var idx=parseInt(d.dataset.idx)||0;
+        track.scrollTo({left:idx*track.clientWidth,behavior:&apos;smooth&apos;});
+      };
+    });
+  } else {
+    dotsEl.innerHTML=&apos;&apos;;
+    dotsEl.style.display=&apos;none&apos;;
+    track.onscroll=null;
+  }
+  // Scroll to the newly tapped asset's slide
+  var lastIdx=types.length-1;
+  requestAnimationFrame(function(){
+    track.scrollTo({left:lastIdx*track.clientWidth,behavior:&apos;smooth&apos;});
+    // Update dot immediately
+    dotsEl.querySelectorAll(&apos;.ap-dot&apos;).forEach(function(d,i){
+      d.classList.toggle(&apos;active&apos;,i===lastIdx);
+    });
+  });
+}
+
+function selectAsset(type){
+  // Toggle: tap again to deselect
+  if(selAsset.has(type)){
+    selAsset.delete(type);
+    var card=document.getElementById(&apos;asset-&apos;+type.toLowerCase());
+    if(card)card.classList.remove(&apos;selected&apos;);
+  } else {
+    selAsset.add(type);
+    var card=document.getElementById(&apos;asset-&apos;+type.toLowerCase());
+    if(card)card.classList.add(&apos;selected&apos;);
+  }
+  buildApCarousel();
+  updateImpact();
+}
+function selectSite(i,el){
+  selSite=i;
+  document.querySelectorAll(&apos;.site-row&apos;).forEach(function(r){r.classList.remove(&apos;selected&apos;);});
+  el.classList.add(&apos;selected&apos;);
+  updateImpact();
+}
+function updateImpact(){
+  if(!selAsset||selAsset.size===0||selSite===null)return;
+  var inst=INSTALLATIONS[selSite];
+  var _assetKey=Array.from(selAsset)[selAsset.size-1];
+  var asset=ASSET_PROFILES[_assetKey];
+  if(!asset)return;
+  var scLabel=selScenarioType===&apos;outage&apos;?&apos;Grid Failure&apos;:&apos;Disaster Strike&apos;;
+  document.getElementById(&apos;imp-scenario&apos;).textContent=scLabel;
+  document.getElementById(&apos;imp-asset&apos;).textContent=Array.from(selAsset).map(function(a){return a===&apos;MICROGRID&apos;?&apos;MICRO GRID&apos;:a;}).join(&apos; + &apos;);
+  document.getElementById(&apos;imp-site&apos;).textContent=inst.name;
+  document.getElementById(&apos;imp-cap&apos;).textContent=asset.cap;
+  document.getElementById(&apos;imp-cost&apos;).textContent=asset.cost;
+  document.getElementById(&apos;imp-delta&apos;).textContent=asset.delta;
+  document.getElementById(&apos;imp-viab&apos;).textContent=asset.viab;
+  document.getElementById(&apos;impact-panel&apos;).classList.add(&apos;show&apos;);
+}
+function runSimulation(){
+  if(!selAsset||selAsset.size===0||selSite===null)return;
+  var btn=document.getElementById(&apos;run-sim-btn&apos;);
+  btn.textContent=&apos;\u27f3  ANALYZING...&apos;; btn.style.opacity=&apos;.6&apos;;
+  setTimeout(function(){
+    btn.textContent=&apos;\u2713  ANALYSIS COMPLETE&apos;; btn.style.opacity=&apos;1&apos;; btn.style.color=&apos;#4db88a&apos;; btn.style.borderColor=&apos;rgba(77,184,138,.4)&apos;;
+    setTimeout(function(){btn.textContent=&apos;\u25b6 \u00a0RUN ANALYSIS&apos;;btn.style.color=&apos;&apos;;btn.style.borderColor=&apos;&apos;;},2800);
+  },1600);
+}
+
+function renderBarChart(){
+  var top5=INSTALLATIONS.slice(0,5);
+  document.getElementById(&apos;bar-chart&apos;).innerHTML=top5.map(function(inst){
+    return &apos;<div class=&quot;bar-row&quot;><div class=&quot;bar-lbl&quot;>&apos;+inst.name.split(&apos; &apos;).pop()+&apos;</div>&apos;
+      +&apos;<div class=&quot;bar-track&quot;><div class=&quot;bar-fill&quot; style=&quot;width:&apos;+inst.score+&apos;%&quot;></div></div>&apos;
+      +&apos;<div class=&quot;bar-val&quot;>&apos;+inst.score+&apos;</div></div>&apos;;
+  }).join(&apos;&apos;);
+}
+
+function renderActions(){
+  document.getElementById(&apos;action-list&apos;).innerHTML=ACTIONS.map(function(a,i){
+    return &apos;<div class=&quot;action-item&quot;>&apos;
+      +&apos;<div class=&quot;action-cb&apos;+(a.done?&apos; done&apos;:&apos;&apos;)+&apos;&quot; onclick=&quot;toggleAction(&apos;+i+&apos;,this)&quot;></div>&apos;
+      +&apos;<div class=&quot;action-body&quot;><div class=&quot;action-title&quot;>&apos;+a.title+&apos;</div>&apos;
+      +&apos;<div class=&quot;action-desc&quot;>&apos;+a.desc+&apos;</div>&apos;
+      +&apos;<span class=&quot;action-tag&quot;>&apos;+a.tag+&apos;</span></div></div>&apos;;
+  }).join(&apos;&apos;);
+}
+function toggleAction(i,el){ACTIONS[i].done=!ACTIONS[i].done;el.classList.toggle(&apos;done&apos;);}
+
+// ── SAVE RECON SITE ──
+function saveReconSiteByIdx(i){
+  var inst=INSTALLATIONS[i];
+  if(!inst)return;
+  var site={
+    id:&apos;RC-&apos;+inst.branch+&apos;-&apos;+Date.now().toString(36).toUpperCase().slice(-5),
+    name:inst.name, branch:inst.branch, region:inst.region,
+    score:inst.score, facilities:inst.facilities,
+    lat:inst.lat, lon:inst.lon, savedAt:new Date().toISOString()
+  };
+  window.parent.postMessage({type:&apos;SAVE_RECON_SITE&apos;,site:site},&apos;*&apos;);
+  // Flash the row save button green
+  var row=document.getElementById(&apos;inst-&apos;+i);
+  if(row){
+    var btn=row.querySelector(&apos;.inst-save-btn&apos;);
+    if(btn){
+      btn.classList.add(&apos;saved&apos;);
+      btn.textContent=&apos;✓&apos;;
+      setTimeout(function(){btn.classList.remove(&apos;saved&apos;);btn.textContent=&apos;⬡&apos;;},2000);
+    }
+  }
+}
+function saveReconSite(){
+  var btn=document.getElementById(&apos;save-recon-btn&apos;);
+  if(btn&&btn.dataset.instIdx)saveReconSiteByIdx(parseInt(btn.dataset.instIdx));
+}
+
+var _selectedInstIdx = null;
+
+function tbSaveReconSite(){
+  if(_selectedInstIdx===null)return;
+  saveReconSiteByIdx(_selectedInstIdx);
+  var btn=document.getElementById(&apos;tb-save-btn&apos;);
+  if(btn){
+    btn.classList.add(&apos;saved&apos;);
+    btn.textContent=&apos;✓ SAVED&apos;;
+    setTimeout(function(){
+      btn.classList.remove(&apos;saved&apos;);
+      btn.innerHTML=&apos;&#x2B21; SAVE SITE&apos;;
+    },2000);
+  }
+}
+
+function initAssetButtons(){
+  document.querySelectorAll(&apos;.asset-dec,.asset-inc&apos;).forEach(function(btn){
+    btn.addEventListener(&apos;touchend&apos;, function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var type  = btn.dataset.type;
+      var delta = parseInt(btn.dataset.delta);
+      adjQty(type, delta);
+    }, {passive:false});
+    // Desktop fallback
+    btn.addEventListener(&apos;click&apos;, function(e){
+      e.stopPropagation();
+      var type  = btn.dataset.type;
+      var delta = parseInt(btn.dataset.delta);
+      adjQty(type, delta);
+    });
+  });
+}
+
+renderInstList(); renderSitePicker(); renderBarChart(); renderActions(); updateTelemetry(&apos;GLOBAL&apos;); initAssetButtons();
+// Map init deferred — fires after overlay is visible and container has height
+setTimeout(function(){ if(!_mapInited){_mapInited=true;initMapEr();} },300);
+// ERECON_OPEN: re-init static map with correct container dimensions
+window.addEventListener(&apos;message&apos;,function(ev){
+  if(!ev.data)return;
+  if(ev.data.type===&apos;ERECON_OPEN&apos;){
+    if(!_mapInited){_mapInited=true;initMapEr();}
+    else{ setTimeout(function(){ _smLoad(_smLat,_smLon,_smZoom); },80); }
+  }
+});
+</script>
+</body>
+</html>"
+  ></iframe>
+</div>
+
 <script>
 // ── AUTH STATE — top-level so showSplash() can reset it ──
 var authEnabled = false;
@@ -5270,6 +6924,14 @@ function bootScan() {
 function openApp(id) {
   document.getElementById('launcher-shell').classList.add('pushed');
   document.getElementById(id).classList.add('visible');
+  if(id==='overlay-erecon'){
+    var _ef=document.getElementById('frame-erecon');
+    if(_ef&&_ef.contentWindow){
+      setTimeout(function(){
+        try{_ef.contentWindow.postMessage({type:'ERECON_OPEN'},'*');}catch(e){}
+      },120);
+    }
+  }
   if (id === 'overlay-builder') {
     var fr = document.getElementById('frame-builder');
     if (fr) {
@@ -5407,8 +7069,249 @@ function reloadWargameFrame() {
   };
 })();
 
+// ═══ DATA INGEST ═══
+var ingestFiles = [];
+
+function ingestDragOver(e) {
+  e.preventDefault();
+  document.getElementById('ingest-dropzone').classList.add('drag-over');
+}
+function ingestDragLeave(e) {
+  document.getElementById('ingest-dropzone').classList.remove('drag-over');
+}
+function ingestDrop(e) {
+  e.preventDefault();
+  document.getElementById('ingest-dropzone').classList.remove('drag-over');
+  ingestFilesAdded(e.dataTransfer.files);
+}
+function ingestFilesAdded(fileList) {
+  var allowed = ['pdf','doc','docx','ppt','pptx','xls','xlsx'];
+  Array.from(fileList).forEach(function(f) {
+    var ext = f.name.split('.').pop().toLowerCase();
+    if (!allowed.includes(ext)) return;
+    // dedupe by name+size
+    if (ingestFiles.find(function(x){ return x.name===f.name && x.size===f.size; })) return;
+    ingestFiles.push({ name: f.name, size: f.size, ext: ext, ts: new Date() });
+  });
+  // reset file input so same file can be re-added if removed
+  var inp = document.getElementById('ingest-file-input');
+  if (inp) inp.value = '';
+  ingestRender();
+}
+function ingestFormatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(0) + ' KB';
+  return (bytes/(1024*1024)).toFixed(1) + ' MB';
+}
+function ingestFormatDate(d) {
+  var mo = d.getMonth()+1, dy = d.getDate();
+  var h = d.getHours(), m = d.getMinutes();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return (mo<10?'0'+mo:mo)+'/'+(dy<10?'0'+dy:dy)+' '+h+':'+(m<10?'0'+m:m)+' '+ampm;
+}
+function ingestDelete(idx) {
+  ingestFiles.splice(idx, 1);
+  ingestRender();
+}
+function ingestRender() {
+  var list = document.getElementById('ingest-file-list');
+  var badge = document.getElementById('ingest-count-badge');
+  var count = ingestFiles.length;
+  badge.textContent = count + (count === 1 ? ' FILE' : ' FILES');
+  if (!count) {
+    list.innerHTML = '<div class="ingest-empty-row" id="ingest-empty-msg">No documents uploaded yet</div>';
+    return;
+  }
+  list.innerHTML = ingestFiles.map(function(f, i) {
+    return '<div class="ingest-file-row">' +
+      '<span class="ingest-file-type">' + f.ext.toUpperCase() + '</span>' +
+      '<span class="ingest-file-name">' + f.name + '</span>' +
+      '<span class="ingest-file-size">' + ingestFormatSize(f.size) + '</span>' +
+      '<span class="ingest-file-date">' + ingestFormatDate(f.ts) + '</span>' +
+      '<button class="ingest-file-del" onclick="ingestDelete(' + i + ')" title="Remove">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
 // ═══ SAVED SCENARIOS ═══
-var savedScenarios = [];
+var savedScenarios  = [];
+var savedReconSites = [];
+var _checkedReconSites = {};
+
+function renderReconSites() {
+  var list  = document.getElementById('recon-site-list');
+  var badge = document.getElementById('recon-count-badge');
+  if (!list) return;
+
+  _checkedReconSites = {};
+  updateReconBar();
+
+  if (!savedReconSites.length) {
+    list.innerHTML = '<div class="ingest-empty-row" id="recon-empty-msg" style="color:var(--txd);padding:18px 0 10px;">No recon sites saved yet</div>';
+    if (badge) badge.textContent = '0 SAVED';
+    return;
+  }
+
+  if (badge) badge.textContent = savedReconSites.length + ' SAVED';
+  list.innerHTML = '';
+
+  savedReconSites.forEach(function(site, i) {
+    var cls = site.score >= 75 ? 'high' : site.score >= 50 ? 'mid' : 'low';
+    var row = document.createElement('div');
+    row.className = 'recon-row';
+
+    // Checkbox
+    var checkWrap = document.createElement('div');
+    checkWrap.className = 'recon-check-wrap';
+    checkWrap.addEventListener('touchend', function(e) { e.preventDefault(); toggleReconCheck(i); }, { passive: false });
+    checkWrap.onclick = function(e) { e.stopPropagation(); toggleReconCheck(i); };
+    var cb = document.createElement('div');
+    cb.className = 'recon-checkbox';
+    cb.id = 'recon-cb-' + i;
+    checkWrap.appendChild(cb);
+
+    // Main content
+    var main = document.createElement('div');
+    main.className = 'recon-row-main';
+    main.innerHTML =
+      '<div class="recon-row-id">' + site.id + '</div>' +
+      '<div class="recon-row-name">' + site.name + '</div>' +
+      '<div class="recon-row-meta">' + site.branch + ' · ' + site.region + ' · ' + site.facilities + ' crit. fac.</div>';
+    main.onclick = function() { openReconFromSite(i); };
+
+    // Score pill
+    var pill = document.createElement('div');
+    pill.className = 'recon-score-pill ' + cls;
+    pill.textContent = site.score;
+
+    // Delete
+    var del = document.createElement('button');
+    del.className = 'recon-btn-del';
+    del.textContent = '✕';
+    del.title = 'Delete';
+    del.addEventListener('touchend', function(e) { e.preventDefault(); deleteReconSite(i); }, { passive: false });
+    del.onclick = function(e) { e.stopPropagation(); deleteReconSite(i); };
+
+    row.appendChild(checkWrap);
+    row.appendChild(main);
+    row.appendChild(pill);
+    row.appendChild(del);
+    list.appendChild(row);
+  });
+
+  // Append print bar
+  var bar = document.getElementById('recon-print-bar');
+  if (bar) {
+    list.parentNode.appendChild(bar);
+
+  }
+}
+
+function toggleReconCheck(i) {
+  _checkedReconSites[i] = !_checkedReconSites[i];
+  var cb = document.getElementById('recon-cb-' + i);
+  if (cb) cb.classList.toggle('checked', !!_checkedReconSites[i]);
+  updateReconBar();
+}
+
+function updateReconBar() {
+  var count = Object.keys(_checkedReconSites).filter(function(k) { return _checkedReconSites[k]; }).length;
+  var bar   = document.getElementById('recon-print-bar');
+  var label = document.getElementById('recon-print-bar-label');
+  if (!bar) return;
+  if (count > 0) {
+    bar.classList.add('visible');
+    if (label) label.textContent = count === 1 ? '1 selected' : count + ' selected';
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+function deleteReconSite(i) {
+  savedReconSites.splice(i, 1);
+  renderReconSites();
+  var hs = document.getElementById('hub-scroll');
+  if (hs) { hs.style.overflowY = 'hidden'; requestAnimationFrame(function() { hs.style.overflowY = ''; }); }
+}
+
+function openReconFromSite(i) {
+  var site = savedReconSites[i];
+  if (!site) return;
+  openApp('overlay-erecon');
+}
+
+// ── Build HTML for one recon site (white-background print format) ──
+function buildReconSiteHTML(site) {
+  function row(k,v){ return '<div style="border-bottom:1px solid #e0e0e0;padding:5px 0"><div style="font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#555">'+k+'</div><div style="font-size:12px;font-weight:700">'+v+'</div></div>'; }
+  return '<div style="margin-bottom:40px;padding-bottom:40px;border-bottom:2px dashed #ccc">' +
+    '<div style="font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-bottom:2px solid #7c6af7;padding-bottom:8px;margin-bottom:16px">e-RECON // '+site.name+'</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 20px">' +
+      row('ID', site.id) +
+      row('BRANCH', site.branch) +
+      row('REGION', site.region) +
+      row('RESILIENCY SCORE', site.score) +
+      row('CRIT. FACILITIES', site.facilities) +
+      row('COORDINATES', site.lat+'°N, '+site.lon+'°') +
+      row('SAVED AT', site.savedAt ? new Date(site.savedAt).toLocaleString() : '—') +
+    '</div>' +
+  '</div>';
+}
+
+// ── Build full report HTML blob ──
+function _buildReconReportHTML() {
+  var selected = savedReconSites.filter(function(s,i){ return !!_checkedReconSites[i]; });
+  if (!selected.length) selected = savedReconSites.slice();
+  if (!selected.length) return null;
+  var filename = 'iNED-ReconSites-' + selected.map(function(s){ return s.id; }).join('-') + '.html';
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>iNED Recon Site Report</title>' +
+    '<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Courier New",monospace;background:#fff;color:#111;padding:24px;font-size:12px;line-height:1.65}</style>' +
+    '</head><body>' +
+    selected.map(buildReconSiteHTML).join('') +
+    '</body></html>';
+  return { html: html, filename: filename };
+}
+var _rcpCachedReport = null;
+
+// ── Open preview overlay (mirrors printSelectedScenarios exactly) ──
+function printSelectedReconSites() {
+  var selected = savedReconSites.filter(function(s,i){ return !!_checkedReconSites[i]; });
+  if (!selected.length) selected = savedReconSites.slice();
+  if (!selected.length) return;
+  var body = document.getElementById('rcp-preview-body');
+  if (body) body.innerHTML = selected.map(buildReconSiteHTML).join('');
+  _rcpCachedReport = _buildReconReportHTML();
+  var overlay = document.getElementById('rcp-preview-overlay');
+  if (overlay) { overlay.classList.add('open'); if (body) body.scrollTop = 0; }
+}
+
+// ── PRINT / SAVE — window.print() triggers iOS native print/share sheet ──
+function rcpPrint() { window.print(); }
+
+// ── SHARE — navigator.share with File API (mirrors scpShare exactly) ──
+function rcpShare() {
+  var result = _rcpCachedReport || _buildReconReportHTML();
+  if (!result) return;
+  var blob = new Blob([result.html], { type: 'text/html' });
+  var file = new File([blob], result.filename, { type: 'text/html' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: 'iNED Recon Site Report' }).catch(function(err) {
+      if (err && err.name !== 'AbortError') { rcpPrint(); }
+    });
+  } else if (navigator.share) {
+    navigator.share({ title: 'iNED Recon Site Report', text: 'Recon site export from iNED e-RECON AI' }).catch(function(){});
+  } else {
+    rcpPrint();
+  }
+}
+
+// ── Close overlay ──
+function closeReconPreview() {
+  var overlay = document.getElementById('rcp-preview-overlay');
+  if (overlay) overlay.classList.remove('open');
+  _rcpCachedReport = null;
+}
 
 function printScenario(sc) {
   // ── Build assets list ──
@@ -5714,14 +7617,23 @@ function scpPrint() {
   window.print();
 }
 
-// ── ⬆ SHARE — Web Share API; falls back to new-tab if unsupported ──
+// ── ⬆ SHARE — navigator.share with File API (HTTPS required); falls back to print ──
 function scpShare() {
   var result = _scpCachedReport || _buildReportHTML();
   if (!result) return;
-  var pw = window.open('', '_blank', 'width=900,height=700');
-  if (!pw) return;
-  pw.document.write(result.html.replace('</body>', '<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt></body>'));
-  pw.document.close();
+  var blob = new Blob([result.html], { type: 'text/html' });
+  var file = new File([blob], result.filename, { type: 'text/html' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: 'iNED Scenario Report' }).catch(function(err) {
+      if (err && err.name !== 'AbortError') { scpPrint(); }
+    });
+  } else if (navigator.share) {
+    // Share text URL fallback
+    navigator.share({ title: 'iNED Scenario Report', text: 'Scenario export from iNED Command Hub' }).catch(function() {});
+  } else {
+    // Final fallback: open print dialog
+    scpPrint();
+  }
 }
 
 function closeScenarioPreview() {
@@ -5754,9 +7666,10 @@ function renderSavedScenarios() {
   _checkedScenarios = {};
   updatePrintBar();
 
+  var emptyMsg = document.getElementById('saved-empty-msg');
   if (!savedScenarios.length) {
     card.classList.remove('has-rows');
-    list.innerHTML = '';
+    list.innerHTML = '<div class="ingest-empty-row" id="saved-empty-msg" style="color:var(--txd);padding:18px 0 10px;">No scenarios saved yet</div>';
     return;
   }
 
@@ -5851,10 +7764,22 @@ window.addEventListener('message', function(e) {
     return;
   }
   if (d.type === 'CLOSE_BUILDER')    closeApp('overlay-builder');
+  if (d.type === 'SAVE_RECON_SITE') {
+    savedReconSites.push(d.site);
+    renderReconSites();
+    // Auto-switch Files card to Recon Sites tab
+    if (typeof switchFilesTab === 'function') switchFilesTab('recon');
+    // iOS hit-test refresh
+    var hs = document.getElementById('hub-scroll');
+    if (hs) { hs.style.overflowY = 'hidden'; requestAnimationFrame(function() { hs.style.overflowY = ''; }); }
+    return;
+  }
   if (d.type === 'SAVE_SCENARIO') {
     savedScenarios.push(d.scenario);
     renderSavedScenarios();
     closeApp('overlay-builder');
+    // Auto-switch Files card to Saved Scenarios tab
+    if (typeof switchFilesTab === 'function') switchFilesTab('saved');
     // Force iOS -webkit-overflow-scrolling hit-test refresh.
     // When DOM is injected into a composited scroll layer, iOS WebKit
     // caches the old hit-test map and new elements don't receive touches
@@ -5888,12 +7813,33 @@ window.addEventListener('message', function(e) {
             if (err && err.name === 'AbortError') { e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'cancelled' }, '*'); return; }
           }
         }
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url; a.download = d.filename || 'NES-Formula-Reference.pdf';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function() { try { URL.revokeObjectURL(url); } catch(x) {} }, 30000);
-        e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'downloaded' }, '*');
+        // iOS: try navigator.share with File API first; fall back to object URL
+        var fname = d.filename || 'NES-Formula-Reference.pdf';
+        if (navigator.canShare && navigator.canShare({ files: [blob] })) {
+          var shareFile = new File([blob], fname, { type: 'application/pdf' });
+          navigator.share({ files: [shareFile], title: fname }).then(function() {
+            e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'shared' }, '*');
+          }).catch(function(shareErr) {
+            if (shareErr && shareErr.name === 'AbortError') {
+              e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'cancelled' }, '*');
+            } else {
+              // share failed — fall back to URL download
+              var url2 = URL.createObjectURL(blob);
+              var a2 = document.createElement('a');
+              a2.href = url2; a2.download = fname;
+              document.body.appendChild(a2); a2.click(); a2.remove();
+              setTimeout(function() { try { URL.revokeObjectURL(url2); } catch(x) {} }, 30000);
+              e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'downloaded' }, '*');
+            }
+          });
+        } else {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = fname;
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function() { try { URL.revokeObjectURL(url); } catch(x) {} }, 30000);
+          e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'downloaded' }, '*');
+        }
       } catch(err) {
         e.source.postMessage({ type: 'SAVE_PDF_DONE', status: 'error', msg: err && err.message ? err.message : String(err) }, '*');
       }
@@ -5920,6 +7866,18 @@ window.addEventListener('message', function(e) {
 
 startClock();
 bootScan();
+
+// ── FILES CARD TAB SWITCHER ──
+function switchFilesTab(tab) {
+  document.querySelectorAll('.files-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.files-panel').forEach(function(p){ p.classList.remove('active'); });
+  var tabEl = document.getElementById('ftab-'+tab);
+  var panelEl = document.getElementById('fpanel-'+tab);
+  if (tabEl)   tabEl.classList.add('active');
+  if (panelEl) panelEl.classList.add('active');
+  // When switching to saved, refresh the list so new saves show immediately
+  if (tab === 'saved') renderSavedScenarios();
+}
 
 // ── THEME TOGGLE ──
 (function() {
@@ -6334,7 +8292,7 @@ function launchSim() {
     {ts:'06:00:07', key:'AI',       val:'capra ready',   cls:''},
     {ts:'06:00:08', key:'CERT',     val:'3 cert expirations pending', cls:'warn'},
     {ts:'06:00:09', key:'BESS',     val:'NS Norfolk 40 MWh — OP',    cls:'ok'},
-    {ts:'06:00:10', key:'SYS',      val:'iNED v101 — ALL SYSTEMS GO', cls:'ok'},
+    {ts:'06:00:10', key:'SYS',      val:'iNED v127 — ALL SYSTEMS GO', cls:'ok'},
   ];
   var lineIdx = 0;
   function streamLine() {
@@ -6453,7 +8411,63 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() { c.classList.add('revealed'); }, 300 + i * 180);
   });
 
+  // ── e-RECON launch button — touchend for iOS -webkit-overflow-scrolling ──
+  var ereconBtn = document.getElementById('erecon-launch-btn');
+  if (ereconBtn) {
+    ereconBtn.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      openApp('overlay-erecon');
+    }, { passive: false });
+  }
 
+  // ── Recon PRINT PDF button — touchend for iOS -webkit-overflow-scrolling ──
+  // onclick is silently blocked inside -webkit-overflow-scrolling:touch containers
+  var reconPrintBtn = document.getElementById('recon-print-bar-btn');
+  if (reconPrintBtn) {
+    reconPrintBtn.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      printSelectedReconSites();
+    }, { passive: false });
+  }
+
+  // ── Scenario PRINT PDF button — same fix for consistency ──
+  var scPrintBtn = document.getElementById('sc-print-bar-btn');
+  if (scPrintBtn) {
+    scPrintBtn.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      printSelectedScenarios();
+    }, { passive: false });
+  }
+
+  // ── Recon preview overlay buttons ──
+  [
+    { id: 'rcp-share-btn',    fn: function() { rcpShare(); } },
+    { id: 'rcp-print-btn',    fn: function() { rcpPrint(); } },
+    { id: 'rcp-preview-close',fn: function() { closeReconPreview(); } },
+  ].forEach(function(b) {
+    var el = document.getElementById(b.id);
+    if (el) el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      b.fn();
+    }, { passive: false });
+  });
+
+  // ── Scenario preview overlay buttons ──
+  [
+    { id: 'scp-share-btn',    fn: function() { scpShare(); } },
+    { id: 'scp-print-btn',    fn: function() { scpPrint(); } },
+    { id: 'scp-preview-close',fn: function() { closeScenarioPreview(); } },
+  ].forEach(function(b) {
+    var el = document.getElementById(b.id);
+    if (el) el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      b.fn();
+    }, { passive: false });
+  });
 });
 
 document.addEventListener('keydown', function(e) {
@@ -6471,12 +8485,13 @@ document.addEventListener('keydown', function(e) {
     var mc = document.getElementById('masthead-clock');
     if (!mc) return;
     var now = new Date();
-    // Convert to EDT (UTC-4)
-    var edt = new Date(now.getTime() - 4 * 3600000);
-    var h = String(edt.getUTCHours()).padStart(2,'0');
-    var m = String(edt.getUTCMinutes()).padStart(2,'0');
-    var s = String(edt.getUTCSeconds()).padStart(2,'0');
-    mc.textContent = h + ':' + m + ':' + s + ' EDT';
+    // Use locale time with 24h format + timezone abbreviation
+    var h = String(now.getHours()).padStart(2,'0');
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var s = String(now.getSeconds()).padStart(2,'0');
+    // Get short timezone name (e.g. EDT, PDT, GMT+1)
+    var tzStr = now.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop() || 'LCL';
+    mc.textContent = h + ':' + m + ':' + s + ' ' + tzStr;
   }
   tickMasthead();
   setInterval(tickMasthead, 1000);
