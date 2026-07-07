@@ -514,6 +514,66 @@ html::after {
   .nes-exec-sub-grid { grid-template-columns: 1fr; }
 }
 
+/* ── CARD: eSimReconAI ── */
+.card-esim::before {
+  background: linear-gradient(90deg, transparent, #b0b8c4, transparent);
+  opacity: .65;
+}
+@media (hover:hover) {
+  .card-esim:hover {
+    border-color: rgba(176,184,196,.4);
+    box-shadow: var(--card-bevel), 0 0 20px rgba(176,184,196,.1);
+  }
+}
+.card-esim .card-badge  { color: #b0b8c4; }
+.card-esim .card-desc em { color: #ccd2da; }
+.card-esim .meta-pill {
+  border-color: rgba(176,184,196,.25);
+  color: rgba(176,184,196,.85);
+  background: rgba(176,184,196,.06);
+}
+.card-esim .launch-btn {
+  background: rgba(176,184,196,.13);
+  color: #b0b8c4;
+  border: 1px solid rgba(176,184,196,.38);
+  border-radius: 10px;
+}
+.card-esim .launch-btn:active,
+.card-esim .launch-btn:hover {
+  background: rgba(176,184,196,.22);
+  box-shadow: 0 0 12px rgba(176,184,196,.2);
+}
+
+/* ── CARD: Intel Archive (SYS-03) ── */
+.card-intel::before {
+  background: linear-gradient(90deg, transparent, #d4855a, transparent);
+  opacity: .65;
+}
+@media (hover:hover) {
+  .card-intel:hover {
+    border-color: rgba(212,133,90,.4);
+    box-shadow: var(--card-bevel), 0 0 20px rgba(212,133,90,.1);
+  }
+}
+.card-intel .card-badge  { color: #d4855a; }
+.card-intel .card-desc em { color: #e0a080; }
+.card-intel .meta-pill {
+  border-color: rgba(212,133,90,.25);
+  color: rgba(212,133,90,.85);
+  background: rgba(212,133,90,.06);
+}
+.card-intel .launch-btn {
+  background: rgba(212,133,90,.13);
+  color: #d4855a;
+  border: 1px solid rgba(212,133,90,.38);
+  border-radius: 10px;
+}
+.card-intel .launch-btn:active,
+.card-intel .launch-btn:hover {
+  background: rgba(212,133,90,.22);
+  box-shadow: 0 0 12px rgba(212,133,90,.2);
+}
+
 /* ── CARD 3: NES AI ── */
 .card-duers::before {
   background: linear-gradient(90deg, transparent, #f2b826, transparent);
@@ -729,7 +789,7 @@ html::after {
 }
 
 
-/* ── WIDE SCREENS — stay 2-col, increase max-width ── */
+/* ── WIDE SCREENS — stay 2-col ── */
 @media (min-width: 900px) {
   #card-grid {
     grid-template-columns: 1fr 1fr !important;
@@ -1082,7 +1142,7 @@ html::after {
 .sp-classif.bottom { bottom: 12px; }
 
 #sp-status {
-  position: absolute; top: 20px; right: 28px;
+  position: absolute; top: 20px; left: 28px;
   display: flex; align-items: center; gap: 7px; z-index: 20;
 }
 .sp-status-dot {
@@ -1092,8 +1152,6 @@ html::after {
 }
 @keyframes spStatusPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.5)} }
 .sp-status-lbl { font-size: 10px; letter-spacing: 3px; color: rgba(0,229,255,0.65); }
-#splash-qr-badge{position:absolute;top:46px;right:22px;z-index:20;width:88px;height:88px;border:1px solid rgba(0,229,255,.25);border-radius:6px;background:rgba(0,0,0,.55);padding:4px;box-shadow:0 2px 16px rgba(0,0,0,.5);pointer-events:none;display:block}
-
 
 #splash-center {
   position: absolute; z-index: 10;
@@ -1335,6 +1393,12 @@ html::after {
   <div class="sp-corner bl"></div>
   <div class="sp-corner br"></div>
 
+  <!-- ── QR CODE: top-right corner ── -->
+  <div style="position:absolute;top:48px;right:28px;z-index:20;display:flex;flex-direction:column;align-items:center;gap:4px;">
+    <img src="data:image/gif;base64,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" alt="Scan to launch" style="width:60px;height:60px;border-radius:4px;border:1px solid rgba(0,229,255,0.35);display:block;"/>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1.5px;color:rgba(0,229,255,0.5);white-space:nowrap;">SCAN TO LAUNCH</span>
+  </div>
+
   <div class="sp-classif top">UNCLASSIFIED // NAVY ENERGY RESILIENCE NETWORK</div>
   <div class="sp-classif bottom">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
 
@@ -1425,8 +1489,6 @@ html::after {
       <div class="sp-metric-val" id="spv3">0%</div>
     </div>
   </div>
-
-  <img id="splash-qr-badge" src="data:image/gif;base64,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" alt="SimMobile QR" draggable="false">
 
 </div>
 
@@ -1535,7 +1597,7 @@ html::after {
       <span class="c-ined-sep">//</span>
       <span class="c-ined-hub">HUB</span>
     </div>
-    <div class="c-tag">2 SYSTEMS ONLINE · UNCLASSIFIED</div>
+    <div class="c-tag">4 SYSTEMS ONLINE · UNCLASSIFIED</div>
     <div class="c-spacer"></div>
     <div class="c-clock" id="wall-clock">--:--:-- ET</div>
     <span style="font-family:var(--mono);font-size:13px;letter-spacing:2px;color:#ffffff;font-weight:700;opacity:.85;white-space:nowrap;position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;">PROTOTYPE</span>
@@ -1581,79 +1643,83 @@ html::after {
           <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-nes-hub')">&#x2B21; &nbsp;ENTER NES</button>
         </div>
 
-        <!-- ── CARD 2: ENERGY WARGAME ── -->
-        <div class="app-card card-wargame" id="card-wargame">
+        <!-- ── CARD 2: eSimReconAI ── -->
+        <div class="app-card card-esim" id="card-esim-hub" onclick="openApp('overlay-esim-hub')" style="cursor:pointer;">
           <div class="card-head">
-            <div class="card-icon-wrap">
-              <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="6" y="14" width="50" height="36" rx="2" stroke="#4d9e7a" stroke-width="1.5" fill="rgba(77,158,122,0.06)"/>
-                <line x1="6"  y1="26" x2="56" y2="26" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
-                <line x1="6"  y1="38" x2="56" y2="38" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
-                <line x1="22" y1="14" x2="22" y2="50" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
-                <line x1="38" y1="14" x2="38" y2="50" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
-                <circle cx="30" cy="32" r="5" fill="rgba(77,158,122,0.15)" stroke="#4d9e7a" stroke-width="1.5"/>
-                <circle cx="30" cy="32" r="2.5" fill="#4d9e7a">
-                  <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="30" cy="32" r="8" stroke="#4d9e7a" stroke-width=".8" fill="none" opacity="0">
-                  <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite"/>
-                  <animate attributeName="r" values="5;14" dur="2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="16" cy="44" r="2.5" stroke="#4d9e7a" stroke-width="1" fill="rgba(77,158,122,0.1)"/>
-                <circle cx="46" cy="20" r="2.5" stroke="#4d9e7a" stroke-width="1" fill="rgba(77,158,122,0.1)"/>
-                <line x1="30" y1="32" x2="16" y2="44" stroke="#4d9e7a" stroke-width=".8" stroke-dasharray="3 2" opacity=".5"/>
-                <line x1="30" y1="32" x2="46" y2="20" stroke="#4d9e7a" stroke-width=".8" stroke-dasharray="3 2" opacity=".5"/>
-                <path d="M60 10 L55 24 L60 24 L54 38 L62 21 L57 21 Z" fill="#4d9e7a" opacity=".7"/>
-              </svg>
+            <div style="position:relative;width:52px;height:52px;border:2px solid #b0b8c4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--dsp);font-weight:900;font-size:9px;color:#ffffff;letter-spacing:.08em;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(176,184,196,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #b0b8c4,0 0 18px rgba(176,184,196,.35);">
+              eSRA
+              <span style="position:absolute;bottom:-6px;right:-6px;width:24px;height:24px;background:#b0b8c4;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:2px solid rgba(14,24,36,.9);box-shadow:0 0 0 1px #b0b8c4;">AI</span>
             </div>
             <div class="card-head-text">
-              <div class="card-badge">SYS-02 // SIMULATOR</div>
-              <div class="card-title">Energy Resilience Wargame Simulator AI</div>
+              <div class="card-badge">SYS-02 // eSIMRECONAI</div>
+              <div class="card-title"><span style="color:#b0b8c4;">eSimRecon</span><span style="color:#ffffff;">AI</span></div>
             </div>
           </div>
           <div class="card-desc">
-            A <em>7-phase scenario simulation</em> of a grid failure at a major military installation — mapping, criticality tagging, outage trigger, backup activation, and resource depletion — ending with a full post-mortem cost analysis.<br><br>
-            Choose a scenario: <em>NB San Diego</em> (utility outage) or <em>NS Norfolk</em> (hurricane).
+            <em>Military installation readiness simulator</em> — scenario simulation and live e-Recon intelligence panel. Combines wargame analysis with real-time reconnaissance across monitored nodes.
           </div>
-          <div class="card-meta" id="wargame-meta-A">
-            <span class="meta-pill">7 Phases</span>
-            <span class="meta-pill">NB San Diego</span>
-            <span class="meta-pill">Live Map</span>
-            <span class="meta-pill">Warning Orders</span>
-            <span class="meta-pill">SDG&amp;E Outage</span>
+          <div class="card-meta">
+            <span class="meta-pill">Scenario Sim</span>
+            <span class="meta-pill">e-Recon</span>
+            <span class="meta-pill">2 Modules</span>
           </div>
-          <div class="card-meta" id="wargame-meta-B" style="display:none">
-            <span class="meta-pill">7 Phases</span>
-            <span class="meta-pill">NS Norfolk</span>
-            <span class="meta-pill">Hurricane Event</span>
-            <span class="meta-pill">Navy DDG-51</span>
-            <span class="meta-pill">BESS Barge</span>
-          </div>
-          <div id="sc-select-wrap">
-            <div class="sc-select-label">SELECT SCENARIO</div>
-            <div class="sc-options">
-              <div class="sc-opt active" id="sc-opt-A" onclick="selectScenario('A');">
-                <div class="sc-opt-tag">A · NAVY</div>
-                <div class="sc-opt-name">NB San Diego</div>
-                <div class="sc-opt-detail">Utility Outage · San Diego CA</div>
-              </div>
-              <div class="sc-opt" id="sc-opt-B" onclick="selectScenario('B');">
-                <div class="sc-opt-tag">B · NAVY</div>
-                <div class="sc-opt-name">NS Norfolk</div>
-                <div class="sc-opt-detail">Hurricane · Hampton Roads VA</div>
-              </div>
+          <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-esim-hub')">&#x2B21; &nbsp;ENTER eSIMRECONAI</button>
+        </div>
+
+        <!-- ── CARD 3: Intel Archive (SYS-03) ── -->
+        <div class="app-card card-intel" id="card-intel-hub" onclick="openApp('overlay-intel-hub')" style="cursor:pointer;">
+          <div class="card-head">
+            <div style="position:relative;width:52px;height:52px;border:2px solid #d4855a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--dsp);font-weight:900;font-size:9px;color:#ffffff;letter-spacing:.08em;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(212,133,90,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #d4855a,0 0 18px rgba(212,133,90,.35);">
+              INT
+              <span style="position:absolute;bottom:-6px;right:-6px;width:24px;height:24px;background:#d4855a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:2px solid rgba(14,24,36,.9);box-shadow:0 0 0 1px #d4855a;">03</span>
+            </div>
+            <div class="card-head-text">
+              <div class="card-badge">SYS-03 // INTEL ARCHIVE</div>
+              <div class="card-title"><span style="color:#d4855a;">Saved</span> <span style="color:#ffffff;">Scenarios &amp; Recon</span></div>
             </div>
           </div>
-          <div style="display:flex;gap:8px;margin-top:0">
-            <button class="launch-btn" onclick="launchSim()"
-              style="flex:1;background:rgba(77,158,122,.18);color:var(--sage);border:1px solid rgba(77,158,122,.42);border-radius:10px;font-size:10px;letter-spacing:1.8px;padding:13px 0;">
-              &#9654; &nbsp;LAUNCH SIMULATION
-            </button>
-            <button class="launch-btn" id="builder-btn" onclick="openApp('overlay-builder')"
-              style="flex:0 0 auto;width:auto;padding:13px 16px;background:rgba(200,146,74,.13);color:#c8924a;border-color:rgba(200,146,74,.36);font-size:8px;letter-spacing:1.8px;border-radius:10px">
-              ⚙︎ &nbsp;BUILDER
-            </button>
+          <div class="card-desc">
+            <em>Persistent intelligence archive</em> — saved scenario playbacks and catalogued recon site records. Review past simulation runs, compare grid failure outcomes, and browse geo-tagged installation intelligence entries.
           </div>
+          <div class="card-meta">
+            <span class="meta-pill">Saved Scenarios</span>
+            <span class="meta-pill">Recon Sites</span>
+            <span class="meta-pill">2 Modules</span>
+          </div>
+          <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-intel-hub')">&#x2B21; &nbsp;ENTER INTEL ARCHIVE</button>
+        </div>
+
+        <!-- ── CARD 4: Data Drop Zone (SYS-04) ── -->
+        <div class="app-card card-esim" id="card-dropzone-hub" onclick="closeApp('overlay-esim-hub');openApp('overlay-dropzone');" style="cursor:pointer;">
+          <div class="card-head">
+            <div class="card-icon-wrap">
+              <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="12" y="20" width="48" height="36" rx="4" stroke="#b0b8c4" stroke-width="1.4" fill="rgba(176,184,196,0.05)" stroke-dasharray="5 3"/>
+                <line x1="36" y1="6" x2="36" y2="26" stroke="#b0b8c4" stroke-width="2" opacity=".8"/>
+                <polyline points="28,20 36,28 44,20" stroke="#b0b8c4" stroke-width="2" fill="none" stroke-linejoin="round" opacity=".8"/>
+                <rect x="20" y="34" width="10" height="13" rx="1.5" stroke="#b0b8c4" stroke-width="1" fill="rgba(176,184,196,0.1)"/>
+                <rect x="42" y="34" width="10" height="13" rx="1.5" stroke="#b0b8c4" stroke-width="1" fill="rgba(176,184,196,0.1)"/>
+                <line x1="44" y1="38" x2="50" y2="38" stroke="#b0b8c4" stroke-width=".8" opacity=".5"/>
+                <line x1="44" y1="41" x2="50" y2="41" stroke="#b0b8c4" stroke-width=".8" opacity=".4"/>
+                <line x1="44" y1="44" x2="48" y2="44" stroke="#b0b8c4" stroke-width=".8" opacity=".3"/>
+                <circle cx="36" cy="50" r="3" fill="rgba(176,184,196,0.2)" stroke="#b0b8c4" stroke-width="1"><animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/></circle>
+              </svg>
+            </div>
+            <div class="card-head-text">
+              <div class="card-badge">SYS-04 // DATA DROP ZONE</div>
+              <div class="card-title"><span style="color:#b0b8c4;">Data</span> <span style="color:#ffffff;">Drop Zone</span></div>
+            </div>
+          </div>
+          <div class="card-desc">
+            <em>Secure data ingest portal</em> — structured upload zone for scenario datasets, sensor exports, NOAA weather archives, and DoD logistics files feeding eSimReconAI analysis.<br><br>
+            Supports <em>XLSX, CSV, JSON</em> with auto-classification on ingest.
+          </div>
+          <div class="card-meta">
+            <span class="meta-pill">XLSX / CSV</span>
+            <span class="meta-pill">JSON</span>
+            <span class="meta-pill">Auto-Classify</span>
+          </div>
+          <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-dropzone');">&#x2B21; &nbsp;ENTER DATA DROP ZONE</button>
         </div>
 
       </div><!-- #card-grid -->
@@ -1758,6 +1824,142 @@ html::after {
           <span class="meta-pill">12 Slides</span>
         </div>
         <button class="launch-btn" onclick="event.stopPropagation();closeApp('overlay-nes-hub');setTimeout(function(){launchBriefing();},420);">&#x2B21; &nbsp;LAUNCH SYS-01B</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: eSIMRECONAI HUB (SYS-02)
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-esim-hub">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-esim-hub')">&#8592; HUB</button>
+    <span class="overlay-app-name" style="color:#b0b8c4;">eSIMRECONAI</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#d9d3c7;display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;gap:18px;">
+
+    <!-- header -->
+    <div style="background:var(--card-bg);border:1px solid rgba(176,184,196,.28);border-radius:14px;padding:10px 20px;width:100%;max-width:900px;margin-bottom:8px;text-align:center;">
+      <div class="hub-eyebrow">SYS-02 // eSIMRECONAI</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+        <div style="position:relative;width:52px;height:52px;border:2px solid #b0b8c4;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--dsp);font-weight:900;font-size:9px;color:#fff;letter-spacing:.08em;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(176,184,196,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #b0b8c4,0 0 18px rgba(176,184,196,.35);">
+          eSRA
+          <span style="position:absolute;bottom:-6px;right:-6px;width:24px;height:24px;background:#b0b8c4;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:2px solid rgba(14,24,36,.9);">AI</span>
+        </div>
+        <div class="hub-title" style="margin-bottom:0;"><span style="color:#b0b8c4;">eSIMRECON</span><span style="color:#ffffff;">AI</span></div>
+      </div>
+      <div class="hub-sub" style="margin-top:4px;">Select a module to launch</div>
+    </div>
+
+    <!-- Three sub-cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;width:100%;max-width:900px;">
+
+      <!-- SYS-02A: Scenario Simulator -->
+      <div class="app-card card-wargame" style="cursor:pointer;" onclick="closeApp('overlay-esim-hub');setTimeout(function(){launchSim();},420);">
+        <div class="card-head">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="14" width="50" height="36" rx="2" stroke="#4d9e7a" stroke-width="1.5" fill="rgba(77,158,122,0.06)"/>
+              <line x1="6" y1="26" x2="56" y2="26" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
+              <line x1="6" y1="38" x2="56" y2="38" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
+              <line x1="22" y1="14" x2="22" y2="50" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
+              <line x1="38" y1="14" x2="38" y2="50" stroke="#4d9e7a" stroke-width=".6" opacity=".3"/>
+              <circle cx="30" cy="32" r="5" fill="rgba(77,158,122,0.15)" stroke="#4d9e7a" stroke-width="1.5"/>
+              <circle cx="30" cy="32" r="2.5" fill="#4d9e7a"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+              <circle cx="30" cy="32" r="8" stroke="#4d9e7a" stroke-width=".8" fill="none" opacity="0"><animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite"/><animate attributeName="r" values="5;14" dur="2s" repeatCount="indefinite"/></circle>
+              <circle cx="16" cy="44" r="2.5" stroke="#4d9e7a" stroke-width="1" fill="rgba(77,158,122,0.1)"/>
+              <circle cx="46" cy="20" r="2.5" stroke="#4d9e7a" stroke-width="1" fill="rgba(77,158,122,0.1)"/>
+              <line x1="30" y1="32" x2="16" y2="44" stroke="#4d9e7a" stroke-width=".8" stroke-dasharray="3 2" opacity=".5"/>
+              <line x1="30" y1="32" x2="46" y2="20" stroke="#4d9e7a" stroke-width=".8" stroke-dasharray="3 2" opacity=".5"/>
+              <path d="M60 10 L55 24 L60 24 L54 38 L62 21 L57 21 Z" fill="#4d9e7a" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="card-head-text">
+            <div class="card-badge">SYS-02A // SIMULATOR</div>
+            <div class="card-title">Scenario Simulator</div>
+          </div>
+        </div>
+        <div class="card-desc">
+          A <em>7-phase scenario simulation</em> of a grid failure at a major military installation — mapping, criticality tagging, outage trigger, backup activation, and resource depletion.<br><br>
+          Choose a scenario: <em>NB San Diego</em> (utility outage) or <em>NS Norfolk</em> (hurricane).
+        </div>
+        <div class="card-meta">
+          <span class="meta-pill">7 Phases</span>
+          <span class="meta-pill">Live Map</span>
+          <span class="meta-pill">Warning Orders</span>
+        </div>
+        <button class="launch-btn" onclick="event.stopPropagation();closeApp('overlay-esim-hub');setTimeout(function(){launchSim();},420);">&#9654; &nbsp;LAUNCH SYS-02A</button>
+      </div>
+
+      <!-- SYS-02B: e-Recon (military green) -->
+      <div class="app-card" style="cursor:pointer;border-color:rgba(74,120,56,.35);background:linear-gradient(155deg,rgba(255,255,255,.05),rgba(255,255,255,0) 35%,rgba(0,0,0,.16)),var(--card-bg);position:relative;overflow:hidden;display:flex;flex-direction:column;" onclick="closeApp('overlay-esim-hub');setTimeout(function(){openApp('overlay-erecon');},420);">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#5a8a3c,transparent);opacity:.7;"></div>
+        <div class="card-head">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="36" cy="34" r="20" stroke="#5a8a3c" stroke-width="1.4" fill="rgba(90,138,60,0.05)"/>
+              <ellipse cx="36" cy="34" rx="20" ry="8" stroke="#5a8a3c" stroke-width=".7" opacity=".3" fill="none"/>
+              <line x1="16" y1="34" x2="56" y2="34" stroke="#5a8a3c" stroke-width=".7" opacity=".3"/>
+              <ellipse cx="36" cy="34" rx="8" ry="20" stroke="#5a8a3c" stroke-width=".7" opacity=".4" fill="none"/>
+              <circle cx="36" cy="34" r="5" fill="rgba(90,138,60,0.2)" stroke="#5a8a3c" stroke-width="1.2"/>
+              <circle cx="36" cy="34" r="2" fill="#6aaa40"><animate attributeName="opacity" values="1;0.25;1" dur="1.9s" repeatCount="indefinite"/></circle>
+              <circle cx="36" cy="34" r="9" stroke="#5a8a3c" stroke-width=".7" fill="none" opacity="0"><animate attributeName="opacity" values="0.55;0" dur="2.1s" repeatCount="indefinite"/><animate attributeName="r" values="5;19" dur="2.1s" repeatCount="indefinite"/></circle>
+              <line x1="36" y1="14" x2="36" y2="18" stroke="#5a8a3c" stroke-width="1.2" opacity=".7"/>
+              <line x1="36" y1="50" x2="36" y2="54" stroke="#5a8a3c" stroke-width="1.2" opacity=".7"/>
+              <line x1="16" y1="34" x2="20" y2="34" stroke="#5a8a3c" stroke-width="1.2" opacity=".7"/>
+              <line x1="52" y1="34" x2="56" y2="34" stroke="#5a8a3c" stroke-width="1.2" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="card-head-text">
+            <div class="card-badge" style="color:#6aaa40;">SYS-02B // E-RECON</div>
+            <div class="card-title">e-Recon Panel</div>
+          </div>
+        </div>
+        <div class="card-desc" style="flex:1;">
+          <em style="color:#6aaa40;">Live installation intelligence panel</em> — real-time recon of military base energy posture, sensor feeds, and geospatial status via TomTom map integration.<br><br>
+          Displays <em style="color:#6aaa40;">site-level telemetry</em>, grid status overlays, and installation health across monitored nodes.
+        </div>
+        <div class="card-meta">
+          <span class="meta-pill" style="border-color:rgba(90,138,60,.28);color:rgba(106,170,64,.85);background:rgba(90,138,60,.07);">TomTom Map</span>
+          <span class="meta-pill" style="border-color:rgba(90,138,60,.28);color:rgba(106,170,64,.85);background:rgba(90,138,60,.07);">Live Telemetry</span>
+          <span class="meta-pill" style="border-color:rgba(90,138,60,.28);color:rgba(106,170,64,.85);background:rgba(90,138,60,.07);">Geo Intel</span>
+        </div>
+        <button style="font-family:var(--dsp);font-size:10px;letter-spacing:2px;border:1px solid rgba(90,138,60,.42);border-radius:10px;padding:var(--btn-pad);width:100%;cursor:pointer;background:rgba(90,138,60,.15);color:#6aaa40;transition:background .18s,box-shadow .18s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;" onclick="event.stopPropagation();closeApp('overlay-esim-hub');setTimeout(function(){openApp('overlay-erecon');},420);">&#x2B21; &nbsp;LAUNCH SYS-02B</button>
+      </div>
+
+      <!-- SYS-02C: Data Drop Zone -->
+      <div class="app-card card-esim" style="cursor:pointer;" onclick="closeApp('overlay-esim-hub');setTimeout(function(){openApp('overlay-dropzone');},420);">
+        <div class="card-head">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="12" y="20" width="48" height="36" rx="4" stroke="#b0b8c4" stroke-width="1.4" fill="rgba(176,184,196,0.05)" stroke-dasharray="5 3"/>
+              <line x1="36" y1="6" x2="36" y2="26" stroke="#b0b8c4" stroke-width="2" opacity=".8"/>
+              <polyline points="28,20 36,28 44,20" stroke="#b0b8c4" stroke-width="2" fill="none" stroke-linejoin="round" opacity=".8"/>
+              <rect x="20" y="34" width="10" height="13" rx="1.5" stroke="#b0b8c4" stroke-width="1" fill="rgba(176,184,196,0.1)"/>
+              <rect x="42" y="34" width="10" height="13" rx="1.5" stroke="#b0b8c4" stroke-width="1" fill="rgba(176,184,196,0.1)"/>
+              <line x1="44" y1="38" x2="50" y2="38" stroke="#b0b8c4" stroke-width=".8" opacity=".5"/>
+              <line x1="44" y1="41" x2="50" y2="41" stroke="#b0b8c4" stroke-width=".8" opacity=".4"/>
+              <line x1="44" y1="44" x2="48" y2="44" stroke="#b0b8c4" stroke-width=".8" opacity=".3"/>
+              <circle cx="36" cy="50" r="3" fill="rgba(176,184,196,0.2)" stroke="#b0b8c4" stroke-width="1"><animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/></circle>
+            </svg>
+          </div>
+          <div class="card-head-text">
+            <div class="card-badge">SYS-02C // DATA DROP ZONE</div>
+            <div class="card-title">Data Drop Zone</div>
+          </div>
+        </div>
+        <div class="card-desc">
+          <em>Secure data ingest portal</em> — structured upload zone for scenario datasets, sensor exports, NOAA weather archives, and DoD logistics files feeding eSimReconAI analysis.<br><br>
+          Supports <em>XLSX, CSV, JSON</em> with auto-classification on ingest.
+        </div>
+        <div class="card-meta">
+          <span class="meta-pill">XLSX / CSV</span>
+          <span class="meta-pill">JSON</span>
+          <span class="meta-pill">Auto-Classify</span>
+        </div>
+        <button class="launch-btn" onclick="event.stopPropagation();closeApp('overlay-esim-hub');setTimeout(function(){openApp('overlay-dropzone');},420);">&#x2B21; &nbsp;LAUNCH SYS-02C</button>
       </div>
 
     </div>
@@ -7388,6 +7590,211 @@ updateAiContext();
 </div>
 
 
+<!-- ═══════════════════════════════════════
+     OVERLAY: e-RECON (SYS-02B) — STUB
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-erecon">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-erecon');setTimeout(function(){openApp('overlay-esim-hub');},420);">&#8592; SYS-02</button>
+    <span class="overlay-app-name" style="color:#6aaa40;">e-Recon // Live Intelligence Panel</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#060e06;gap:18px;padding:40px 20px;">
+    <div style="font-family:var(--dsp);font-size:11px;letter-spacing:3px;color:#6aaa40;opacity:.7;">SYS-02B // E-RECON</div>
+    <div style="width:64px;height:64px;border:2px solid #5a8a3c;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(90,138,60,.35);">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="10" stroke="#5a8a3c" stroke-width="1.4" fill="none"/>
+        <circle cx="16" cy="16" r="3" fill="#6aaa40"><animate attributeName="opacity" values="1;0.2;1" dur="1.8s" repeatCount="indefinite"/></circle>
+        <line x1="16" y1="6" x2="16" y2="9" stroke="#5a8a3c" stroke-width="1.2"/>
+        <line x1="16" y1="23" x2="16" y2="26" stroke="#5a8a3c" stroke-width="1.2"/>
+        <line x1="6" y1="16" x2="9" y2="16" stroke="#5a8a3c" stroke-width="1.2"/>
+        <line x1="23" y1="16" x2="26" y2="16" stroke="#5a8a3c" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div style="font-family:var(--dsp);font-size:14px;letter-spacing:2px;color:#c8e8b0;">e-RECON PANEL</div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(90,138,60,.7);letter-spacing:1.5px;text-align:center;max-width:360px;line-height:1.7;">
+      TomTom map integration · live installation telemetry · geospatial status overlays<br>
+      <span style="color:rgba(90,138,60,.4);">— Module under construction —</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: DATA DROP ZONE (SYS-02C) — STUB
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-dropzone">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-dropzone');">&#8592; HUB</button>
+    <span class="overlay-app-name" style="color:#b0b8c4;">Data Drop Zone // Secure Ingest</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a1020;gap:18px;padding:40px 20px;">
+    <div style="font-family:var(--dsp);font-size:11px;letter-spacing:3px;color:#b0b8c4;opacity:.7;">SYS-02C // DATA DROP ZONE</div>
+    <div style="width:64px;height:64px;border:2px dashed rgba(176,184,196,.6);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(176,184,196,.2);">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <line x1="16" y1="4" x2="16" y2="18" stroke="#b0b8c4" stroke-width="2" opacity=".8"/>
+        <polyline points="10,13 16,19 22,13" stroke="#b0b8c4" stroke-width="2" fill="none" stroke-linejoin="round" opacity=".8"/>
+        <rect x="6" y="22" width="20" height="6" rx="2" stroke="#b0b8c4" stroke-width="1.2" fill="rgba(176,184,196,0.08)"/>
+        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+      </svg>
+    </div>
+    <div style="font-family:var(--dsp);font-size:14px;letter-spacing:2px;color:#e0d0ff;">DATA DROP ZONE</div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(176,184,196,.55);letter-spacing:1.5px;text-align:center;max-width:360px;line-height:1.7;">
+      XLSX · CSV · JSON ingest · NOAA weather archives · DoD logistics files<br>
+      <span style="color:rgba(176,184,196,.3);">— Module under construction —</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: INTEL ARCHIVE HUB (SYS-03)
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-intel-hub">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-intel-hub')">&#8592; HUB</button>
+    <span class="overlay-app-name" style="color:#d4855a;">INTEL ARCHIVE</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#d9d3c7;display:flex;flex-direction:column;align-items:center;padding:28px 20px 20px;gap:18px;">
+
+    <!-- header -->
+    <div style="background:var(--card-bg);border:1px solid rgba(212,133,90,.28);border-radius:14px;padding:10px 20px;width:100%;max-width:900px;margin-bottom:8px;text-align:center;">
+      <div class="hub-eyebrow" style="color:rgba(212,133,90,.65);">SYS-03 // INTEL ARCHIVE</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+        <div style="position:relative;width:52px;height:52px;border:2px solid #d4855a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--dsp);font-weight:900;font-size:9px;color:#fff;letter-spacing:.08em;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(212,133,90,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #d4855a,0 0 18px rgba(212,133,90,.35);">
+          INT
+          <span style="position:absolute;bottom:-6px;right:-6px;width:24px;height:24px;background:#d4855a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:2px solid rgba(14,24,36,.9);">03</span>
+        </div>
+        <div class="hub-title" style="margin-bottom:0;"><span style="color:#d4855a;">INTEL</span><span style="color:#ffffff;"> ARCHIVE</span></div>
+      </div>
+      <div class="hub-sub" style="margin-top:4px;">Select a module to launch</div>
+    </div>
+
+    <!-- Two sub-cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;width:100%;max-width:900px;">
+
+      <!-- SYS-03A: Saved Scenarios -->
+      <div class="app-card card-intel" style="cursor:pointer;" onclick="closeApp('overlay-intel-hub');setTimeout(function(){openApp('overlay-saved-scenarios');},420);">
+        <div class="card-head">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="14" width="52" height="44" rx="4" stroke="#d4855a" stroke-width="1.4" fill="rgba(212,133,90,0.05)"/>
+              <line x1="10" y1="26" x2="62" y2="26" stroke="#d4855a" stroke-width=".7" opacity=".4"/>
+              <rect x="16" y="32" width="18" height="10" rx="2" stroke="#d4855a" stroke-width="1" fill="rgba(212,133,90,0.1)"/>
+              <rect x="16" y="46" width="26" height="6" rx="2" stroke="#d4855a" stroke-width=".8" fill="rgba(212,133,90,0.07)" opacity=".6"/>
+              <rect x="40" y="32" width="16" height="22" rx="2" stroke="#d4855a" stroke-width="1" fill="rgba(212,133,90,0.08)"/>
+              <circle cx="18" cy="20" r="2" fill="#d4855a" opacity=".6"><animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/></circle>
+              <circle cx="24" cy="20" r="2" fill="#d4855a" opacity=".4"/>
+              <circle cx="30" cy="20" r="2" fill="#d4855a" opacity=".25"/>
+              <path d="M48 36 L44 42 L48 42 L43 52 L54 40 L49 40 Z" fill="#d4855a" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="card-head-text">
+            <div class="card-badge">SYS-03A // SAVED SCENARIOS</div>
+            <div class="card-title">Saved Scenarios</div>
+          </div>
+        </div>
+        <div class="card-desc">
+          <em>Scenario playback archive</em> — browse and replay saved simulation runs from past wargame sessions. Compare grid failure outcomes across installations, review warning order sequences, and extract lessons-learned from completed exercises.<br><br>
+          Each saved session preserves <em>phase logs, asset deployments, and AI-generated assessments</em>.
+        </div>
+        <div class="card-meta">
+          <span class="meta-pill">Playback</span>
+          <span class="meta-pill">Compare Runs</span>
+          <span class="meta-pill">Phase Logs</span>
+        </div>
+        <button class="launch-btn" onclick="event.stopPropagation();closeApp('overlay-intel-hub');setTimeout(function(){openApp('overlay-saved-scenarios');},420);">&#x2B21; &nbsp;LAUNCH SYS-03A</button>
+      </div>
+
+      <!-- SYS-03B: Recon Sites -->
+      <div class="app-card card-intel" style="cursor:pointer;" onclick="closeApp('overlay-intel-hub');setTimeout(function(){openApp('overlay-recon-sites');},420);">
+        <div class="card-head">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="36" cy="30" r="14" stroke="#d4855a" stroke-width="1.4" fill="rgba(212,133,90,0.05)"/>
+              <circle cx="36" cy="30" r="5" stroke="#d4855a" stroke-width="1.2" fill="rgba(212,133,90,0.12)"/>
+              <circle cx="36" cy="30" r="2" fill="#d4855a"><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle>
+              <circle cx="36" cy="30" r="9" stroke="#d4855a" stroke-width=".7" fill="none" opacity="0"><animate attributeName="opacity" values="0.5;0" dur="2.2s" repeatCount="indefinite"/><animate attributeName="r" values="5;18" dur="2.2s" repeatCount="indefinite"/></circle>
+              <path d="M36 44 L29 56 L36 52 L43 56 Z" fill="#d4855a" stroke="#d4855a" stroke-width="1" stroke-linejoin="round" opacity=".8"/>
+              <line x1="22" y1="30" x2="16" y2="30" stroke="#d4855a" stroke-width="1" opacity=".5"/>
+              <line x1="50" y1="30" x2="56" y2="30" stroke="#d4855a" stroke-width="1" opacity=".5"/>
+              <line x1="36" y1="16" x2="36" y2="10" stroke="#d4855a" stroke-width="1" opacity=".5"/>
+              <circle cx="50" cy="50" r="3" stroke="#d4855a" stroke-width="1" fill="rgba(212,133,90,0.1)" opacity=".6"/>
+              <circle cx="20" cy="52" r="3" stroke="#d4855a" stroke-width="1" fill="rgba(212,133,90,0.1)" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="card-head-text">
+            <div class="card-badge">SYS-03B // RECON SITES</div>
+            <div class="card-title">Recon Sites</div>
+          </div>
+        </div>
+        <div class="card-desc">
+          <em>Geo-tagged installation intelligence catalog</em> — catalogued recon site records from e-Recon sessions. Browse installation energy posture snapshots, sensor readings, and geospatial status entries collected across monitored nodes.<br><br>
+          Filter by <em>region, installation type, or readiness status</em> to surface priority sites.
+        </div>
+        <div class="card-meta">
+          <span class="meta-pill">Geo Catalog</span>
+          <span class="meta-pill">Site Records</span>
+          <span class="meta-pill">Filter &amp; Search</span>
+        </div>
+        <button class="launch-btn" onclick="event.stopPropagation();closeApp('overlay-intel-hub');setTimeout(function(){openApp('overlay-recon-sites');},420);">&#x2B21; &nbsp;LAUNCH SYS-03B</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: SAVED SCENARIOS (SYS-03A) — STUB
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-saved-scenarios">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-saved-scenarios');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-03</button>
+    <span class="overlay-app-name" style="color:#d4855a;">Saved Scenarios</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#100c08;gap:18px;padding:40px 20px;">
+    <div style="font-family:var(--dsp);font-size:11px;letter-spacing:3px;color:#d4855a;opacity:.7;">SYS-03A // SAVED SCENARIOS</div>
+    <div style="width:64px;height:64px;border:2px dashed rgba(212,133,90,.6);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(212,133,90,.2);">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="4" y="6" width="24" height="20" rx="2" stroke="#d4855a" stroke-width="1.4" fill="rgba(212,133,90,0.08)"/>
+        <line x1="4" y1="12" x2="28" y2="12" stroke="#d4855a" stroke-width=".8" opacity=".4"/>
+        <rect x="7" y="15" width="8" height="5" rx="1" stroke="#d4855a" stroke-width=".9" fill="rgba(212,133,90,0.1)"/>
+        <rect x="18" y="15" width="7" height="9" rx="1" stroke="#d4855a" stroke-width=".9" fill="rgba(212,133,90,0.08)"/>
+        <path d="M22 17 L20 20 L22 20 L19 25 L26 19 L23 19 Z" fill="#d4855a" opacity=".7"/>
+        <animate attributeName="opacity" values="1;0.5;1" dur="2.4s" repeatCount="indefinite"/>
+      </svg>
+    </div>
+    <div style="font-family:var(--dsp);font-size:14px;letter-spacing:2px;color:#e0a080;">SAVED SCENARIOS</div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(212,133,90,.55);letter-spacing:1.5px;text-align:center;max-width:360px;line-height:1.7;">
+      Scenario playback archive · phase logs · AI assessments<br>
+      <span style="color:rgba(212,133,90,.3);">— Module under construction —</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     OVERLAY: RECON SITES (SYS-03B) — STUB
+     ═══════════════════════════════════════ -->
+<div class="app-overlay overlay-duers" id="overlay-recon-sites">
+  <div class="overlay-chrome">
+    <button class="overlay-back" onclick="closeApp('overlay-recon-sites');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-03</button>
+    <span class="overlay-app-name" style="color:#d4855a;">Recon Sites</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#100c08;gap:18px;padding:40px 20px;">
+    <div style="font-family:var(--dsp);font-size:11px;letter-spacing:3px;color:#d4855a;opacity:.7;">SYS-03B // RECON SITES</div>
+    <div style="width:64px;height:64px;border:2px dashed rgba(212,133,90,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(212,133,90,.2);">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="13" r="6" stroke="#d4855a" stroke-width="1.4" fill="rgba(212,133,90,0.08)"/>
+        <circle cx="16" cy="13" r="2.5" fill="#d4855a"><animate attributeName="opacity" values="1;0.25;1" dur="1.9s" repeatCount="indefinite"/></circle>
+        <circle cx="16" cy="13" r="4" stroke="#d4855a" stroke-width=".7" fill="none" opacity="0"><animate attributeName="opacity" values="0.5;0" dur="2s" repeatCount="indefinite"/><animate attributeName="r" values="3;10" dur="2s" repeatCount="indefinite"/></circle>
+        <path d="M16 19 L12 27 L16 25 L20 27 Z" fill="#d4855a" stroke="#d4855a" stroke-width=".8" stroke-linejoin="round" opacity=".8"/>
+      </svg>
+    </div>
+    <div style="font-family:var(--dsp);font-size:14px;letter-spacing:2px;color:#e0a080;">RECON SITES</div>
+    <div style="font-family:var(--mono);font-size:11px;color:rgba(212,133,90,.55);letter-spacing:1.5px;text-align:center;max-width:360px;line-height:1.7;">
+      Geo-tagged installation catalog · sensor records · readiness status<br>
+      <span style="color:rgba(212,133,90,.3);">— Module under construction —</span>
+    </div>
+  </div>
+</div>
+
 <!-- OVERLAY: NES AI PROTOTYPE -->
 <div class="app-overlay overlay-duers" id="overlay-duers">
   <div class="overlay-chrome">
@@ -7701,7 +8108,6 @@ svg text{font-family:var(--body)}
 #boot-console .sec{color:#60a5fa}
 /* Boot progress bar */
 #boot-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,var(--gold),#4ade80);width:0;transition:width .25s ease-out;z-index:3;box-shadow:0 0 12px rgba(74,222,128,.40)}
-
 #earth-splash .splash-skip{position:absolute;top:18px;right:18px;font-family:var(--mono);font-size:10.5px;letter-spacing:.20em;color:rgba(232,237,245,.55);text-transform:uppercase;border:1px solid rgba(232,237,245,.20);padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.25);cursor:pointer;animation:fadein 1s .8s forwards;opacity:0}
 /* Cool title that emanates from the center of the Earth, growing larger and brighter */
 #earth-splash .splash-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;mix-blend-mode:screen;will-change:transform,opacity}
@@ -8004,7 +8410,6 @@ nav.tabs button.on{box-shadow:0 0 22px var(--glow),inset 0 -3px 0 var(--gold-dim
     <div class=&quot;title-sub&quot;>Executive Intelligence · Navy Energy System</div>
   </div>
   <div class=&quot;splash-skip&quot; id=&quot;earth-splash-skip&quot;>Skip · Click anywhere to dismiss</div>
-
   <div id=&quot;boot-console&quot;></div>
   <div id=&quot;boot-progress&quot;></div>
   <div class=&quot;splash-label&quot;>Initializing &amp;middot; Naval Energy Intelligence<span class=&quot;sub&quot;>DEPARTMENT OF THE NAVY</span></div>
@@ -12980,6 +13385,7 @@ function bootScan() {
   setTimeout(function() { cards[0].classList.add('revealed'); }, 240);
   setTimeout(function() { if(cards[1]) cards[1].classList.add('revealed'); }, 420);
   setTimeout(function() { if(cards[2]) cards[2].classList.add('revealed'); }, 600);
+  setTimeout(function() { if(cards[3]) cards[3].classList.add('revealed'); }, 780);
 }
 
 // ── OPEN / CLOSE ──
